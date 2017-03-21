@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorBack"
+    tools:context=".login.view.SplashScreen">
+
+
+    <android.support.v7.widget.AppCompatImageView
+        android:id="@+id/imageView_logo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        app:srcCompat="@drawable/logo" />
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/textView_splash"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="57dp"
+        android:text="Welcome Back,BridgeLabz"
+        android:textColor="@android:color/white"
+        android:textSize="30dp"
+        android:layout_below="@+id/imageView_logo"
+        android:layout_centerHorizontal="true" />
+
+</RelativeLayout>

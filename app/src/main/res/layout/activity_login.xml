@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+
+    tools:context=".login.view.LoginActivity">
+<ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/imageview_icon_login"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/diamen_80dp"
+            android:layout_marginTop="@dimen/diamen_50dp"
+            android:layout_centerHorizontal="true"
+
+            app:srcCompat="@drawable/logo" />
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/edittext_layout_email"
+            android:layout_width="match_parent"
+            android:layout_marginRight="@dimen/diamen_20dp"
+            android:layout_marginLeft="@dimen/diamen_20dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/imageview_icon_login">
+
+            <android.support.v7.widget.AppCompatEditText
+                android:id="@+id/edittext_email"
+                android:textColor="@android:color/black"                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:maxLines="1"
+                android:text="gokulsonawane9@gmail.com"
+                />
+        </android.support.design.widget.TextInputLayout>
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/edittext_layout_password"
+            android:layout_width="match_parent"
+            android:layout_marginLeft="@dimen/diamen_20dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/diamen_20dp"
+            android:layout_marginRight="@dimen/diamen_20dp"
+            android:layout_below="@+id/edittext_layout_email">
+            <android.support.v7.widget.AppCompatEditText
+                android:id="@+id/edittext_password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:text="dipak123"
+                android:textColor="@android:color/black"
+
+                />
+
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/textview_forgot"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorBack"
+            android:textSize="@dimen/diamen_30sp"
+            android:text="Forgot Password ?"
+            android:layout_marginLeft="@dimen/diamen_20dp"
+            android:layout_marginTop="@dimen/diamen_20dp"
+            android:layout_below="@+id/edittext_layout_password"/>
+
+
+                <android.support.v7.widget.AppCompatButton
+                    android:id="@+id/button_signin"
+                    android:layout_width="@dimen/diamen_80dp"
+                    android:layout_height="@dimen/diamen_40dp"
+                    android:text="Log in"
+                    android:layout_marginBottom="@dimen/diamen_10dp"
+                    android:layout_marginTop="@dimen/diamen_20dp"
+                    android:background="@drawable/fb"
+                    android:layout_below="@id/textview_forgot"
+                    android:layout_centerHorizontal="true"
+                    />
+
+
+
+        <com.facebook.login.widget.LoginButton
+            android:id="@+id/login_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="30dp"
+            android:layout_marginBottom="30dp"
+            android:layout_below="@+id/button_signin"/>
+    </RelativeLayout>
+</ScrollView>
+</RelativeLayout>
