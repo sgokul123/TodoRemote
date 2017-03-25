@@ -5,20 +5,25 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context=".login.view.ToDoActivity"
-    tools:showIn="@layout/app_bar_to_do">
+
+    tools:showIn="@layout/app_bar_to_do"
+  >
 
 
     <GridView
         android:id="@+id/gridview_notes"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:columnWidth="90dp"
-        android:numColumns="auto_fit"
+        android:columnWidth="170dp"
+        android:numColumns="2"
         android:verticalSpacing="10dp"
         android:horizontalSpacing="10dp"
         android:stretchMode="columnWidth"
         android:gravity="center"
+        android:layout_marginBottom="@dimen/diamen_20dp"
+        android:layout_marginLeft="@dimen/diamen_20dp"
+        android:layout_marginRight="@dimen/diamen_20dp"
+        android:layout_marginTop="@dimen/diamen_65dp"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
 
         >
 

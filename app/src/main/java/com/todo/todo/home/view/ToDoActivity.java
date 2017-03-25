@@ -2,6 +2,7 @@ package com.todo.todo.home.view;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -9,16 +10,23 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.AppCompatImageView;
+import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.todo.todo.R;
+import com.todo.todo.home.adapter.CustomGrid;
 import com.todo.todo.home.adapter.DataAdapter;
 import com.todo.todo.home.model.ToDoModel;
 import com.todo.todo.home.presenter.ToDoPresenter;
+import com.todo.todo.login.view.LoginActivity;
 
 
 import java.util.List;
@@ -26,39 +34,69 @@ import java.util.List;
 public class ToDoActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, AdapterView.OnItemClickListener, View.OnClickListener ,ToDoActivityInteface {
     private  String TAG ="ToDoActivity";
-    ToDoPresenter toDoPresenter;
+    ToDoPresenter mTtoDoPresenter;
     ProgressDialog mProgressDialog;
-    Toolbar toolbar;
+    AppCompatTextView mTextViewEmail,mTextView_Name;
+    Toolbar mToolbar;
     GridView mGridview;
-    FloatingActionButton floatingActionButton;
+    AppCompatImageView mImageViewsearch, mImageViewGrid;
+    FloatingActionButton mFloatingActionButton;
+    SharedPreferences pref;
+    SharedPreferences.Editor editor;
+    private  String mEmail_id;
+    private  boolean mLinear=false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_to_do);
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-
-        floatingActionButton=(FloatingActionButton) findViewById(R.id.fab);
-        floatingActionButton.setOnClickListener(this);
-        setSupportActionBar(toolbar);
-        toDoPresenter =new ToDoPresenter(ToDoActivity.this,getApplicationContext());
-       // toDoPresenter.getPresenterNotes();
+        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        mFloatingActionButton =(FloatingActionButton) findViewById(R.id.fab);
+        mImageViewsearch =(AppCompatImageView) findViewById(R.id.imageView_search);
+        mImageViewGrid =(AppCompatImageView) findViewById(R.id.imageView_grid_linear);
 
         mGridview = (GridView) findViewById(R.id.gridview_notes);
-     //   mGridview.setAdapter(new DataAdapter(ToDoActivity.this,toDoModels));
 
+        mFloatingActionButton.setOnClickListener(this);
+        mImageViewsearch.setOnClickListener(this);
+        mImageViewGrid.setOnClickListener(this);
+
+        pref = getSharedPreferences("testapp", MODE_PRIVATE);
+        editor = pref.edit();
+
+
+
+        setSupportActionBar(mToolbar);
+        mTtoDoPresenter =new ToDoPresenter(ToDoActivity.this,this);
+        mTtoDoPresenter.getPresenterNotes();
+
+        //   mGridview.setAdapter(new DataAdapter(ToDoActivity.this,toDoModels));
+        mGridview.setOnItemClickListener(this);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(this);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+                this, drawer, mToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        View header=navigationView.getHeaderView(0);
+        mTextViewEmail=(AppCompatTextView) header.findViewById(R.id.textView_nav_email);
+        mTextView_Name=(AppCompatTextView)header. findViewById(R.id.textview_nave_name);
+        if(pref.contains("email"))
+        {
+            String  getemail=pref.getString("user_id", "abcd@gmail.com");
+            String  getName=pref.getString("name", "xyz");
+            Log.i(TAG, "onCreate:  email"+getemail);
+             mTextViewEmail.setText(getemail);
+            mTextView_Name.setText(getName);
+        }
+
     }
 
     @Override
@@ -108,6 +146,12 @@ public class ToDoActivity extends AppCompatActivity
         } else if (id == R.id.nav_deleted) {
 
 
+        }else if(id==R.id.nav_logout){
+
+            editor.putString("register","false");
+                    editor.commit();
+            Intent intent =new Intent(ToDoActivity.this, LoginActivity.class);
+            startActivity(intent);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -123,9 +167,42 @@ public class ToDoActivity extends AppCompatActivity
     @Override
     public void onClick(View v) {
 
-        //getSupportFragmentManager().beginTransaction().replace(R.id.layout_todo_main,NewNoteFragment.newInstance()).addToBackStack(null).commit();
-        Intent intent =new Intent(ToDoActivity.this,NewNote.class);
-        startActivity(intent);
+        switch (v.getId()){
+            case R.id.imageView_search:
+                //Search Note
+                Toast.makeText(this, "Search View", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.imageView_grid_linear:
+                //Convert Grid view to linear
+                if(!mLinear){
+                    mLinear=true;
+                    mGridview.setNumColumns(1);
+                    mImageViewGrid.setImageResource(R.drawable.ic_grid);
+                }
+                else{
+                    mLinear=false;
+                    mGridview.setNumColumns(2);
+                    mImageViewGrid.setImageResource(R.drawable.ic_list);
+                }
+                Toast.makeText(this, "Convert view ", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.fab:
+
+                /*getSupportFragmentManager().beginTransaction().replace(R.id.layout_todo_main,NewNoteFragment.newInstance()).addToBackStack(null).commit();
+                mToolbar.setVisibility(View.INVISIBLE);
+                getSupportActionBar().hide();
+                mFloatingActionButton.setVisibility(View.INVISIBLE);*/
+                Intent intent =new Intent(ToDoActivity.this,NewNote.class);
+                startActivity(intent);
+                break;
+            default:
+                //Default
+
+
+                break;
+
+        }
+
     }
 
     @Override
@@ -142,8 +219,28 @@ public class ToDoActivity extends AppCompatActivity
 
     @Override
     public void showDataInActivity(List<ToDoModel> toDoModels) {
-        mGridview.setAdapter(new DataAdapter(ToDoActivity.this,toDoModels));
-       mGridview.setOnItemClickListener(this);
+        Log.i(TAG, "showDataInActivity: "+toDoModels.get(1).get_reminder());
+        DataAdapter adapter=new DataAdapter(ToDoActivity.this,toDoModels);
+        mGridview.setAdapter(adapter);
+
+    }
+
+    @Override
+    public void getResponce(boolean flag) {
+
+        if(flag){
+            Toast.makeText(getApplicationContext(), "succcess", Toast.LENGTH_SHORT).show();
+
+        }
+        else {
+            Toast.makeText(getApplicationContext(), "fail", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
     }
 
 }

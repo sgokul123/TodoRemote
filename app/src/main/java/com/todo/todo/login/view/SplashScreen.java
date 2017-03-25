@@ -23,9 +23,9 @@ public class SplashScreen extends Activity {
         setContentView(R.layout.activity_splash_screen);
         textView_title=(AppCompatTextView) findViewById(R.id.textView_splash);
         Animation animationimage = AnimationUtils.loadAnimation(getApplicationContext(),
-                R.anim.clockwise);
+                R.anim.fade);
         Animation animationtext = AnimationUtils.loadAnimation(getApplicationContext(),
-                R.anim.clockwise);
+                R.anim.translate);
         textView_title.setAnimation(animationtext);
         image1 = (AppCompatImageView)findViewById(R.id.imageView_logo);
         image1.startAnimation(animationimage);

@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-
+    android:background="@color/back_front_color"
+    android:id="@+id/login_layout"
     tools:context=".login.view.LoginActivity">
 <ScrollView
     android:layout_width="match_parent"
@@ -61,7 +62,7 @@
             android:id="@+id/textview_forgot"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@color/colorBack"
+            android:textColor="@color/colorAccent"
             android:textSize="@dimen/diamen_30sp"
             android:text="Forgot Password ?"
             android:layout_marginLeft="@dimen/diamen_20dp"
@@ -71,7 +72,7 @@
 
                 <android.support.v7.widget.AppCompatButton
                     android:id="@+id/button_signin"
-                    android:layout_width="@dimen/diamen_80dp"
+                    android:layout_width="@dimen/diamen_100dp"
                     android:layout_height="@dimen/diamen_40dp"
                     android:text="Log in"
                     android:layout_marginBottom="@dimen/diamen_10dp"
@@ -81,16 +82,37 @@
                     android:layout_centerHorizontal="true"
                     />
 
-
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/registation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/diamen_10dp"
+                android:layout_below="@+id/button_signin"
+                android:layout_centerHorizontal="true"
+                android:text="Sign Up"
+                android:textSize="@dimen/diamen_20sp"
+                android:textColor="@color/colorAccent"
+                android:textAlignment="center"
+                />
 
         <com.facebook.login.widget.LoginButton
             android:id="@+id/login_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
+
+           android:layout_marginLeft="@dimen/diamen_30dp"
             android:layout_marginTop="30dp"
             android:layout_marginBottom="30dp"
-            android:layout_below="@+id/button_signin"/>
+            android:layout_below="@+id/registation"/>
+        <com.google.android.gms.common.SignInButton
+            android:id="@+id/gsign_in_button"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/diamen_35dp"
+            android:layout_marginLeft="@dimen/diamen_30dp"
+            android:layout_marginTop="@dimen/diamen_20dp"
+            android:layout_below="@+id/registation"
+            android:layout_toRightOf="@+id/login_button"/>
     </RelativeLayout>
 </ScrollView>
 </RelativeLayout>

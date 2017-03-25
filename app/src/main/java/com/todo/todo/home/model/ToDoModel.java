@@ -1,10 +1,12 @@
 package com.todo.todo.home.model;
 
+import android.content.Intent;
+
 /**
  * Created by bridgeit on 20/3/17.
  */
 
-public class ToDoModel {
+public class ToDoModel  {
 
     int _id;
     String _title;

@@ -13,4 +13,5 @@ public interface ToDoActivityInteface {
     public  void closeProgressDialog();
     public void  showProgressDialog();
     public  void showDataInActivity(List<ToDoModel> toDoModels);
+    public  void getResponce(boolean flag);
 }

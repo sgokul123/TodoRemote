@@ -1,10 +1,10 @@
-package com.todo.todo.login.model;
+package com.todo.todo.registration.model;
 
 /**
- * Created by bridgeit on 14/3/17.
+ * Created by bridgeit on 23/3/17.
  */
 
-public class LoginModel {
+public class RegistrationModel {
     private  int mId;
 
     private  String mEmail;
@@ -12,7 +12,7 @@ public class LoginModel {
     private  String mMobile;
     private  String mName;
 
-    public LoginModel(int mId, String mEmail, String mPassword, String mMobile, String mName) {
+    public RegistrationModel(int mId, String mEmail, String mPassword, String mMobile, String mName) {
         this.mId = mId;
         this.mEmail = mEmail;
         this.mPassword = mPassword;
@@ -20,10 +20,7 @@ public class LoginModel {
         this.mName = mName;
     }
 
-    public LoginModel() {
-    }
-
-    public LoginModel(String email, String password) {
+    public RegistrationModel() {
     }
 
     public int getmId() {

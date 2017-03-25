@@ -21,12 +21,12 @@
 
         <android.support.v7.widget.AppCompatImageView
             android:id="@+id/imageView_pin"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/diamen_30dp"
+            android:layout_height="@dimen/diamen_30dp"
             android:layout_marginRight="@dimen/diamen_20dp"
             android:layout_marginTop="@dimen/diamen_10dp"
             android:layout_toLeftOf="@+id/imageView_reminder"
-            app:srcCompat="@drawable/ic_menu_slideshow" />
+            app:srcCompat="@drawable/pin" />
 
         <android.support.v7.widget.AppCompatImageView
             android:id="@+id/imageView_reminder"
@@ -35,7 +35,7 @@
             android:layout_marginRight="@dimen/diamen_20dp"
             android:layout_marginTop="@dimen/diamen_10dp"
             android:layout_toLeftOf="@+id/imageView_save"
-            app:srcCompat="@drawable/com_facebook_tooltip_black_topnub" />
+            app:srcCompat="@drawable/reminder" />
 
         <android.support.v7.widget.AppCompatImageView
             android:id="@+id/imageView_save"
@@ -44,7 +44,7 @@
             android:layout_alignParentEnd="true"
             android:layout_marginRight="@dimen/diamen_20dp"
             android:layout_marginTop="@dimen/diamen_10dp"
-            app:srcCompat="@android:drawable/ic_partial_secure" />
+            app:srcCompat="@drawable/save" />
         <View
             android:id="@+id/view_first"
             android:layout_width="match_parent"

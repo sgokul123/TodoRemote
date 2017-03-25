@@ -1,0 +1,213 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/fragment_registration"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/back_front_color"
+   >
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    <LinearLayout
+        android:id="@+id/layout_linear_parent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_alignParentTop="true"
+        >
+        <LinearLayout
+            android:id="@+id/layout_registration"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="40dp"
+            android:layout_marginLeft="118dp"
+            android:layout_marginRight="100dp">
+
+            <android.support.v7.widget.AppCompatImageView
+                android:id="@+id/imageView_register_logo"
+                android:layout_width="43dp"
+                android:layout_height="58dp"
+                android:src="@drawable/pinup"
+                app:srcCompat="@drawable/com_facebook_button_send_icon_blue" />
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/textView_register_title_main"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@+id/imageView_main_logo"
+                android:layout_marginLeft="16dp"
+
+                android:text="ToDo"
+
+                android:textSize="24dp"
+                android:textStyle="bold" />
+        </LinearLayout>
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/textview_register_admin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/layout_registration"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="25dp"
+            android:text="Welcome to ToDo"
+            android:textAlignment="center"
+
+            android:textStyle="bold"
+            android:fontFamily="Avenir-Medium"
+            />
+        <LinearLayout
+            android:id="@+id/linear_lay_Edit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textview_register_admin"
+            android:layout_marginLeft="49dp"
+            android:layout_marginRight="47dp"
+
+            android:layout_marginTop="10dp"
+            android:orientation="vertical"
+            >
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/input_layout_register_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                >
+                <android.support.v7.widget.AppCompatEditText
+                    android:id="@+id/edittext_registration_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:maxLines="1"
+
+                    android:hint="Name"
+                    />
+            </android.support.design.widget.TextInputLayout>
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/input_layout_register_email"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                >
+                <android.support.v7.widget.AppCompatEditText
+                    android:id="@+id/edittext_registration_email"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:inputType="textEmailAddress"
+                    android:maxLines="1"
+
+                    android:hint="Email"
+
+                    />
+            </android.support.design.widget.TextInputLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:weightSum="1">
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/input_layout_register_phone_st"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                >
+                <android.support.v7.widget.AppCompatEditText
+                    android:id="@+id/edittext_registration_phone_st"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:inputType="phone"
+                    android:text="+91"
+                    android:maxLength="4"
+                    android:maxLines="1"
+                    />
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/input_layout_register_phone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.2"
+                >
+                <android.support.v7.widget.AppCompatEditText
+                    android:id="@+id/edittext_registration_phone"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="8dp"
+                    android:inputType="phone"
+                    android:layout_marginRight="@dimen/diamen_20dp"
+                    android:maxLength="10"
+                    android:maxLines="1"
+
+                    android:hint="Mobile"
+                    />
+            </android.support.design.widget.TextInputLayout>
+            </LinearLayout>
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/input_layout_register_password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.7"
+                >
+                <android.support.v7.widget.AppCompatEditText
+                    android:id="@+id/edittext_registration_password"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:inputType="textPassword"
+                    android:maxLines="1"
+                    android:hint="Password"
+
+                    />
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/input_layout_password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                >
+                <android.support.v7.widget.AppCompatEditText
+                    android:id="@+id/edittext_registration_re_password"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPassword"
+                    android:layout_marginTop="8dp"
+                    android:maxLines="1"
+                    android:hint="Re-enter Password"
+                    />
+            </android.support.design.widget.TextInputLayout>
+        </LinearLayout>
+
+    </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_below="@+id/layout_linear_parent"
+            android:layout_marginTop="@dimen/diamen_50dp"
+            android:layout_alignParentBottom="true">
+            <View
+                android:id="@+id/viewbutton_admin"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#000000"
+                />
+
+            <android.support.v7.widget.AppCompatButton
+                android:id="@+id/button_registration_register"
+                android:layout_width="match_parent"
+                android:layout_height="58dp"
+                android:textSize="14dp"
+                android:text="Register"
+
+                />
+
+        </LinearLayout>
+
+    </RelativeLayout>
+    </ScrollView>
+</RelativeLayout>

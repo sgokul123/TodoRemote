@@ -3,29 +3,29 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".login.view.NewNoteFragment">
-
+    android:background="@color/fraagment_back"
+   >
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-       >
+        >
 
         <android.support.v7.widget.AppCompatImageView
             android:id="@+id/imageView_back_arrow"
             android:layout_width="@dimen/diamen_30dp"
             android:layout_height="@dimen/diamen_30dp"
-                android:layout_marginTop="@dimen/diamen_10dp"
+            android:layout_marginTop="@dimen/diamen_10dp"
             android:layout_marginLeft="@dimen/diamen_10dp"
             app:srcCompat="?attr/actionModeCloseDrawable" />
 
         <android.support.v7.widget.AppCompatImageView
             android:id="@+id/imageView_pin"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/diamen_30dp"
+            android:layout_height="@dimen/diamen_30dp"
             android:layout_marginRight="@dimen/diamen_20dp"
             android:layout_marginTop="@dimen/diamen_10dp"
             android:layout_toLeftOf="@+id/imageView_reminder"
-            />
+            app:srcCompat="@drawable/pin" />
 
         <android.support.v7.widget.AppCompatImageView
             android:id="@+id/imageView_reminder"
@@ -34,7 +34,7 @@
             android:layout_marginRight="@dimen/diamen_20dp"
             android:layout_marginTop="@dimen/diamen_10dp"
             android:layout_toLeftOf="@+id/imageView_save"
-            app:srcCompat="@drawable/com_facebook_tooltip_black_topnub" />
+            app:srcCompat="@drawable/reminder" />
 
         <android.support.v7.widget.AppCompatImageView
             android:id="@+id/imageView_save"
@@ -43,27 +43,29 @@
             android:layout_alignParentEnd="true"
             android:layout_marginRight="@dimen/diamen_20dp"
             android:layout_marginTop="@dimen/diamen_10dp"
-            app:srcCompat="@drawable/common_google_signin_btn_icon_light_disabled" />
+            app:srcCompat="@drawable/save" />
         <View
             android:id="@+id/view_first"
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="@color/cardview_dark_background"
-            android:layout_marginTop="@dimen/diamen_20dp"
+            android:layout_marginTop="5dp"
+
             android:layout_below="@+id/imageView_back_arrow"/>
 
         <android.support.design.widget.TextInputLayout
             android:id="@+id/input_layout_title"
             android:layout_below="@+id/view_first"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-        <android.support.v7.widget.AppCompatEditText
-            android:id="@+id/edittext_title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Title"
             android:layout_marginTop="@dimen/diamen_20dp"
-            />
+            android:layout_height="wrap_content">
+            <android.support.v7.widget.AppCompatEditText
+                android:id="@+id/edittext_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Title"
+                android:layout_marginTop="@dimen/diamen_20dp"
+                />
         </android.support.design.widget.TextInputLayout>
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
@@ -76,15 +78,21 @@
                 android:layout_height="wrap_content"
                 android:hint="Note"
                 />
-
         </android.support.design.widget.TextInputLayout>
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/textview_reminder_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/diamen_10dp"
+            android:layout_marginRight="@dimen/diamen_30dp"
+            android:layout_above="@+id/view_second"/>
         <View
             android:id="@+id/view_second"
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_above="@+id/textview_editedat"
             android:background="@color/cardview_dark_background"
-          android:layout_marginBottom="@dimen/diamen_10dp"
+            android:layout_marginBottom="@dimen/diamen_10dp"
             />
         <android.support.v7.widget.AppCompatTextView
             android:id="@+id/textview_editedat"

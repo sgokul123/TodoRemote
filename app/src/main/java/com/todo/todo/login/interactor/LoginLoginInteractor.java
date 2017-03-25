@@ -20,7 +20,6 @@ public class LoginLoginInteractor implements LoginInteractorInterface {
     FirebaseAuth firebaseAuth;
     private LoginLoginPresenter mLoginPresenter;
 
-
     public LoginLoginInteractor(LoginLoginPresenter loginPresenter) {
         Log.i(TAG, "LoginLoginInteractor: ");
         mLoginPresenter=loginPresenter;
@@ -38,6 +37,7 @@ public class LoginLoginInteractor implements LoginInteractorInterface {
                     Log.i(TAG, "getFirbaseLogin: call");
                     mLoginPresenter.closeProgress();
                     mLoginPresenter.getLoginAuthentication(true);
+
                 }
                 else {
                     Log.i(TAG, "closeDialog:  ");

@@ -5,7 +5,9 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
+import com.todo.todo.home.interactor.ToDoInteractor;
 import com.todo.todo.home.model.ToDoModel;
 
 import java.util.ArrayList;
@@ -13,6 +15,7 @@ import java.util.List;
 
 
 public class DatabaseHandler extends SQLiteOpenHelper {
+    private  String TAG ="RegistrationDatabaseModel";
     private static final int DATABASE_VERSION = 1;
     private static final String DATABASE_NAME = "ToDosManager";
     private static final String TABLE_ToDoS = "ToDos";
@@ -20,10 +23,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final String KEY_TITLE = "title";
     private static final String KEY_NOTE = "notes";
     private static final String KEY_REMINDER = "reminder";
-
-    public  DatabaseHandler(Context context) {
+    private ToDoInteractor todoInteractor;
+    public  DatabaseHandler(Context context, ToDoInteractor todoInteractor) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
-        //3rd argument to be passed is CursorFactory instance  
+        //3rd argument to be passed is CursorFactory instance
+        this.todoInteractor=todoInteractor;
     }
 
     // Creating Tables  
@@ -47,21 +51,35 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
 
     // code to add the new ToDo  
-    void addToDo(ToDoModel toDoModel) {
-        SQLiteDatabase db = this.getWritableDatabase();
+   public void addToDo(ToDoModel toDoModel) {
+       SQLiteDatabase db = null;
+       try {
 
-        ContentValues values = new ContentValues();
-        values.put(KEY_TITLE, toDoModel.get_title()); // ToDo Name
-        values.put(KEY_NOTE, toDoModel.get_note()); // ToDo Phone
-        values.put(KEY_REMINDER, toDoModel.get_reminder()); // ToDo REMINDER
-        // Inserting Row  
-        db.insert(TABLE_ToDoS, null, values);
-        //2nd argument is String containing nullColumnHack  
-        db.close(); // Closing database connection  
+
+         db = this.getWritableDatabase();
+           Log.i(TAG, "addToDo: start");
+           ContentValues values = new ContentValues();
+           values.put(KEY_TITLE, toDoModel.get_title()); // ToDo Name
+           values.put(KEY_NOTE, toDoModel.get_note()); // ToDo Phone
+           values.put(KEY_REMINDER, toDoModel.get_reminder()); // ToDo REMINDER
+           // Inserting Row
+
+           db.insert(TABLE_ToDoS, null, values);
+           Log.i(TAG, "addToDo: success");
+           todoInteractor.getResponce(true);
+           //2nd argument is String containing nullColumnHack
+
+       }catch (Exception e){
+           todoInteractor.getResponce(false);
+           Log.i(TAG, "addToDo: "+e);
+       }
+       finally {
+           db.close(); // Closing database connection
+       }
     }
 
     // code to get the single ToDo  
-    ToDoModel getToDo(int id) {
+    public ToDoModel getToDo(int id) {
         SQLiteDatabase db = this.getReadableDatabase();
 
         Cursor cursor = db.query(TABLE_ToDoS, new String[] { KEY_ID,
@@ -78,6 +96,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     // code to get all ToDos in a list view  
     public List<ToDoModel> getAllToDos() {
+        Log.i(TAG, "getAllToDos: ");
         List<ToDoModel> ToDoList = new ArrayList<ToDoModel>();
         // Select All Query  
         String selectQuery = "SELECT  * FROM " + TABLE_ToDoS;
