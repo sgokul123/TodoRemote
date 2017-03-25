@@ -145,10 +145,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 editor.putString("facebook","true");
                 editor.commit();
 
-                Profile profile = Profile.getCurrentProfile();
+             /*   Profile profile = Profile.getCurrentProfile();
                 mStrEmail=profile.getId();
                 mStrName=profile.getFirstName()+" "+profile.getLastName();
-               // mImageUrl=profile.getProfilePictureUri(20,20);
+               */// mImageUrl=profile.getProfilePictureUri(20,20);
                 Log.i(TAG, "onSuccess: "+mImageUrl);
                 Intent intent=new Intent(LoginActivity.this,ToDoActivity.class);
                 intent.putExtra("user_id",mStrEmail);
@@ -181,30 +181,33 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
 
        // Toast.makeText(this, "login...", Toast.LENGTH_SHORT).show();
-        if(isNetworkConnected()){
+
             switch (v.getId()){
+
                 case R.id.login_button:
+
                     LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("public_profile"));
                     break;
                 case R.id.button_signin:
+
                     doAuthentication();
                     break;
                 case R.id.gsign_in_button:
 
+
                     signIn();
                     break;
                 case R.id.registation:
+
                     getSupportFragmentManager().beginTransaction().replace(R.id.login_layout,Registration.newInstance("","")).addToBackStack(null).commit();
                     Log.i(TAG, "onClick: ");
+
                     break;
                 default:
+
                     break;
             }
 
-        }
-        else{
-            Toast.makeText(this, "Please Check Internet Conection...", Toast.LENGTH_SHORT).show();
-        }
 
         // LoginPresenterInterface presenter=new LoginLoginPresenter();
 
