@@ -5,8 +5,8 @@ import android.util.Log;
 
 
 import com.todo.todo.home.interactor.ToDoInteractor;
-import com.todo.todo.home.model.ToDoModel;
-import com.todo.todo.home.view.NewNote;
+import com.todo.todo.home.model.ToDoItemModel;
+import com.todo.todo.home.view.NewNoteActivity;
 import com.todo.todo.home.view.ToDoActivity;
 
 import java.util.List;
@@ -20,7 +20,7 @@ public class ToDoPresenter implements  ToDoPresenterInteface {
     ToDoActivity mToDoActivity;
     ToDoInteractor mToDoInteractor;
     Context  mContext;
-    NewNote newNote;
+    NewNoteActivity newNoteActivity;
     public ToDoPresenter(ToDoActivity mToDoActivity, Context applicationContext) {
         Log.i(TAG, "ToDoPresenter: ");
         this.mToDoActivity = mToDoActivity;
@@ -28,8 +28,8 @@ public class ToDoPresenter implements  ToDoPresenterInteface {
         mToDoInteractor =new ToDoInteractor(ToDoPresenter.this,mContext);
     }
 
-    public ToDoPresenter(NewNote newNote, Context applicationContext) {
-        this.newNote = newNote;
+    public ToDoPresenter(NewNoteActivity newNoteActivity, Context applicationContext) {
+        this.newNoteActivity = newNoteActivity;
         this.mContext=applicationContext;
         mToDoInteractor =new ToDoInteractor(ToDoPresenter.this,mContext);
     }
@@ -47,25 +47,25 @@ public class ToDoPresenter implements  ToDoPresenterInteface {
     }
 
     @Override
-    public void showDataInActivity(List<ToDoModel> toDoModels) {
-        mToDoActivity.showDataInActivity(toDoModels);
+    public void showDataInActivity(List<ToDoItemModel> toDoItemModels) {
+        mToDoActivity.showDataInActivity(toDoItemModels);
 
     }
 
     @Override
     public void closeNoteProgressDialog() {
-        newNote.closeNoteProgressDialog();
+        newNoteActivity.closeNoteProgressDialog();
     }
 
     @Override
     public void showNoteProgressDialog() {
-        newNote.showNoteProgressDialog();
+        newNoteActivity.showNoteProgressDialog();
     }
 
     @Override
     public void getResponce(boolean flag) {
         Log.i(TAG, "getResponce: ");
-        newNote.getResponce(flag);
+        newNoteActivity.getResponce(flag);
     }
 
 
@@ -78,18 +78,23 @@ public class ToDoPresenter implements  ToDoPresenterInteface {
     }
 
     @Override
-    public void getCallBackNotes(List<ToDoModel> toDoModels) {
+    public void getCallBackNotes(List<ToDoItemModel> toDoItemModels) {
         Log.i(TAG, "getCallBackNotes: ");
-        mToDoActivity.showDataInActivity(toDoModels);
+        mToDoActivity.showDataInActivity(toDoItemModels);
     }
 
     @Override
-    public void PutNote(ToDoModel toDoModel) {
+    public void PutNote(String uid, ToDoItemModel toDoItemModel) {
         Log.i(TAG, "PutNote: ");
         //mToDoInteractor.getCallToDatabase();
-        mToDoInteractor.storeNote(toDoModel);
-
+     //   mToDoInteractor.uploadNotes(uid,toDoItemModel);
     }
+
+    @Override
+    public void loadNotetoFirebase(String uid, String date, String timestamp, ToDoItemModel toDoItemModel) {
+        mToDoInteractor.uploadNotes(uid,date,timestamp,toDoItemModel);
+    }
+
 
 
 

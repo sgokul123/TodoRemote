@@ -1,6 +1,7 @@
 package com.todo.todo.registration.view;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
@@ -13,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.todo.todo.R;
+import com.todo.todo.login.view.LoginActivity;
 import com.todo.todo.registration.model.RegistrationModel;
 import com.todo.todo.registration.presenter.RegistrationPresenter;
 import com.todo.todo.util.ProgressUtil;
@@ -115,7 +117,9 @@ public class RegistrationFragment extends Fragment implements View.OnClickListen
     @Override
     public void getResponce(boolean flag) {
         if(flag){
-                
+            Intent intent=new Intent(getActivity(), LoginActivity.class);
+            startActivity(intent);
+            getActivity().finish();
             Toast.makeText(getActivity(), "Successfull", Toast.LENGTH_SHORT).show();
         }else {
 

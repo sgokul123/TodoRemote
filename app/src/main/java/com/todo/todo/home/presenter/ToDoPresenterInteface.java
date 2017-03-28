@@ -1,6 +1,6 @@
 package com.todo.todo.home.presenter;
 
-import com.todo.todo.home.model.ToDoModel;
+import com.todo.todo.home.model.ToDoItemModel;
 import com.todo.todo.home.view.NoteInterface;
 import com.todo.todo.home.view.ToDoActivityInteface;
 
@@ -13,8 +13,9 @@ import java.util.List;
 public interface ToDoPresenterInteface  extends ToDoActivityInteface, NoteInterface {
 
     public  void getPresenterNotes();
-    public  void getCallBackNotes(List<ToDoModel> toDoModels);
-    public  void PutNote(ToDoModel toDoModel);
+    public  void getCallBackNotes(List<ToDoItemModel> toDoItemModels);
+    public  void PutNote(String uid,ToDoItemModel toDoItemModel);
+    public  void loadNotetoFirebase(String uid,String date,String timestamp,ToDoItemModel toDoItemModel);
 
 
 }

@@ -6,7 +6,7 @@ package com.todo.todo.login.presenter;
 
 public interface LoginPresenterInterface {
         public  void getLogin(String email, String password);
-        public  void getLoginAuthentication(Boolean flag);
+        public  void getLoginAuthentication(String uid);
 
         public  void showProgress();
         public  void closeProgress();

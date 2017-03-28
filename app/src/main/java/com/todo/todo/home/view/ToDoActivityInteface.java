@@ -1,6 +1,6 @@
 package com.todo.todo.home.view;
 
-import com.todo.todo.home.model.ToDoModel;
+import com.todo.todo.home.model.ToDoItemModel;
 
 import java.util.List;
 
@@ -12,6 +12,6 @@ public interface ToDoActivityInteface {
 
     public  void closeProgressDialog();
     public void  showProgressDialog();
-    public  void showDataInActivity(List<ToDoModel> toDoModels);
+    public  void showDataInActivity(List<ToDoItemModel> toDoItemModels);
     public  void getResponce(boolean flag);
 }

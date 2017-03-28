@@ -1,6 +1,5 @@
 package com.todo.todo.home.view;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -18,24 +17,25 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.todo.todo.R;
-import com.todo.todo.home.adapter.CustomGrid;
-import com.todo.todo.home.adapter.DataAdapter;
-import com.todo.todo.home.model.ToDoModel;
+import com.todo.todo.base.BaseActivity;
+import com.todo.todo.home.adapter.NoteAdapter;
+import com.todo.todo.home.model.ToDoItemModel;
 import com.todo.todo.home.presenter.ToDoPresenter;
 import com.todo.todo.login.view.LoginActivity;
+import com.todo.todo.util.Constants;
+import com.todo.todo.util.ProgressUtil;
 
 
 import java.util.List;
 
-public class ToDoActivity extends AppCompatActivity
+public class ToDoActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener, AdapterView.OnItemClickListener, View.OnClickListener ,ToDoActivityInteface {
     private  String TAG ="ToDoActivity";
     ToDoPresenter mTtoDoPresenter;
-    ProgressDialog mProgressDialog;
+    ProgressUtil mProgressDialog;
     AppCompatTextView mTextViewEmail,mTextView_Name;
     Toolbar mToolbar;
     GridView mGridview;
@@ -43,59 +43,66 @@ public class ToDoActivity extends AppCompatActivity
     FloatingActionButton mFloatingActionButton;
     SharedPreferences pref;
     SharedPreferences.Editor editor;
-    private  String mEmail_id;
-    private  boolean mLinear=false;
 
+    private  String mEmail_id,mUserUID;
+    private  boolean mLinear=false;
+    List<ToDoItemModel> toDoItemModels;
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public void initialise() {
         setContentView(R.layout.activity_to_do);
+
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         mFloatingActionButton =(FloatingActionButton) findViewById(R.id.fab);
         mImageViewsearch =(AppCompatImageView) findViewById(R.id.imageView_search);
         mImageViewGrid =(AppCompatImageView) findViewById(R.id.imageView_grid_linear);
-
         mGridview = (GridView) findViewById(R.id.gridview_notes);
 
         mFloatingActionButton.setOnClickListener(this);
         mImageViewsearch.setOnClickListener(this);
         mImageViewGrid.setOnClickListener(this);
-
+        mProgressDialog=new ProgressUtil(this);
         pref = getSharedPreferences("testapp", MODE_PRIVATE);
         editor = pref.edit();
-
-
-
         setSupportActionBar(mToolbar);
         mTtoDoPresenter =new ToDoPresenter(ToDoActivity.this,this);
-        mTtoDoPresenter.getPresenterNotes();
+       // mTtoDoPresenter.getPresenterNotes();
 
-        //   mGridview.setAdapter(new DataAdapter(ToDoActivity.this,toDoModels));
+        //   mGridview.setAdapter(new NoteAdapter(ToDoActivity.this,toDoModels));
         mGridview.setOnItemClickListener(this);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+       /* FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(this);
-
+*/
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, mToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, mToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
         View header=navigationView.getHeaderView(0);
         mTextViewEmail=(AppCompatTextView) header.findViewById(R.id.textView_nav_email);
         mTextView_Name=(AppCompatTextView)header. findViewById(R.id.textview_nave_name);
+        setNavigationProfile();
+
+    }
+
+    public  void setNavigationProfile(){
+
         if(pref.contains("email"))
         {
-            String  getemail=pref.getString("user_id", "abcd@gmail.com");
-            String  getName=pref.getString("name", "xyz");
+            String  getemail=pref.getString(Constants.BundleKey.USER_REGISTER, "abcd@gmail.com");
+            String  getName=pref.getString(Constants.BundleKey.USER_NAME, "xyz");
+            mUserUID=pref.getString(Constants.BundleKey.USER_USER_UID,"null");
             Log.i(TAG, "onCreate:  email"+getemail);
-             mTextViewEmail.setText(getemail);
+            mTextViewEmail.setText(getemail);
             mTextView_Name.setText(getName);
         }
+    }
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        initialise();
 
     }
 
@@ -192,36 +199,39 @@ public class ToDoActivity extends AppCompatActivity
                 mToolbar.setVisibility(View.INVISIBLE);
                 getSupportActionBar().hide();
                 mFloatingActionButton.setVisibility(View.INVISIBLE);*/
-                Intent intent =new Intent(ToDoActivity.this,NewNote.class);
-                startActivity(intent);
+                Intent intent =new Intent(ToDoActivity.this,NewNoteActivity.class);
+                intent.putExtra(Constants.BundleKey.USER_USER_UID,mUserUID);
+                startActivityForResult(intent,2);
                 break;
             default:
                 //Default
-
-
                 break;
-
         }
 
     }
 
     @Override
     public void closeProgressDialog() {
-        mProgressDialog.dismiss();
+        mProgressDialog.dismissProgress();
     }
 
     @Override
     public void showProgressDialog() {
-        mProgressDialog.setMessage("Please Wait while loading data");
-        mProgressDialog.setCancelable(false);
-        mProgressDialog.show();
+        mProgressDialog.showProgress("Please Wait while loading data");
     }
 
     @Override
-    public void showDataInActivity(List<ToDoModel> toDoModels) {
-        Log.i(TAG, "showDataInActivity: "+toDoModels.get(1).get_reminder());
-        DataAdapter adapter=new DataAdapter(ToDoActivity.this,toDoModels);
-        mGridview.setAdapter(adapter);
+    public void showDataInActivity(List<ToDoItemModel> toDoItemModels) {
+       this. toDoItemModels=toDoItemModels;
+
+        if(toDoItemModels.size()!=0){
+           // Log.i(TAG, "showDataInActivity: "+ toDoItemModels.get().get_reminder());
+            NoteAdapter adapter=new NoteAdapter(ToDoActivity.this, toDoItemModels);
+            mGridview.setAdapter(adapter);
+        }else {
+            Toast.makeText(this, "No data Present", Toast.LENGTH_SHORT).show();
+        }
+
 
     }
 
@@ -240,7 +250,21 @@ public class ToDoActivity extends AppCompatActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+     /*   if(requestCode==2){
+                Bundle ban=data.getBundleExtra(Constants.BundleKey.MEW_NOTE);
+                ToDoItemModel toDoItemModel=new ToDoItemModel();
+            toDoItemModel.set_id(Integer.parseInt(ban.getString(Constants.RequestParam.KEY_ID)));
+            toDoItemModel.set_title(ban.getString(Constants.RequestParam.KEY_TITLE));
+            toDoItemModel.set_note(ban.getString(Constants.RequestParam.KEY_NOTE));
+            toDoItemModel.set_reminder(ban.getString(Constants.RequestParam.KEY_REMINDER));
+            toDoItemModels.add(toDoItemModel);
+            NoteAdapter adapter=new NoteAdapter(ToDoActivity.this, toDoItemModels);
+            Log.i(TAG, "onActivityResult: "+toDoItemModel.get_title());
+            mGridview.setAdapter(adapter);
+
+        }*/
 
     }
+
 
 }

@@ -2,7 +2,6 @@ package com.todo.todo.home.view;
 
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.AppCompatEditText;
@@ -15,7 +14,7 @@ import android.widget.DatePicker;
 import android.widget.Toast;
 
 import com.todo.todo.R;
-import com.todo.todo.home.model.ToDoModel;
+import com.todo.todo.home.model.ToDoItemModel;
 import com.todo.todo.home.presenter.ToDoPresenter;
 
 import java.text.SimpleDateFormat;
@@ -99,23 +98,23 @@ public class NewNoteFragment extends Fragment implements View.OnClickListener,No
                 break;
             case R.id.imageView_save:
 
-                ToDoModel toDoModel=new ToDoModel();
+                ToDoItemModel toDoItemModel =new ToDoItemModel();
 
                 StrNote=editTextNote.getText().toString();
-                toDoModel.set_note(StrNote);
+                toDoItemModel.set_note(StrNote);
                 editTextNote.setText("");
                 StrTitle=editTextTitle.getText().toString();
-                toDoModel.set_title(StrTitle);
+                toDoItemModel.set_title(StrTitle);
                 editTextTitle.setText("");
                 StrReminder=textViewReminder.getText().toString();
-                toDoModel.set_reminder(StrReminder);
+                toDoItemModel.set_reminder(StrReminder);
                 textViewReminder.setText("");
-                Toast.makeText(getActivity(), toDoModel+"", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), toDoItemModel +"", Toast.LENGTH_SHORT).show();
                 toDoPresenter=new ToDoPresenter(new ToDoActivity(),getActivity());
-                toDoPresenter.PutNote(toDoModel);
+                //toDoPresenter.PutNote(toDoItemModel);
 
              //   getActivity().getFragmentManager().beginTransaction().remove().commit();
-               /* Intent intent=new Intent(NewNote.this,ToDoActivity.class);
+               /* Intent intent=new Intent(NewNoteActivity.this,ToDoActivity.class);
                 startActivity(intent);*/
                 break;
             default:

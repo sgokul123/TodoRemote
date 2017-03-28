@@ -1,4 +1,4 @@
-package com.todo.todo.registration.database;
+package com.todo.todo.database;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -14,20 +14,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class RegistrationDatabaseModel extends SQLiteOpenHelper {
+public class RegistrationDatabase extends SQLiteOpenHelper {
     private static final int DATABASE_VERSION = 1;
-    private static final String DATABASE_NAME = "ToDosUserManager";
-    private static final String TABLE_USERS = "UserData";
+    private static final String DATABASE_NAME = "ToDoManager";
+    private static final String TABLE_USERS = "UserNData";
     private static final String KEY_ID = "id";
     private static final String KEY_NAME = "name";
+    private static final String KEY_LNAME = "lname";
     private static final String KEY_PHONE = "phone";
+    private static final String KEY_URL = "imageurl";
     private static final String KEY_PASSWORD = "password";
     private static final String KEY_EMAIL = "email";
-    private  String TAG ="RegistrationDatabaseModel";
+    private  String TAG ="RegistrationDatabase";
     SQLiteDatabase db;
     RegistrationInteractor registrationInteractor;
 
-    public RegistrationDatabaseModel(Context context, RegistrationInteractor registrationInteractor) {
+    public RegistrationDatabase(Context context, RegistrationInteractor registrationInteractor) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
         //3rd argument to be passed is CursorFactory instance
       this.  registrationInteractor =registrationInteractor;
@@ -38,8 +40,8 @@ public class RegistrationDatabaseModel extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         Log.i(TAG, "onCreate: db");
         String CREATE_ToDoS_TABLE = "CREATE TABLE IF NOT EXISTS " + TABLE_USERS + "("
-                + KEY_ID + " INTEGER PRIMARY KEY," + KEY_NAME + " TEXT," + KEY_PHONE + " TEXT,"
-                + KEY_EMAIL + " TEXT," + KEY_PASSWORD + " TEXT" +")";
+                + KEY_ID + " INTEGER PRIMARY KEY," + KEY_NAME + " TEXT,"+ KEY_LNAME+ " TEXT," + KEY_PHONE + " TEXT,"
+                + KEY_EMAIL + " TEXT," + KEY_PASSWORD + " TEXT,"+ KEY_URL  + " TEXT" +")";
         db.execSQL(CREATE_ToDoS_TABLE);
     }
 
@@ -47,9 +49,7 @@ public class RegistrationDatabaseModel extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // Drop older table if existed  
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_USERS);
-
-        // Create tables again  
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_USERS);  // Create tables again
         onCreate(db);
     }
     // code to add the new ToDo
@@ -59,14 +59,17 @@ public class RegistrationDatabaseModel extends SQLiteOpenHelper {
            db = this.getWritableDatabase();
             //Log.i(TAG, "addToDo: start");
             ContentValues values = new ContentValues();
-            values.put(KEY_NAME, registrationModel.getmName()); // ToDo Name
-            values.put(KEY_PHONE, registrationModel.getmMobile()); // ToDo Phone
-            values.put(KEY_EMAIL, registrationModel.getmEmail()); // ToDo REMINDER
-            values.put(KEY_PASSWORD, registrationModel.getmPassword()); // ToDo REMINDER
+            values.put(KEY_NAME, registrationModel.getUserFirstName()); // ToDo Name
+            values.put(KEY_LNAME, registrationModel.getUserLastName()); // ToDo Name
+            values.put(KEY_PHONE, registrationModel.getMobileNo()); // ToDo Phone
+            values.put(KEY_EMAIL, registrationModel.getMailid()); // ToDo REMINDER
+            values.put(KEY_PASSWORD, registrationModel.getUserPassword()); // ToDo REMINDER
+            values.put(KEY_URL, registrationModel.getUserProfileImgurl()); // ToDo REMINDER
             // Inserting Row
             Log.i(TAG, "addUser: ");
             db.insert(TABLE_USERS, null, values);
             registrationInteractor.getResponce(true);
+
             Log.i(TAG, "addUser: added");
             //  Log.i(TAG, "addToDo: success");
             //2nd argument is String containing nullColumnHack
@@ -85,13 +88,13 @@ public class RegistrationDatabaseModel extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
 
         Cursor cursor = db.query(TABLE_USERS, new String[] { KEY_ID,
-                        KEY_NAME, KEY_PHONE,KEY_EMAIL,KEY_PASSWORD}, KEY_ID + "=?",
+                        KEY_NAME,KEY_LNAME, KEY_PHONE,KEY_EMAIL,KEY_PASSWORD,KEY_URL}, KEY_ID + "=?",
                 new String[] { String.valueOf(id) }, null, null, null, null);
         if (cursor != null)
             cursor.moveToFirst();
 
-        RegistrationModel registrationModel = new RegistrationModel(Integer.parseInt(cursor.getString(0)),
-                cursor.getString(1), cursor.getString(2),cursor.getString(3),cursor.getString(4));
+        RegistrationModel registrationModel = new RegistrationModel(
+                cursor.getString(1),cursor.getString(2), cursor.getString(3),cursor.getString(4),cursor.getString(5),cursor.getString(6));
         // return toDoModel
         return registrationModel;
     }
@@ -110,11 +113,13 @@ public class RegistrationDatabaseModel extends SQLiteOpenHelper {
         if (cursor.moveToFirst()) {
             do {
                 RegistrationModel registrationModel = new RegistrationModel();
-                registrationModel.setmId(Integer.parseInt(cursor.getString(0)));
-                registrationModel.setmName(cursor.getString(1));
-                registrationModel.setmEmail(cursor.getString(2));
-                registrationModel.setmMobile(cursor.getString(3));
-                registrationModel.setmPassword(cursor.getString(4));
+
+                registrationModel.setUserFirstName(cursor.getString(1));
+                registrationModel.setUserLastName(cursor.getString(2));
+                registrationModel.setMailid(cursor.getString(4));
+                registrationModel.setMobileNo(cursor.getString(3));
+                registrationModel.setUserPassword(cursor.getString(5));
+                registrationModel.setUserProfileImgurl(cursor.getString(6));
                 // Adding ToDo to list  
                 registrationModelList.add(registrationModel);
             } while (cursor.moveToNext());
@@ -124,29 +129,30 @@ public class RegistrationDatabaseModel extends SQLiteOpenHelper {
         return registrationModelList;
     }
 
-    // code to update the single ToDo  
+  /*  // code to update the single ToDo
     public int updateUser(RegistrationModel registrationModel) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
-        values.put(KEY_ID, registrationModel.getmId());
-        values.put(KEY_EMAIL, registrationModel.getmEmail());
-        values.put(KEY_NAME, registrationModel.getmName());
-        values.put(KEY_PASSWORD, registrationModel.getmPassword());
-        values.put(KEY_PHONE, registrationModel.getmMobile());
 
+        values.put(KEY_NAME, registrationModel.getUserFirstName());
+        values.put(KEY_LNAME, registrationModel.getUserLastName());
+        values.put(KEY_EMAIL, registrationModel.getMailid());
+        values.put(KEY_PHONE, registrationModel.getMobileNo());
+        values.put(KEY_PASSWORD, registrationModel.getUserPassword());
+        values.put(KEY_URL, registrationModel.getUserProfileImgurl());
         // updating row  
         return db.update(TABLE_USERS, values, KEY_ID + " = ?",
-                new String[] { String.valueOf(registrationModel.getmId()) });
+              //  new String[] { String.valueOf(registrationModel.getId()) });
     }
 
     // Deleting single ToDo  
     public void deleteUser(RegistrationModel registrationModel) {
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete(TABLE_USERS, KEY_ID + " = ?",
-                new String[] { String.valueOf(registrationModel.getmId()) });
+                new String[] { String.valueOf(registrationModel.getId()) });
         db.close();
-    }
+    }*/
 
     // Getting ToDos Count  
     public int getUserCount() {

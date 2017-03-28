@@ -19,7 +19,7 @@ public class Connection {
 
     }
 
-    private boolean isNetworkConnected() {
+    public boolean isNetworkConnected() {
 
 
         ConnectivityManager cm = (ConnectivityManager) context.getSystemService(context.CONNECTIVITY_SERVICE);

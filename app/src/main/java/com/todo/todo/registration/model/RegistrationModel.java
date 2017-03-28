@@ -5,61 +5,83 @@ package com.todo.todo.registration.model;
  */
 
 public class RegistrationModel {
-    private  int mId;
 
-    private  String mEmail;
-    private  String mPassword;
-    private  String mMobile;
-    private  String mName;
+        private String mailid;
 
-    public RegistrationModel(int mId, String mEmail, String mPassword, String mMobile, String mName) {
-        this.mId = mId;
-        this.mEmail = mEmail;
-        this.mPassword = mPassword;
-        this.mMobile = mMobile;
-        this.mName = mName;
+        private String userFirstName;
+
+        private String userLastName;
+
+        private String userPassword;
+
+        private String userProfileImgurl="";
+
+        private String mobileNo;
+
+
+
+    public RegistrationModel( String userFirstName, String userLastName, String mobileNo, String mailid, String userPassword,String userProfileImgurl) {
+
+        this.userFirstName = userFirstName;
+        this.userLastName = userLastName;
+        this.mobileNo = mobileNo;
+        this.mailid = mailid;
+        this.userPassword = userPassword;
+        this.userProfileImgurl = userProfileImgurl;
+
     }
 
     public RegistrationModel() {
+
     }
 
-    public int getmId() {
-        return mId;
-    }
+    public String getMailid() {
+            return mailid;
+        }
 
-    public void setmId(int mId) {
-        this.mId = mId;
-    }
+        public void setMailid(String mailid) {
+            this.mailid = mailid;
+        }
 
-    public String getmEmail() {
-        return mEmail;
-    }
+        public String getUserFirstName() {
+            return userFirstName;
+        }
 
-    public void setmEmail(String mEmail) {
-        this.mEmail = mEmail;
-    }
+        public void setUserFirstName(String userFirstName) {
+            this.userFirstName = userFirstName;
+        }
 
-    public String getmPassword() {
-        return mPassword;
-    }
+        public String getUserLastName() {
+            return userLastName;
+        }
 
-    public void setmPassword(String mPassword) {
-        this.mPassword = mPassword;
-    }
+        public void setUserLastName(String userLastName) {
+            this.userLastName = userLastName;
+        }
 
-    public String getmMobile() {
-        return mMobile;
-    }
+        public String getUserPassword() {
+            return userPassword;
+        }
 
-    public void setmMobile(String mMobile) {
-        this.mMobile = mMobile;
-    }
+        public void setUserPassword(String userPassword) {
+            this.userPassword = userPassword;
+        }
 
-    public String getmName() {
-        return mName;
-    }
+        public String getUserProfileImgurl() {
+            return userProfileImgurl;
+        }
 
-    public void setmName(String mName) {
-        this.mName = mName;
-    }
+        public void setUserProfileImgurl(String userProfileImgurl) {
+            this.userProfileImgurl = userProfileImgurl;
+        }
+
+        public String getMobileNo() {
+            return mobileNo;
+        }
+
+        public void setMobileNo(String mobileNo) {
+            this.mobileNo = mobileNo;
+        }
+
 }
+

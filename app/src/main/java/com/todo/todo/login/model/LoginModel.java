@@ -12,18 +12,11 @@ public class LoginModel {
     private  String mMobile;
     private  String mName;
 
-    public LoginModel(int mId, String mEmail, String mPassword, String mMobile, String mName) {
-        this.mId = mId;
-        this.mEmail = mEmail;
-        this.mPassword = mPassword;
-        this.mMobile = mMobile;
-        this.mName = mName;
-    }
 
-    public LoginModel() {
-    }
 
     public LoginModel(String email, String password) {
+        this.mEmail = email;
+        this.mPassword = password;
     }
 
     public int getmId() {

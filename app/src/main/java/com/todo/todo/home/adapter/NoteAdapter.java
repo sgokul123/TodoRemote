@@ -9,7 +9,7 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.todo.todo.R;
-import com.todo.todo.home.model.ToDoModel;
+import com.todo.todo.home.model.ToDoItemModel;
 
 import java.util.List;
 
@@ -17,22 +17,22 @@ import java.util.List;
  * Created by bridgeit on 18/3/17.
  */
 
-public class DataAdapter extends BaseAdapter {
-        private  String TAG ="DataAdapter";
+public class NoteAdapter extends BaseAdapter {
+        private  String TAG ="NoteAdapter";
         private Context mContext;
-        private List<ToDoModel> toDoModels;
+        private List<ToDoItemModel> toDoItemModels;
 
-        public DataAdapter(Context c,List<ToDoModel> toDoModels ) {
-            Log.i(TAG, "DataAdapter: ");
+        public NoteAdapter(Context c, List<ToDoItemModel> toDoItemModels) {
+            Log.i(TAG, "NoteAdapter: ");
             mContext = c;
-            this.toDoModels=toDoModels;
+            this.toDoItemModels = toDoItemModels;
         }
 
         @Override
         public int getCount() {
             // TODO Auto-generated method stub
             Log.i(TAG, "getCount: ");
-            return toDoModels.size();
+            return toDoItemModels.size();
         }
 
         @Override
@@ -57,17 +57,17 @@ public class DataAdapter extends BaseAdapter {
             Log.i(TAG, "getView: ");
             if (convertView == null) {
                 
-                ToDoModel toDoModel=toDoModels.get(position);
+                ToDoItemModel toDoItemModel = toDoItemModels.get(position);
 
                 grid = new View(mContext);
-                Log.i(TAG, "getView: ");
+                Log.i(TAG, "getView: "+toDoItemModel.get_title());
                 grid = inflater.inflate(R.layout.itemview_notes, null);
                 TextView textViewTitle = (TextView) grid.findViewById(R.id.textview_card_title);
                 TextView textViewnote = (TextView) grid.findViewById(R.id.textview_notes);
                 TextView textViewReminder = (TextView) grid.findViewById(R.id.textView_reminder);
-                textViewTitle.setText(toDoModel.get_title());
-                textViewnote.setText(toDoModel.get_note());
-                textViewReminder.setText(toDoModel.get_reminder());
+                textViewTitle.setText(toDoItemModel.get_title());
+                textViewnote.setText(toDoItemModel.get_note());
+                textViewReminder.setText(toDoItemModel.get_reminder());
             } else {
                 grid = (View) convertView;
             }

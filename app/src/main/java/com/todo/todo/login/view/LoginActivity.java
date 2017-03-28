@@ -1,12 +1,10 @@
 package com.todo.todo.login.view;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatEditText;
@@ -19,9 +17,7 @@ import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
-import com.facebook.Profile;
 import com.facebook.appevents.AppEventsLogger;
-import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.auth.api.Auth;
@@ -32,20 +28,31 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.todo.todo.R;
+import com.todo.todo.base.BaseActivity;
 import com.todo.todo.home.view.ToDoActivity;
 import com.todo.todo.login.presenter.LoginLoginPresenter;
-import com.todo.todo.registration.view.Registration;
+import com.todo.todo.registration.view.RegistrationFragment;
+import com.todo.todo.util.Constants;
+import com.todo.todo.util.ProgressUtil;
 
-import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class LoginActivity extends AppCompatActivity implements View.OnClickListener,LoginInterface, GoogleApiClient.OnConnectionFailedListener {
+public class LoginActivity extends BaseActivity implements View.OnClickListener,LoginInterface, GoogleApiClient.OnConnectionFailedListener {
 
-    private  String TAG ="LoginActivity";
+    private static final int RC_SIGN_IN = 9001;
+    private static final String EMAIL_PATTERN = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
+            + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
+    private static String APP_ID = "308180782571605"; // Replace your App ID here
     AppCompatButton mButtonLogin;//,mButtonfbLogin;
     AppCompatEditText mEditTextEmail,mEditTextPassword;
     AppCompatTextView textview1,textViewSignUp;
+    SharedPreferences pref;
+    SharedPreferences.Editor editor;
+    ProgressUtil progressDialog;
+    LoginButton loginButton;
+    SignInButton signgoogleInButton;
+    private  String TAG ="LoginActivity";
     private String mStrPass;
     private String mStrEmail="";
     private String mStrName="Sonawane Gokul";
@@ -53,63 +60,19 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private Pattern mPattern;
     private LoginLoginPresenter login;
     private Matcher mMatcher;
-    SharedPreferences pref;
-    SharedPreferences.Editor editor;
-    ProgressDialog progressDialog;
-    private static final int RC_SIGN_IN = 9001;
-    private GoogleApiClient mGoogleApiClient;
-    private static String APP_ID = "308180782571605"; // Replace your App ID here
-    LoginButton loginButton;
-    SignInButton signgoogleInButton;
     // Instance of Facebook Class
-
-
-    private static final String EMAIL_PATTERN = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
-            + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
+    private GoogleApiClient mGoogleApiClient;
     private CallbackManager callbackManager;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public void initialise() {
         setContentView(R.layout.activity_login);
-
-        pref = getSharedPreferences("testapp", MODE_PRIVATE);
-
-        editor = pref.edit();
-
-        if(pref.contains("register"))
-        {
-
-            String getStatus=pref.getString("register", "nil");
-            if(getStatus.equals("true")){
-                mStrEmail=pref.getString("email","abcd@gmail.com");
-                //redirect to next activity
-                mStrName=pref.getString("name","Gokul Sonawane");
-                Intent intent=new Intent(LoginActivity.this,ToDoActivity.class);
-                intent.putExtra("user_id",mStrEmail);
-                intent.putExtra("name",mStrName);
-                startActivity(intent);
-
-                finish();
-            }
-        }
-
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestEmail()
-                .build();
-
-
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .enableAutoManage(this /* FragmentActivity */, this /* OnConnectionFailedListener */)
-                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
-                .build();
-
 
         FacebookSdk.sdkInitialize(getApplicationContext());
         AppEventsLogger.activateApp(this);
         callbackManager = CallbackManager.Factory.create();
-       // mButtonfbLogin=(AppCompatButton) findViewById(R.id.button_fb_login);
-         signgoogleInButton = (SignInButton) findViewById(R.id.gsign_in_button);
+        // mButtonfbLogin=(AppCompatButton) findViewById(R.id.button_fb_login);
+        signgoogleInButton = (SignInButton) findViewById(R.id.gsign_in_button);
         signgoogleInButton.setSize(SignInButton.SIZE_STANDARD);
         signgoogleInButton.setOnClickListener(this);
         mButtonLogin =(AppCompatButton) findViewById(R.id.button_signin);
@@ -120,15 +83,62 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         mButtonLogin.setOnClickListener(this);
         textViewSignUp.setOnClickListener(this);
         Log.i(TAG, "onCreate: ");
-        progressDialog=new ProgressDialog(this);
-        progressDialog.setCancelable(false);
-        progressDialog.setMessage("Please Wait while login ...");
-        login = new LoginLoginPresenter(LoginActivity.this);
 
-       // mButtonfbLogin.setOnClickListener(this);
-//fb login
+        progressDialog=new ProgressUtil(this);
+        login = new LoginLoginPresenter(LoginActivity.this );
         loginButton = (LoginButton)findViewById(R.id.login_button);
         loginButton.setReadPermissions("email");
+        pref = getSharedPreferences("testapp", MODE_PRIVATE);
+        editor = pref.edit();
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        initialise();
+        facebookLogin();
+           /*  Animation animationToRight = new TranslateAnimation(-400,400, 0, 0);
+        animationToRight.setDuration(12000);
+        animationToRight.setRepeatMode(Animation.RESTART);
+        animationToRight.setRepeatCount(Animation.INFINITE);
+        textview1.setAnimation(animationToRight);*/
+    }
+    //check is User  Login
+
+    @Override
+    public void onClick(View v) {
+
+        switch (v.getId())
+        {
+            case R.id.login_button:
+               // LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("public_profile"));
+
+                break;
+            case R.id.button_signin:
+
+                doAuthentication();
+                break;
+            case R.id.gsign_in_button:
+
+                googleLogin();
+                signIn();
+                break;
+            case R.id.registation:
+
+                getSupportFragmentManager().beginTransaction().replace(R.id.login_layout, RegistrationFragment.newInstance("","")).addToBackStack(null).commit();
+                Log.i(TAG, "onClick: ");
+
+                break;
+            default:
+
+                break;
+        }
+
+    }
+
+    //Facebook Social Login
+    public  void facebookLogin(){
+
         loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
@@ -139,20 +149,20 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         + loginResult.getAccessToken().getToken(), Toast.LENGTH_SHORT).show();
                 //Facebbok Login
                 Log.i(TAG, "onSuccess: ");
-                editor.putString("register","true");
-                editor.putString("email",mStrEmail);
-                editor.putString("name",mStrName);
-                editor.putString("facebook","true");
+                editor.putString(Constants.BundleKey.USER_REGISTER,"true");
+                editor.putString(Constants.BundleKey.USER_EMAIL,mStrEmail);
+                editor.putString(Constants.BundleKey.USER_NAME,mStrName);
+                editor.putString(Constants.BundleKey.FACEBOOK_LOGIN,"true");
                 editor.commit();
 
              /*   Profile profile = Profile.getCurrentProfile();
                 mStrEmail=profile.getId();
                 mStrName=profile.getFirstName()+" "+profile.getLastName();
                */// mImageUrl=profile.getProfilePictureUri(20,20);
-                Log.i(TAG, "onSuccess: "+mImageUrl);
+               // Log.i(TAG, "onSuccess: "+mImageUrl);
                 Intent intent=new Intent(LoginActivity.this,ToDoActivity.class);
-                intent.putExtra("user_id",mStrEmail);
-                intent.putExtra("name",mStrName);
+                intent.putExtra(Constants.BundleKey.USER_EMAIL,mStrEmail);
+                intent.putExtra(Constants.BundleKey.USER_NAME,mStrName);
                 startActivity(intent);
                 finish();
             }
@@ -168,51 +178,20 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             }
         });
 
-
-      /*  Animation animationToRight = new TranslateAnimation(-400,400, 0, 0);
-        animationToRight.setDuration(12000);
-        animationToRight.setRepeatMode(Animation.RESTART);
-        animationToRight.setRepeatCount(Animation.INFINITE);
-        textview1.setAnimation(animationToRight);*/
     }
 
-    @Override
-    public void onClick(View v) {
+    //Google Social Login
+    public  void googleLogin(){
 
-
-       // Toast.makeText(this, "login...", Toast.LENGTH_SHORT).show();
-
-            switch (v.getId()){
-
-                case R.id.login_button:
-
-                    LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("public_profile"));
-                    break;
-                case R.id.button_signin:
-
-                    doAuthentication();
-                    break;
-                case R.id.gsign_in_button:
-
-
-                    signIn();
-                    break;
-                case R.id.registation:
-
-                    getSupportFragmentManager().beginTransaction().replace(R.id.login_layout,Registration.newInstance("","")).addToBackStack(null).commit();
-                    Log.i(TAG, "onClick: ");
-
-                    break;
-                default:
-
-                    break;
-            }
-
-
-        // LoginPresenterInterface presenter=new LoginLoginPresenter();
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .build();
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .enableAutoManage(this /* FragmentActivity */, this /* OnConnectionFailedListener */)
+                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+                .build();
 
     }
-
 
     //connection check
     private boolean isNetworkConnected() {
@@ -242,25 +221,26 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         if (result.isSuccess()) {
             // Signed in successfully, show authenticated UI.
             GoogleSignInAccount acct = result.getSignInAccount();
-           // mStatusTextView.setText(getString(R.string.signed_in_fmt, acct.getDisplayName()));
-         //   updateUI(true);
+            // mStatusTextView.setText(getString(R.string.signed_in_fmt, acct.getDisplayName()));
+            //   updateUI(true);
             //Google Login
-            editor.putString("register","true");
-            editor.putString("email",mStrEmail);
-            editor.putString("name",mStrName);
-            editor.putString("google","true");
+
+            editor.putString(Constants.BundleKey.USER_REGISTER,"true");
+            editor.putString(Constants.BundleKey.USER_EMAIL,mStrEmail);
+            editor.putString(Constants.BundleKey.USER_NAME,mStrName);
+            editor.putString(Constants.BundleKey.GOOGLE_LOGIN,"true");
             editor.commit();
 
             Intent intent=new Intent(LoginActivity.this,ToDoActivity.class);
-            intent.putExtra("user_id",mStrEmail);
-            intent.putExtra("name",mStrName);
+            intent.putExtra(Constants.BundleKey.USER_EMAIL,mStrEmail);
+            intent.putExtra(Constants.BundleKey.USER_NAME,mStrName);
             startActivity(intent);
             finish();
 
             Toast.makeText(this, "Signin", Toast.LENGTH_SHORT).show();
         } else {
             // Signed out, show unauthenticated UI.
-         //   updateUI(false);
+            //   updateUI(false);
 
             Toast.makeText(this, "Signout", Toast.LENGTH_SHORT).show();
         }
@@ -284,23 +264,20 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
     @Override
-    public void loginSuccess() {
-        Toast.makeText(this, "Success....", Toast.LENGTH_SHORT).show();
-        Log.i(TAG, "loginSuccess: ");
+    public void loginSuccess(String userUid) {
+        Toast.makeText(this, "Success...."+userUid, Toast.LENGTH_SHORT).show();
+        Log.i(TAG, "loginSuccess: "+userUid);
 
-
-                editor.putString("register","true");
-                editor.putString("email",mStrEmail);
-                editor.putString("name",mStrName);
-
-                editor.commit();
-                ///  show registration page again
-
-
+        editor.putString(Constants.BundleKey.USER_REGISTER,"true");
+        editor.putString(Constants.BundleKey.USER_EMAIL,mStrEmail);
+        editor.putString(Constants.BundleKey.USER_USER_UID,userUid);
+        editor.putString(Constants.BundleKey.USER_NAME,mStrName);
+        editor.commit();
+        ///  show registration page again
 
         Intent intent=new Intent(LoginActivity.this,ToDoActivity.class);
-        intent.putExtra("user_id",mEditTextEmail.getText().toString());
-        intent.putExtra("name",mStrName);
+        intent.putExtra(Constants.BundleKey.USER_EMAIL,mEditTextEmail.getText().toString());
+        intent.putExtra(Constants.BundleKey.USER_NAME,mStrName);
 
         startActivity(intent);
         finish();
@@ -309,18 +286,18 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     @Override
     public void loginFailuar() {
-        progressDialog.dismiss();
+        progressDialog.dismissProgress();
         Log.i(TAG, "loginFailuar: ");
     }
 
     @Override
     public void showProgress() {
-        progressDialog.show();
+        progressDialog.showProgress("Login User...");
     }
 
     @Override
     public void closeProgress() {
-        progressDialog.dismiss();
+        progressDialog.dismissProgress();
     }
 
 
@@ -330,8 +307,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         Log.d(TAG, "onConnectionFailed:" + connectionResult);
     }
-
-
 
 
     //google social login signout

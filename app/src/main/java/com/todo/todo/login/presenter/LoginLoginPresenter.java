@@ -1,10 +1,12 @@
 package com.todo.todo.login.presenter;
 
 import android.util.Log;
+import android.widget.Toast;
 
 import com.todo.todo.login.interactor.LoginLoginInteractor;
 import com.todo.todo.login.model.LoginModel;
 import com.todo.todo.login.view.LoginActivity;
+import com.todo.todo.util.Connection;
 
 
 /**
@@ -24,19 +26,33 @@ public class LoginLoginPresenter implements LoginPresenterInterface {
 
     @Override
     public void getLogin(String email, String password) {
-        LoginModel model=new LoginModel(email,password);
-        interactor.getFirbaseLogin(model);
-        Log.i(TAG, "getLogin:  call");
-        
+
+        Connection connection=new Connection(loginActivity);
+        if(connection.isNetworkConnected()){
+            LoginModel model=new LoginModel(email,password);
+            interactor.getFirbaseLogin(model);
+            Log.i(TAG, "getLogin:  call");
+
+        }else{
+            loginActivity.closeProgress();
+            Toast.makeText(loginActivity, "Connection not Present...", Toast.LENGTH_SHORT).show();
+        }
+
     }
 
     @Override
-    public void getLoginAuthentication(Boolean flag) {
-        if(flag) {
-            loginActivity.loginSuccess();
+    public void getLoginAuthentication(String uid) {
+
+        if(uid!=null){
+            Log.i(TAG, "getLoginAuthentication: ");
+            loginActivity.loginSuccess(uid);
         }
-        Log.i(TAG, "getLoginAuthentication: ");
+       else {
+            loginActivity.loginFailuar();
+        }
+
     }
+
 
     @Override
     public void showProgress() {

@@ -8,4 +8,5 @@
     <color name="text_color_white">#ffffff</color>
     <color name="back_saperator_fent">#97d9d6</color>
     <color name="fraagment_back">#abb3b0</color>
+    <color name="color_view">#000000</color>
 </resources>

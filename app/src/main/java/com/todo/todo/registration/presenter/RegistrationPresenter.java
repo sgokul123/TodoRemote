@@ -5,9 +5,7 @@ import android.util.Log;
 
 import com.todo.todo.registration.interactor.RegistrationInteractor;
 import com.todo.todo.registration.model.RegistrationModel;
-import com.todo.todo.registration.view.Registration;
-
-import java.util.List;
+import com.todo.todo.registration.view.RegistrationFragment;
 
 /**
  * Created by bridgeit on 23/3/17.
@@ -17,26 +15,26 @@ public class RegistrationPresenter  implements  RegistrationPresenterInterface{
     private  String TAG ="RegistrationPresenter";
     private  RegistrationInteractor registrationInteractor;
     private  Context mContext;
-    Registration registrationMain;
-    public RegistrationPresenter(Context context, Registration registration) {
+    RegistrationFragment registrationFragmentMain;
+    public RegistrationPresenter(Context context, RegistrationFragment registrationFragment) {
         Log.i(TAG, "RegistrationPresenter: ");
         this.mContext=context;
-        this.registrationMain=registration;
+        this.registrationFragmentMain = registrationFragment;
     }
 
     @Override
     public void showProgressDialog() {
-        registrationMain.showProgressDialog();
+        registrationFragmentMain.showProgressDialog();
     }
 
     @Override
     public void closeProgressDialog() {
-        registrationMain.closeProgressDialog();
+        registrationFragmentMain.closeProgressDialog();
     }
 
     @Override
     public void getResponce(boolean flag) {
-        registrationMain.getResponce(flag);
+        registrationFragmentMain.getResponce(flag);
     }
 
     @Override

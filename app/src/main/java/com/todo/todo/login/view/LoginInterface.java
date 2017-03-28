@@ -6,7 +6,7 @@ package com.todo.todo.login.view;
 
 public interface LoginInterface {
 
-    public void  loginSuccess();
+    public void  loginSuccess(String userUid);
 
     public  void loginFailuar();
     public  void showProgress();

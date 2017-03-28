@@ -6,24 +6,24 @@ import android.content.Intent;
  * Created by bridgeit on 20/3/17.
  */
 
-public class ToDoModel  {
+public class ToDoItemModel {
 
     int _id;
     String _title;
     String _reminder;
     String _note;
 
-    public ToDoModel() {
+    public ToDoItemModel() {
     }
 
-    public ToDoModel(String _title, String _reminder, String _note) {
+    public ToDoItemModel(String _title, String _reminder, String _note) {
 
         this._title = _title;
         this._reminder = _reminder;
         this._note = _note;
     }
 
-    public ToDoModel(int _id, String _title, String _reminder, String _note) {
+    public ToDoItemModel(int _id, String _title, String _reminder, String _note) {
 
         this._id = _id;
         this._title = _title;

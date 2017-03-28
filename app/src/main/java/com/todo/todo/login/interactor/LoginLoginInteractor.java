@@ -21,17 +21,19 @@ public class LoginLoginInteractor implements LoginInteractorInterface {
     private  Context context;
     FirebaseAuth firebaseAuth;
     private LoginLoginPresenter mLoginPresenter;
-    Connection connection;
+LoginModel loginModel;
     public LoginLoginInteractor(LoginLoginPresenter loginPresenter) {
         Log.i(TAG, "LoginLoginInteractor: ");
         mLoginPresenter=loginPresenter;
-        connection=new Connection();
+
     }
 
     @Override
     public void getFirbaseLogin(LoginModel loginModel) {
         firebaseAuth=FirebaseAuth.getInstance();
         mLoginPresenter.showProgress();
+        this.loginModel = loginModel;
+        Log.i(TAG, "getFirbaseLogin: "+loginModel);
 
 
             firebaseAuth.signInWithEmailAndPassword(loginModel.getmEmail(),loginModel.getmPassword()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
@@ -41,7 +43,7 @@ public class LoginLoginInteractor implements LoginInteractorInterface {
                     if(task.isSuccessful()){
                         Log.i(TAG, "getFirbaseLogin: call");
                         mLoginPresenter.closeProgress();
-                        mLoginPresenter.getLoginAuthentication(true);
+                        mLoginPresenter.getLoginAuthentication(task.getResult().getUser().getUid());
 
                     }
                     else {
