@@ -12,24 +12,43 @@ public class ToDoItemModel {
     String _title;
     String _reminder;
     String _note;
+    String _startdate;
+
+
 
     public ToDoItemModel() {
     }
 
-    public ToDoItemModel(String _title, String _reminder, String _note) {
-
-        this._title = _title;
-        this._reminder = _reminder;
-        this._note = _note;
-    }
-
     public ToDoItemModel(int _id, String _title, String _reminder, String _note) {
-
         this._id = _id;
         this._title = _title;
         this._reminder = _reminder;
         this._note = _note;
     }
+
+    public ToDoItemModel(String _title, String _note, String _reminder, String _startdate) {
+        this._title = _title;
+        this._reminder = _reminder;
+        this._note = _note;
+        this._startdate = _startdate;
+    }
+
+    public ToDoItemModel(int _id, String _title, String _note,  String _reminder,String _startdate) {
+        this._id = _id;
+        this._title = _title;
+        this._reminder = _reminder;
+        this._note = _note;
+        this._startdate = _startdate;
+    }
+
+    public String get_startdate() {
+        return _startdate;
+    }
+
+    public void set_startdate(String _startdate) {
+        this._startdate = _startdate;
+    }
+
 
     public int get_id() {
         return _id;

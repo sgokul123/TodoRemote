@@ -111,7 +111,7 @@ public class NewNoteFragment extends Fragment implements View.OnClickListener,No
                 textViewReminder.setText("");
                 Toast.makeText(getActivity(), toDoItemModel +"", Toast.LENGTH_SHORT).show();
                 toDoPresenter=new ToDoPresenter(new ToDoActivity(),getActivity());
-                //toDoPresenter.PutNote(toDoItemModel);
+               // toDoPresenter.PutNote(toDoItemModel);
 
              //   getActivity().getFragmentManager().beginTransaction().remove().commit();
                /* Intent intent=new Intent(NewNoteActivity.this,ToDoActivity.class);

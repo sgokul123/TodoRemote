@@ -31,6 +31,7 @@ import com.todo.todo.R;
 import com.todo.todo.base.BaseActivity;
 import com.todo.todo.home.view.ToDoActivity;
 import com.todo.todo.login.presenter.LoginLoginPresenter;
+import com.todo.todo.registration.model.RegistrationModel;
 import com.todo.todo.registration.view.RegistrationFragment;
 import com.todo.todo.util.Constants;
 import com.todo.todo.util.ProgressUtil;
@@ -124,7 +125,6 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
                 signIn();
                 break;
             case R.id.registation:
-
                 getSupportFragmentManager().beginTransaction().replace(R.id.login_layout, RegistrationFragment.newInstance("","")).addToBackStack(null).commit();
                 Log.i(TAG, "onClick: ");
 
@@ -263,25 +263,27 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
         }
     }
 
+
     @Override
-    public void loginSuccess(String userUid) {
+    public void loginSuccess(RegistrationModel registrationModel, String userUid) {
         Toast.makeText(this, "Success...."+userUid, Toast.LENGTH_SHORT).show();
         Log.i(TAG, "loginSuccess: "+userUid);
 
         editor.putString(Constants.BundleKey.USER_REGISTER,"true");
-        editor.putString(Constants.BundleKey.USER_EMAIL,mStrEmail);
+        editor.putString(Constants.BundleKey.USER_EMAIL,registrationModel.getMailid());
         editor.putString(Constants.BundleKey.USER_USER_UID,userUid);
+        editor.putString(Constants.ProfileeKey.FIRST_NAME,registrationModel.getUserFirstName());
+        editor.putString(Constants.ProfileeKey.LAST_NAME,registrationModel.getUserLastName());
+        editor.putString(Constants.ProfileeKey.MOBILE_NO,registrationModel.getMobileNo());
+        editor.putString(Constants.ProfileeKey.PROFILE_IMAGE_URL,registrationModel.getUserProfileImgurl());
+
         editor.putString(Constants.BundleKey.USER_NAME,mStrName);
         editor.commit();
         ///  show registration page again
 
         Intent intent=new Intent(LoginActivity.this,ToDoActivity.class);
-        intent.putExtra(Constants.BundleKey.USER_EMAIL,mEditTextEmail.getText().toString());
-        intent.putExtra(Constants.BundleKey.USER_NAME,mStrName);
-
         startActivity(intent);
         finish();
-
     }
 
     @Override

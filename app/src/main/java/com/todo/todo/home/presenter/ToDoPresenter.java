@@ -3,11 +3,11 @@ package com.todo.todo.home.presenter;
 import android.content.Context;
 import android.util.Log;
 
-
 import com.todo.todo.home.interactor.ToDoInteractor;
 import com.todo.todo.home.model.ToDoItemModel;
 import com.todo.todo.home.view.NewNoteActivity;
 import com.todo.todo.home.view.ToDoActivity;
+import com.todo.todo.util.Connection;
 
 import java.util.List;
 
@@ -16,11 +16,11 @@ import java.util.List;
  */
 
 public class ToDoPresenter implements  ToDoPresenterInteface {
-    private  String TAG ="ToDoPresenter";
     ToDoActivity mToDoActivity;
     ToDoInteractor mToDoInteractor;
     Context  mContext;
     NewNoteActivity newNoteActivity;
+    private  String TAG ="ToDoPresenter";
     public ToDoPresenter(ToDoActivity mToDoActivity, Context applicationContext) {
         Log.i(TAG, "ToDoPresenter: ");
         this.mToDoActivity = mToDoActivity;
@@ -38,12 +38,12 @@ public class ToDoPresenter implements  ToDoPresenterInteface {
     @Override
     public void closeProgressDialog() {
         Log.i(TAG, "closeProgressDialog: ");
-    mToDoActivity.closeProgressDialog();
+        mToDoActivity.closeProgressDialog();
     }
 
     @Override
     public void showProgressDialog() {
-    mToDoActivity.showProgressDialog();
+        mToDoActivity.showProgressDialog();
     }
 
     @Override
@@ -70,10 +70,15 @@ public class ToDoPresenter implements  ToDoPresenterInteface {
 
 
     @Override
-    public void getPresenterNotes() {
+    public void getPresenterNotes(String uid) {
         Log.i(TAG, "getPresenterNotes: ");
-
-        mToDoInteractor.getCallToDatabase();
+        Connection con=new Connection();
+        if(con.isNetworkConnected()){
+            mToDoInteractor.getFireBaseDatabase(uid);
+        }
+        else{
+            mToDoInteractor.getCallToDatabase();
+        }
 
     }
 
@@ -87,15 +92,22 @@ public class ToDoPresenter implements  ToDoPresenterInteface {
     public void PutNote(String uid, ToDoItemModel toDoItemModel) {
         Log.i(TAG, "PutNote: ");
         //mToDoInteractor.getCallToDatabase();
-     //   mToDoInteractor.uploadNotes(uid,toDoItemModel);
+        //   mToDoInteractor.uploadNotes(uid,toDoItemModel);
     }
 
     @Override
-    public void loadNotetoFirebase(String uid, String date, String timestamp, ToDoItemModel toDoItemModel) {
-        mToDoInteractor.uploadNotes(uid,date,timestamp,toDoItemModel);
+    public void loadNotetoFirebase(String uid, String date, ToDoItemModel toDoItemModel) {
+        Connection con=new Connection(mContext);
+        if(con.isNetworkConnected()){
+
+            Log.i(TAG, "loadNotetoFirebase: ");
+            mToDoInteractor.uploadNotes(uid,date,toDoItemModel);
+
+        }else{
+            mToDoInteractor.storeNote(date,toDoItemModel);
+        }
+
+
     }
-
-
-
 
 }

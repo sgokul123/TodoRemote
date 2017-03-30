@@ -18,11 +18,10 @@ import java.util.List;
 public class DatabaseHandler extends SQLiteOpenHelper {
     private  String TAG ="RegistrationDatabase";
     private static final int DATABASE_VERSION = 1;
-    private static final String DATABASE_NAME = "ToDosManager";
-
     private ToDoInteractor todoInteractor;
+
     public  DatabaseHandler(Context context, ToDoInteractor todoInteractor) {
-        super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        super(context, Constants.RequestParam.DATABASE_NAME, null, DATABASE_VERSION);
         //3rd argument to be passed is CursorFactory instance
         this.todoInteractor=todoInteractor;
     }
@@ -31,9 +30,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
 
-        String CREATE_ToDoS_TABLE = "CREATE TABLE IF NOT EXISTS " + Constants.RequestParam.NOTES_TABLE_NAME + "("
+        String CREATE_ToDoS_TABLE = "CREATE TABLE IF NOT EXISTS " + Constants.RequestParam.LOCAL_NOTES_TABLE_NAME + "("
                 + Constants.RequestParam.KEY_ID + " INTEGER PRIMARY KEY," + Constants.RequestParam.KEY_TITLE + " TEXT," + Constants.RequestParam.KEY_NOTE + " TEXT,"
-                + Constants.RequestParam.KEY_REMINDER + " TEXT" + ")";
+                + Constants.RequestParam.KEY_REMINDER + " TEXT" + Constants.RequestParam.KEY_STARTDATE + " TEXT"+ ")";
         db.execSQL(CREATE_ToDoS_TABLE);
     }
 
@@ -58,6 +57,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
            values.put(Constants.RequestParam.KEY_TITLE, toDoItemModel.get_title()); // ToDo Name
            values.put(Constants.RequestParam.KEY_NOTE, toDoItemModel.get_note()); // ToDo Phone
            values.put(Constants.RequestParam.KEY_REMINDER, toDoItemModel.get_reminder()); // ToDo REMINDER
+           values.put(Constants.RequestParam.KEY_STARTDATE, toDoItemModel.get_startdate()); // ToDo REMINDER
            // Inserting Row
 
            db.insert(Constants.RequestParam.NOTES_TABLE_NAME, null, values);
@@ -79,13 +79,13 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
 
         Cursor cursor = db.query(Constants.RequestParam.NOTES_TABLE_NAME, new String[] { Constants.RequestParam.KEY_ID,
-                        Constants.RequestParam.KEY_TITLE, Constants.RequestParam.KEY_NOTE,Constants.RequestParam.KEY_REMINDER}, Constants.RequestParam.KEY_ID + "=?",
-                new String[] { String.valueOf(id) }, null, null, null, null);
+                        Constants.RequestParam.KEY_TITLE, Constants.RequestParam.KEY_NOTE,Constants.RequestParam.KEY_REMINDER,Constants.RequestParam.KEY_STARTDATE}, Constants.RequestParam.KEY_ID + "=?",
+                new String[] { String.valueOf(id)}, null, null, null, null);
         if (cursor != null)
             cursor.moveToFirst();
 
         ToDoItemModel toDoItemModel = new ToDoItemModel(Integer.parseInt(cursor.getString(0)),
-                cursor.getString(1), cursor.getString(2),cursor.getString(3));
+                cursor.getString(1), cursor.getString(2),cursor.getString(3),cursor.getString(4));
         // return toDoItemModel
         return toDoItemModel;
 
@@ -106,13 +106,33 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             do {
                 ToDoItemModel ToDo = new ToDoItemModel();
                 ToDo.set_id(Integer.parseInt(cursor.getString(0)));
-                ToDo.set_note(cursor.getString(1));
-                ToDo.set_title(cursor.getString(2));
+                ToDo.set_title(cursor.getString(1));
+                ToDo.set_note(cursor.getString(2));
                 ToDo.set_reminder(cursor.getString(3));
+                ToDo.set_startdate(cursor.getString(4));
                 // Adding ToDo to list  
                 ToDoList.add(ToDo);
             } while (cursor.moveToNext());
         }
+        String selectQuerylocal = "SELECT  * FROM " + Constants.RequestParam.LOCAL_NOTES_TABLE_NAME;
+
+
+        Cursor cursor2 = db.rawQuery(selectQuerylocal, null);
+
+        // looping through all rows and adding to list
+        if (cursor2.moveToFirst()) {
+            do {
+                ToDoItemModel ToDo = new ToDoItemModel();
+                ToDo.set_id(Integer.parseInt(cursor.getString(0)));
+                ToDo.set_title(cursor.getString(1));
+                ToDo.set_note(cursor.getString(2));
+                ToDo.set_reminder(cursor.getString(3));
+                ToDo.set_startdate(cursor.getString(4));
+                // Adding ToDo to list
+                ToDoList.add(ToDo);
+            } while (cursor.moveToNext());
+        }
+
 
         // return ToDo list  
         return ToDoList;
@@ -126,6 +146,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         values.put(Constants.RequestParam.KEY_TITLE, toDoItemModel.get_note());
         values.put(Constants.RequestParam.KEY_NOTE, toDoItemModel.get_title());
         values.put(Constants.RequestParam.KEY_REMINDER, toDoItemModel.get_reminder());
+        values.put(Constants.RequestParam.KEY_STARTDATE, toDoItemModel.get_startdate());
         // updating row  
         return db.update(Constants.RequestParam.NOTES_TABLE_NAME, values, Constants.RequestParam.KEY_ID + " = ?",
                 new String[] { String.valueOf(toDoItemModel.get_id()) });

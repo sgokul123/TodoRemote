@@ -8,7 +8,6 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.Toolbar;
@@ -25,7 +24,9 @@ import com.todo.todo.home.adapter.NoteAdapter;
 import com.todo.todo.home.model.ToDoItemModel;
 import com.todo.todo.home.presenter.ToDoPresenter;
 import com.todo.todo.login.view.LoginActivity;
+import com.todo.todo.update.view.UpdateNoteActivity;
 import com.todo.todo.util.Constants;
+import com.todo.todo.util.Constants.ProfileeKey;
 import com.todo.todo.util.ProgressUtil;
 
 
@@ -39,10 +40,11 @@ public class ToDoActivity extends BaseActivity
     AppCompatTextView mTextViewEmail,mTextView_Name;
     Toolbar mToolbar;
     GridView mGridview;
-    AppCompatImageView mImageViewsearch, mImageViewGrid;
+    AppCompatImageView mImageViewsearch, mImageViewGrid,mImageViewNavProfile;
     FloatingActionButton mFloatingActionButton;
     SharedPreferences pref;
     SharedPreferences.Editor editor;
+
 
     private  String mEmail_id,mUserUID;
     private  boolean mLinear=false;
@@ -64,8 +66,11 @@ public class ToDoActivity extends BaseActivity
         pref = getSharedPreferences("testapp", MODE_PRIVATE);
         editor = pref.edit();
         setSupportActionBar(mToolbar);
+
+
+        mUserUID=pref.getString(Constants.BundleKey.USER_USER_UID,"null");
         mTtoDoPresenter =new ToDoPresenter(ToDoActivity.this,this);
-       // mTtoDoPresenter.getPresenterNotes();
+        mTtoDoPresenter.getPresenterNotes(mUserUID);
 
         //   mGridview.setAdapter(new NoteAdapter(ToDoActivity.this,toDoModels));
         mGridview.setOnItemClickListener(this);
@@ -81,6 +86,7 @@ public class ToDoActivity extends BaseActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         View header=navigationView.getHeaderView(0);
+        mImageViewNavProfile=(AppCompatImageView) header.findViewById(R.id.imageView_nav_profile);
         mTextViewEmail=(AppCompatTextView) header.findViewById(R.id.textView_nav_email);
         mTextView_Name=(AppCompatTextView)header. findViewById(R.id.textview_nave_name);
         setNavigationProfile();
@@ -88,13 +94,14 @@ public class ToDoActivity extends BaseActivity
     }
 
     public  void setNavigationProfile(){
-
+        String  getemail,getName;
         if(pref.contains("email"))
         {
-            String  getemail=pref.getString(Constants.BundleKey.USER_REGISTER, "abcd@gmail.com");
-            String  getName=pref.getString(Constants.BundleKey.USER_NAME, "xyz");
-            mUserUID=pref.getString(Constants.BundleKey.USER_USER_UID,"null");
+            getemail =pref.getString(Constants.BundleKey.USER_EMAIL, "abcd@gmail.com");
+            getName=pref.getString(ProfileeKey.FIRST_NAME, "Gokul")+" "+pref.getString(ProfileeKey.LAST_NAME,"Sonawane");
+
             Log.i(TAG, "onCreate:  email"+getemail);
+            mImageViewNavProfile.setImageResource(R.drawable.gokulsonawane);
             mTextViewEmail.setText(getemail);
             mTextView_Name.setText(getName);
         }
@@ -168,6 +175,19 @@ public class ToDoActivity extends BaseActivity
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+        Intent intent =new Intent(ToDoActivity.this,UpdateNoteActivity.class);
+        Bundle bun=new Bundle();
+        bun.putString(Constants.RequestParam.KEY_ID, String.valueOf(toDoItemModels.get(position).get_id()));
+        bun.putString(Constants.RequestParam.KEY_NOTE,toDoItemModels.get(position).get_note());
+        bun.putString(Constants.RequestParam.KEY_TITLE,toDoItemModels.get(position).get_title());
+        bun.putString(Constants.RequestParam.KEY_REMINDER,toDoItemModels.get(position).get_reminder());
+        bun.putString(Constants.RequestParam.KEY_STARTDATE,toDoItemModels.get(position).get_startdate());
+        intent.putExtra(Constants.BundleKey.USER_USER_UID,mUserUID);
+        intent.putExtra(Constants.BundleKey.MEW_NOTE,bun);
+        startActivityForResult(intent,2);
+
+        Toast.makeText(this, "selected"+position, Toast.LENGTH_SHORT).show();
 
     }
 
@@ -250,19 +270,20 @@ public class ToDoActivity extends BaseActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-     /*   if(requestCode==2){
+        if(requestCode==2){
                 Bundle ban=data.getBundleExtra(Constants.BundleKey.MEW_NOTE);
                 ToDoItemModel toDoItemModel=new ToDoItemModel();
             toDoItemModel.set_id(Integer.parseInt(ban.getString(Constants.RequestParam.KEY_ID)));
             toDoItemModel.set_title(ban.getString(Constants.RequestParam.KEY_TITLE));
             toDoItemModel.set_note(ban.getString(Constants.RequestParam.KEY_NOTE));
             toDoItemModel.set_reminder(ban.getString(Constants.RequestParam.KEY_REMINDER));
+            toDoItemModel.set_startdate(ban.getString(Constants.RequestParam.KEY_STARTDATE));
             toDoItemModels.add(toDoItemModel);
             NoteAdapter adapter=new NoteAdapter(ToDoActivity.this, toDoItemModels);
             Log.i(TAG, "onActivityResult: "+toDoItemModel.get_title());
             mGridview.setAdapter(adapter);
 
-        }*/
+        }
 
     }
 

@@ -6,6 +6,7 @@ import android.widget.Toast;
 import com.todo.todo.login.interactor.LoginLoginInteractor;
 import com.todo.todo.login.model.LoginModel;
 import com.todo.todo.login.view.LoginActivity;
+import com.todo.todo.registration.model.RegistrationModel;
 import com.todo.todo.util.Connection;
 
 
@@ -41,17 +42,17 @@ public class LoginLoginPresenter implements LoginPresenterInterface {
     }
 
     @Override
-    public void getLoginAuthentication(String uid) {
-
+    public void getLoginAuthentication(RegistrationModel registrationModel, String uid) {
         if(uid!=null){
             Log.i(TAG, "getLoginAuthentication: ");
-            loginActivity.loginSuccess(uid);
+
+            loginActivity.loginSuccess(registrationModel,uid);
         }
-       else {
+        else {
             loginActivity.loginFailuar();
         }
-
     }
+
 
 
     @Override

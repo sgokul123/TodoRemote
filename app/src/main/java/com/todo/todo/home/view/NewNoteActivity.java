@@ -108,9 +108,13 @@ public class NewNoteActivity extends BaseActivity implements View.OnClickListene
                 mToDoItemModel.set_title(StrTitle);
                 StrReminder=textViewReminder.getText().toString();
                 mToDoItemModel.set_reminder(StrReminder);
+
+                mToDoItemModel.set_startdate(getCurrentDate());
+
                 toDoPresenter=new ToDoPresenter(NewNoteActivity.this,this);
+
                 Log.i(TAG, "onClick: "+mUsre_UID+"  date"+getCurrentDate());
-                toDoPresenter.loadNotetoFirebase(mUsre_UID,getCurrentDate(),getTimestamp(),mToDoItemModel);
+                toDoPresenter.loadNotetoFirebase(mUsre_UID,getCurrentDate(),mToDoItemModel);
                 break;
             default:
 
@@ -122,7 +126,7 @@ public class NewNoteActivity extends BaseActivity implements View.OnClickListene
 
     private void updateLabel() {
 
-        String myFormat = "EEE, MMM d, ''yy"; //In which you need put here
+        String myFormat = "EEE,MMM d,yy"; //In which you need put here
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
         textViewReminder.setText(sdf.format(myCalendar.getTime()));
 
@@ -151,6 +155,7 @@ public class NewNoteActivity extends BaseActivity implements View.OnClickListene
             bun.putString(Constants.RequestParam.KEY_NOTE,mToDoItemModel.get_note());
             bun.putString(Constants.RequestParam.KEY_TITLE,mToDoItemModel.get_title());
             bun.putString(Constants.RequestParam.KEY_REMINDER,mToDoItemModel.get_reminder());
+            bun.putString(Constants.RequestParam.KEY_STARTDATE,mToDoItemModel.get_startdate());
             Intent intent=new Intent();
             intent.putExtra(Constants.BundleKey.MEW_NOTE,bun);
             setResult(2,intent);
@@ -171,7 +176,7 @@ public class NewNoteActivity extends BaseActivity implements View.OnClickListene
             return date;
         }
 
-        public  String getTimestamp(){
+       /* public  String getTimestamp(){
             String timestamp="";
              try {
                 int day, second, minute, hour;
@@ -189,5 +194,5 @@ public class NewNoteActivity extends BaseActivity implements View.OnClickListene
                 e.printStackTrace();
             }
             return timestamp;
-        }
+        }*/
 }

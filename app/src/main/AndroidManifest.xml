@@ -42,6 +42,10 @@
             android:name=".home.view.ToDoActivity"
             android:label="@string/title_activity_to_do"
             android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".update.view.UpdateNoteActivity"
+            android:label="@string/title_activity_to_do"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".home.view.NewNoteActivity"
             android:theme="@style/AppTheme.NoActionBar"
             />

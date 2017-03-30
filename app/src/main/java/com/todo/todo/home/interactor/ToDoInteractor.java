@@ -3,7 +3,6 @@ package com.todo.todo.home.interactor;
 import android.content.Context;
 import android.util.Log;
 
-
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -14,6 +13,7 @@ import com.todo.todo.database.DatabaseHandler;
 import com.todo.todo.home.model.ToDoItemModel;
 import com.todo.todo.home.presenter.ToDoPresenter;
 
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,20 +22,21 @@ import java.util.List;
  */
 
 public class ToDoInteractor implements  TodoInteractorInterface {
-    private  String TAG ="ToDoInteractor";
     ToDoPresenter mToDoPresenter;
     DatabaseHandler db;
     DatabaseReference mRef;
     int size=0;
     ToDoItemModel todoitemModel;
+    Context context;
+    private  String TAG ="ToDoInteractor";
     private  String uid,date;
     private DatabaseReference mDatabase;
-    Context context;
     public ToDoInteractor(ToDoPresenter mToDoPresenter, Context mContext) {
         Log.i(TAG, "ToDoInteractor: ");
         this.mToDoPresenter = mToDoPresenter;
-       // db = new DatabaseHandler(mContext,ToDoInteractor.this);
+        // db = new DatabaseHandler(mContext,ToDoInteractor.this);
         mDatabase = FirebaseDatabase.getInstance().getReference();
+
     }
 
     @Override
@@ -59,57 +60,79 @@ public class ToDoInteractor implements  TodoInteractorInterface {
     }
 
     @Override
-    public void storeNote(ToDoItemModel toDoItemModel) {
-
+    public void storeNote(String date, ToDoItemModel toDoItemModel) {
         Log.i(TAG, "storeNote: s  tore");
-        //Store Notes in Database
-        // it will give boolean responce of result
-
-      //  mToDoPresenter.showNoteProgressDialog();
+        mToDoPresenter.showNoteProgressDialog();
         db.addToDo(toDoItemModel);
-        //mToDoPresenter.closeNoteProgressDialog();
-        //  mToDoPresenter.getResponce(true);
 
     }
+
 
     @Override
-    public void uploadNotes(String uid, String date, String timestamp, final ToDoItemModel toDoItemModel) {
+    public void uploadNotes(String uid, String date, final ToDoItemModel toDoItemModel) {
         mToDoPresenter.showNoteProgressDialog();
-        date=date;
-        uid=uid;
-        todoitemModel=toDoItemModel;
-        try{
-            Log.i(TAG, "setSize: "+size);
-           String str= mDatabase.child("usersdata").child(uid).child(date).push().getKey();
-            Log.i(TAG, "uploadNotes: "+str);
-            mDatabase.child("usersdata").child(uid).child(date).child().setValue(todoitemModel);
-            mToDoPresenter.getResponce(true);
-            mToDoPresenter.closeNoteProgressDialog();
-        }catch (Exception f){
-            Log.i(TAG, "uploadNotes: exceptoion");
-            mToDoPresenter.closeNoteProgressDialog();
-            Log.i(TAG, "registerData: "+f);
-        }
-    }
+        this.date=date;
+        this.uid=uid;
+        this.todoitemModel=toDoItemModel;
+        Log.i(TAG, "uploadNotes: call firebase");
 
-
-        public  void getSize(){
-          
-        }
-    private void saveData() {
-        Log.i(TAG, "setSize: "+size);
-        mDatabase.child("usersdata").child(uid).child(date).child(String.valueOf(size)).setValue(todoitemModel);
-        mToDoPresenter.getResponce(true);
-        mToDoPresenter.closeNoteProgressDialog();
+        FireBaseGetIndex fireBaseGetIndex=new FireBaseGetIndex(this);
+        fireBaseGetIndex.getIndex(uid,date);
 
     }
 
     @Override
     public void getResponce(boolean flag) {
         mToDoPresenter.getResponce(flag);
+        mToDoPresenter.closeNoteProgressDialog();
     }
 
+    @Override
+    public void setData(int size) {
 
+        try{
+            Log.i(TAG, "setSize: "+size);
+            todoitemModel.set_id(size);
+            mDatabase.child("usersdata").child(uid).child(date).child(String.valueOf(size)).setValue(todoitemModel);
+            mToDoPresenter.getResponce(true);
+            mToDoPresenter.closeNoteProgressDialog();
+
+        }catch (Exception f){
+
+            Log.i(TAG, "uploadNotes: exceptoion");
+            mToDoPresenter.closeNoteProgressDialog();
+            Log.i(TAG, "registerData: "+f);
+        }
+
+    }
+
+    @Override
+    public void getFireBaseDatabase(String uid) {
+        mToDoPresenter.showProgressDialog();
+        mRef = mDatabase.child("usersdata").child(uid);
+
+        mRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                GenericTypeIndicator<ArrayList<ToDoItemModel>> t = new GenericTypeIndicator<ArrayList<ToDoItemModel>>() {
+                };
+
+                Log.i(TAG, "onDataChange: ");
+                ArrayList<ToDoItemModel> todoItemModel = new ArrayList<ToDoItemModel>();
+                for (DataSnapshot child : dataSnapshot.getChildren()) {
+                    todoItemModel.addAll(child.getValue(t));
+                }
+                mToDoPresenter.getCallBackNotes(todoItemModel);
+                mToDoPresenter.closeProgressDialog();
+            }
+            @Override
+            public void onCancelled(DatabaseError error) {
+                Log.i(TAG, "onCancelled: ");
+                mToDoPresenter.closeProgressDialog();
+            }
+        });
+
+    }
 
 
 }

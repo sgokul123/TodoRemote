@@ -7,12 +7,16 @@
     android:gravity="bottom"
     android:orientation="vertical"
     android:theme="@style/ThemeOverlay.AppCompat.Dark">
-
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
     <android.support.v7.widget.AppCompatImageView
         android:id="@+id/imageView_nav_profile"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-       android:layout_marginLeft="@dimen/diamen_20dp"
+        android:layout_width="@dimen/diamen_50dp"
+        android:layout_height="@dimen/diamen_50dp"
+        android:layout_marginTop="@dimen/diamen_10dp"
+        android:layout_marginLeft="@dimen/diamen_20dp"
+        android:background="@drawable/circleimage"
         app:srcCompat="@android:drawable/sym_def_app_icon" />
 
     <android.support.v7.widget.AppCompatTextView
@@ -21,19 +25,21 @@
         android:layout_height="wrap_content"
        android:layout_marginLeft="@dimen/diamen_20dp"
         android:hint="User Name"
+        android:layout_below="@+id/imageView_nav_profile"
         android:textSize="@dimen/diamen_30sp"
         android:layout_marginTop="@dimen/diamen_10dp"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
-<android.support.v7.widget.AppCompatTextView
+    <android.support.v7.widget.AppCompatTextView
     android:id="@+id/textView_nav_email"
         android:layout_marginTop="@dimen/diamen_10dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="@dimen/diamen_20sp"
+        android:layout_below="@+id/textview_nave_name"
         android:layout_marginLeft="@dimen/diamen_20dp"
         android:hint="User Email"
         android:layout_marginBottom="@dimen/diamen_10dp"
         android:text="android.studio@android.com" />
-
+</RelativeLayout>
 </LinearLayout>
