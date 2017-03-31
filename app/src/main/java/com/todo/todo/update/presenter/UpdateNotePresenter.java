@@ -1,8 +1,11 @@
 package com.todo.todo.update.presenter;
 
+import android.content.Context;
+
 import com.todo.todo.home.model.ToDoItemModel;
 import com.todo.todo.update.interactor.UpdateNoteInteractor;
 import com.todo.todo.update.view.UpdateNoteActivity;
+import com.todo.todo.util.Connection;
 
 /**
  * Created by bridgeit on 29/3/17.
@@ -11,10 +14,11 @@ import com.todo.todo.update.view.UpdateNoteActivity;
 public class UpdateNotePresenter implements  UpdateNotePresenterInterface {
     UpdateNoteActivity mUpdateNoteActivity;
     UpdateNoteInteractor mUpdateNoteInteractor;
-
-    public UpdateNotePresenter(UpdateNoteActivity updateNoteActivity) {
+    Context mContext;
+    public UpdateNotePresenter(Context context,UpdateNoteActivity updateNoteActivity) {
         this.mUpdateNoteActivity=updateNoteActivity;
-        mUpdateNoteInteractor=new UpdateNoteInteractor(this);
+        mUpdateNoteInteractor=new UpdateNoteInteractor(context,this);
+        this.mContext=context;
     }
 
     @Override
@@ -34,7 +38,13 @@ public class UpdateNotePresenter implements  UpdateNotePresenterInterface {
 
     @Override
     public void updateNote(String uid, String date, ToDoItemModel toDoItemModel) {
-        mUpdateNoteInteractor.updateFirbaseData(uid,date,toDoItemModel);
+        Connection con=new Connection(mContext);
+        if(con.isNetworkConnected()){
+            mUpdateNoteInteractor.updateFirbaseData(uid,date,toDoItemModel);
+        }
+       else {
+
+        }
 
     }
 }

@@ -1,5 +1,6 @@
 package com.todo.todo.update.interactor;
 
+import android.content.Context;
 import android.util.Log;
 
 import com.google.firebase.database.DatabaseReference;
@@ -15,11 +16,12 @@ import com.todo.todo.update.presenter.UpdateNotePresenter;
 public class UpdateNoteInteractor implements  UpdateNoteInteractorInterface{
     private  String TAG ="UpdateNoteInteractor";
     UpdateNotePresenter mUpdateNotePresenter;
-
+    Context mContext;
     DatabaseReference mDatabase;
-    public UpdateNoteInteractor(UpdateNotePresenter updateNotePresenter) {
+    public UpdateNoteInteractor( Context context,UpdateNotePresenter updateNotePresenter) {
         this.mUpdateNotePresenter=updateNotePresenter;
         mDatabase = FirebaseDatabase.getInstance().getReference();
+        this.mContext=context;
     }
 
     @Override
@@ -30,11 +32,20 @@ public class UpdateNoteInteractor implements  UpdateNoteInteractorInterface{
             mDatabase.child("usersdata").child(uid).child(date).child(String.valueOf(toDoItemModel.get_id())).setValue(toDoItemModel);
             mUpdateNotePresenter.getResponce(true);
             mUpdateNotePresenter.closeProgress();
+
         }catch (Exception e){
             mUpdateNotePresenter.getResponce(false);
             mUpdateNotePresenter.closeProgress();
             Log.i(TAG, "updateFirbaseData: ");
         }
+
+    }
+
+    @Override
+    public void updateLocal(ToDoItemModel toDoItemModel) {
+
+    DatabaseHandler db=new DatabaseHandler(mContext);
+        db.updateLocal(toDoItemModel);
 
     }
 }

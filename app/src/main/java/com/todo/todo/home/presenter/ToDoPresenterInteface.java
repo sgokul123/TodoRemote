@@ -11,11 +11,11 @@ import java.util.List;
  */
 
 public interface ToDoPresenterInteface  extends ToDoActivityInteface, NoteInterface {
-
+    public  void callPresenterNotesAfterUpdateServer(String uid);
     public  void getPresenterNotes(String uid);
     public  void getCallBackNotes(List<ToDoItemModel> toDoItemModels);
     public  void PutNote(String uid,ToDoItemModel toDoItemModel);
     public  void loadNotetoFirebase(String uid,String date,ToDoItemModel toDoItemModel);
-
+    public  void getPresenterNotesAfterUpdate(String uid);
 
 }

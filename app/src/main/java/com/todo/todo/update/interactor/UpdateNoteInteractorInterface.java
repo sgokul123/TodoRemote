@@ -9,5 +9,6 @@ import com.todo.todo.update.view.UpdateNoteActivity;
 
 public interface UpdateNoteInteractorInterface {
     public void updateFirbaseData(String uid, String date, ToDoItemModel toDoItemModel);
+    public  void updateLocal(ToDoItemModel toDoItemModel);
 
 }

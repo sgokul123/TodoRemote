@@ -11,6 +11,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.ValueEventListener;
 import com.todo.todo.home.model.ToDoItemModel;
@@ -69,18 +70,17 @@ LoginModel loginModel;
     }
 
     private void getProfile(final String uid) {
-
-        mRef.child("userprofile").child(uid);
+        mRef= FirebaseDatabase.getInstance().getReference().child("userprofile").child(uid);
 
         mRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 GenericTypeIndicator<ArrayList<RegistrationModel>> t = new GenericTypeIndicator<ArrayList<RegistrationModel>>() {
                 };
-
                 Log.i(TAG, "onDataChange: ");
                RegistrationModel userPreofile = new RegistrationModel();
-                userPreofile= (RegistrationModel) dataSnapshot.getValue();
+                userPreofile= (RegistrationModel) dataSnapshot.getValue(RegistrationModel.class);
+
                 mLoginPresenter.getLoginAuthentication(userPreofile,uid);
                 mLoginPresenter.closeProgress();
 

@@ -27,34 +27,35 @@ public class ToDoInteractor implements  TodoInteractorInterface {
     DatabaseReference mRef;
     int size=0;
     ToDoItemModel todoitemModel;
-    Context context;
+    Context mContext;
     private  String TAG ="ToDoInteractor";
     private  String uid,date;
     private DatabaseReference mDatabase;
-    public ToDoInteractor(ToDoPresenter mToDoPresenter, Context mContext) {
+    public ToDoInteractor(ToDoPresenter mToDoPresenter, Context context) {
         Log.i(TAG, "ToDoInteractor: ");
         this.mToDoPresenter = mToDoPresenter;
+        this.mContext=context;
         // db = new DatabaseHandler(mContext,ToDoInteractor.this);
         mDatabase = FirebaseDatabase.getInstance().getReference();
-
     }
 
     @Override
     public void getCallToDatabase() {
         // call to he database to retrive data load into grid view
         //it will responce all notes back to presenter
-        //  db = new RegistrationDatabase(context);
-
+         db = new DatabaseHandler(mContext,this);
+        mToDoPresenter.showProgressDialog();
         Log.i(TAG, "getCallToDatabase: ");
         List<ToDoItemModel> toDos = db.getAllToDos();
 
         for (ToDoItemModel cn : toDos) {
             String log = "Id: " + cn.get_id() + " ,note: " + cn.get_note() + " ,title: " +
-                    cn.get_title()+"reminder:  "+cn.get_reminder();
+                    cn.get_title()+"reminder:  "+cn.get_reminder()+"startdate:  "+cn.get_startdate();
             // Writing Contacts to log
             Log.d("Name: ", log);
         }
         mToDoPresenter.getCallBackNotes(toDos);
+        mToDoPresenter.closeProgressDialog();
         //mToDoPresenter.getCallBackNotes();
 
     }
@@ -63,7 +64,8 @@ public class ToDoInteractor implements  TodoInteractorInterface {
     public void storeNote(String date, ToDoItemModel toDoItemModel) {
         Log.i(TAG, "storeNote: s  tore");
         mToDoPresenter.showNoteProgressDialog();
-        db.addToDo(toDoItemModel);
+        db = new DatabaseHandler(mContext,this);
+        db.addNoteToLocal(toDoItemModel);
 
     }
 
@@ -110,7 +112,6 @@ public class ToDoInteractor implements  TodoInteractorInterface {
     public void getFireBaseDatabase(String uid) {
         mToDoPresenter.showProgressDialog();
         mRef = mDatabase.child("usersdata").child(uid);
-
         mRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {

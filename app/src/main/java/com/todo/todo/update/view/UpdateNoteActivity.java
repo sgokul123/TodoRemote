@@ -124,7 +124,7 @@ import java.util.Locale;
                     mToDoItemModel.set_reminder(StrReminder);
                     mToDoItemModel.set_startdate(StrStartDate);
                     mToDoItemModel.set_id(Integer.parseInt(Note_id));
-                    updateNotePresenter=new UpdateNotePresenter(UpdateNoteActivity.this);
+                    updateNotePresenter=new UpdateNotePresenter(getApplicationContext(),UpdateNoteActivity.this);
                     Log.i(TAG, "onClick: ");
                     updateNotePresenter.updateNote(mUsre_UID,StrStartDate,mToDoItemModel);
                     break;

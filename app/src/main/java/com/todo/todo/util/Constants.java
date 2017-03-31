@@ -23,10 +23,10 @@ public class Constants {
 
     }
         public  interface  RequestParam{
-        public static final String DATABASE_NAME ="ToDosManager";
+        public static final String DATABASE_NAME ="mylManager";
         public static final String USER_TABLE_NAME= "fellowshipPeriod";
         public static final String LOCAL_NOTES_TABLE_NAME ="localNotes";
-            public static final String NOTES_TABLE_NAME ="ToDos";
+            public static final String NOTES_TABLE_NAME ="TooDos";
         public static final String KEY_ID ="id";
         public static final String KEY_TITLE ="title";
         public static final String KEY_NOTE ="notes";
