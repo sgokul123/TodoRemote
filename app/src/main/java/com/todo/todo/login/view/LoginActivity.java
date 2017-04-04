@@ -17,6 +17,8 @@ import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
+import com.facebook.Profile;
+import com.facebook.ProfileTracker;
 import com.facebook.appevents.AppEventsLogger;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
@@ -142,12 +144,19 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
         loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
-                Toast.makeText(LoginActivity.this, "User ID: "
-                        + loginResult.getAccessToken().getUserId()
-                        + "\n" +
-                        "Auth Token: "
-                        + loginResult.getAccessToken().getToken(), Toast.LENGTH_SHORT).show();
+            // mImageUrl=profile.getProfilePictureUri(20,20);
+                // Log.i(TAG, "onSuccess: "+mImageUrl);
                 //Facebbok Login
+
+                ProfileTracker profileTracker = new ProfileTracker() {
+                    @Override
+                    protected void onCurrentProfileChanged(
+                            Profile oldProfile,
+                            Profile currentProfile) {
+                        mStrName=currentProfile.getName();
+                        // App code
+                    }
+                };
                 Log.i(TAG, "onSuccess: ");
                 editor.putString(Constants.BundleKey.USER_REGISTER,"true");
                 editor.putString(Constants.BundleKey.USER_EMAIL,mStrEmail);
@@ -155,11 +164,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
                 editor.putString(Constants.BundleKey.FACEBOOK_LOGIN,"true");
                 editor.commit();
 
-             /*   Profile profile = Profile.getCurrentProfile();
-                mStrEmail=profile.getId();
-                mStrName=profile.getFirstName()+" "+profile.getLastName();
-               */// mImageUrl=profile.getProfilePictureUri(20,20);
-               // Log.i(TAG, "onSuccess: "+mImageUrl);
+
                 Intent intent=new Intent(LoginActivity.this,ToDoActivity.class);
                 intent.putExtra(Constants.BundleKey.USER_EMAIL,mStrEmail);
                 intent.putExtra(Constants.BundleKey.USER_NAME,mStrName);

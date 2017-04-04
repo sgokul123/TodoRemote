@@ -13,7 +13,8 @@ public class Constants {
         public static final String MEW_NOTE = "note";
         public static final String GOOGLE_LOGIN = "google";
         public static final String FACEBOOK_LOGIN = "facebook";
-
+        public static final String USER_PROFILE_LOCAL = "localimage";
+        public static final String USER_PROFILE_SERVER = "serverimage";
     }
     public interface ProfileeKey {
         public static final String MOBILE_NO = "mobileno";

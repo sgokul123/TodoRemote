@@ -109,10 +109,21 @@ public class ToDoPresenter implements  ToDoPresenterInteface {
         db.deleteLocal(localNotes);
         mToDoInteractor.getFireBaseDatabase(uid);
 
+
     }
     @Override
     public void getCallBackNotes(List<ToDoItemModel> toDoItemModels) {
         Log.i(TAG, "getCallBackNotes: ");
+        //store into local database
+        DatabaseHandler db=new DatabaseHandler(mContext,this);
+        db.addAllNotesToLocal(toDoItemModels);
+
+
+       //
+    }
+
+    @Override
+    public void sendCallBackNotes(List<ToDoItemModel> toDoItemModels) {
         mToDoActivity.showDataInActivity(toDoItemModels);
     }
 

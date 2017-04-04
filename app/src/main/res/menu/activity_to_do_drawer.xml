@@ -16,7 +16,7 @@
             android:title="Create New Label" />
         <item
             android:id="@+id/nav_archive"
-            android:icon="@drawable/ic_menu_manage"
+            android:icon="@drawable/ic_archive"
             android:title="Archive" />
         <item
             android:id="@+id/nav_deleted"

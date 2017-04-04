@@ -21,7 +21,7 @@
         <android.support.v7.widget.AppCompatImageView
             android:id="@+id/imageView_pin"
             android:layout_width="@dimen/diamen_30dp"
-            android:layout_height="@dimen/diamen_30dp"
+            android:layout_height="@dimen/diamen_20dp"
             android:layout_marginRight="@dimen/diamen_20dp"
             android:layout_marginTop="@dimen/diamen_10dp"
             android:layout_toLeftOf="@+id/imageView_reminder"
@@ -30,7 +30,7 @@
         <android.support.v7.widget.AppCompatImageView
             android:id="@+id/imageView_reminder"
             android:layout_width="@dimen/diamen_30dp"
-            android:layout_height="@dimen/diamen_30dp"
+            android:layout_height="@dimen/diamen_20dp"
             android:layout_marginRight="@dimen/diamen_20dp"
             android:layout_marginTop="@dimen/diamen_10dp"
             android:layout_toLeftOf="@+id/imageView_save"
@@ -39,7 +39,7 @@
         <android.support.v7.widget.AppCompatImageView
             android:id="@+id/imageView_save"
             android:layout_width="@dimen/diamen_30dp"
-            android:layout_height="@dimen/diamen_30dp"
+            android:layout_height="@dimen/diamen_20dp"
             android:layout_alignParentEnd="true"
             android:layout_marginRight="@dimen/diamen_20dp"
             android:layout_marginTop="@dimen/diamen_10dp"

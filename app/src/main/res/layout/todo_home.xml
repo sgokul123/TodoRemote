@@ -6,26 +6,22 @@
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
 
-    tools:showIn="@layout/app_bar_to_do"
+    tools:showIn="@layout/app_bar_todo_home"
   >
 
 
-    <GridView
+    <android.support.v7.widget.RecyclerView
         android:id="@+id/gridview_notes"
-        android:columnWidth="170dp"
-        android:numColumns="2"
-        android:verticalSpacing="10dp"
-        android:horizontalSpacing="10dp"
-        android:stretchMode="columnWidth"
+
         android:gravity="center"
-        android:layout_marginBottom="@dimen/diamen_20dp"
-        android:layout_marginLeft="@dimen/diamen_20dp"
-        android:layout_marginRight="@dimen/diamen_20dp"
+        android:layout_marginLeft="@dimen/diamen_5dp"
+        android:layout_marginRight="@dimen/diamen_5dp"
+        android:layout_marginBottom="@dimen/diamen_5dp"
         android:layout_marginTop="@dimen/diamen_65dp"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
 
         >
 
-    </GridView>
+    </android.support.v7.widget.RecyclerView>
 </RelativeLayout>

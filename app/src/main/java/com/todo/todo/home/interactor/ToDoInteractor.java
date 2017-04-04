@@ -54,7 +54,7 @@ public class ToDoInteractor implements  TodoInteractorInterface {
             // Writing Contacts to log
             Log.d("Name: ", log);
         }
-        mToDoPresenter.getCallBackNotes(toDos);
+        mToDoPresenter.sendCallBackNotes(toDos);
         mToDoPresenter.closeProgressDialog();
         //mToDoPresenter.getCallBackNotes();
 

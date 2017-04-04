@@ -14,6 +14,7 @@ public interface ToDoPresenterInteface  extends ToDoActivityInteface, NoteInterf
     public  void callPresenterNotesAfterUpdateServer(String uid);
     public  void getPresenterNotes(String uid);
     public  void getCallBackNotes(List<ToDoItemModel> toDoItemModels);
+    public  void sendCallBackNotes(List<ToDoItemModel> toDoItemModels);
     public  void PutNote(String uid,ToDoItemModel toDoItemModel);
     public  void loadNotetoFirebase(String uid,String date,ToDoItemModel toDoItemModel);
     public  void getPresenterNotesAfterUpdate(String uid);
