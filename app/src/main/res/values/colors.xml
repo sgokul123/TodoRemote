@@ -9,6 +9,7 @@
     <color name="back_saperator_fent">#97d9d6</color>
     <color name="fraagment_back">#abb3b0</color>
     <color name="color_view">#000000</color>
+    <color name="gray">#606360</color>
     <color name="toolbar_back">#FEBA00</color>
-
+    <color name="light_gray">#a9aca9</color>
 </resources>

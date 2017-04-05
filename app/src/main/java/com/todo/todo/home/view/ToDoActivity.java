@@ -35,6 +35,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Filter;
+import android.widget.GridView;
 import android.widget.Toast;
 
 import com.facebook.FacebookSdk;
@@ -48,6 +49,7 @@ import com.google.firebase.storage.UploadTask;
 import com.todo.todo.R;
 import com.todo.todo.base.BaseActivity;
 import com.todo.todo.home.adapter.CustomGrid;
+import com.todo.todo.home.listener.RecyclerItemClickListener;
 import com.todo.todo.home.model.ToDoItemModel;
 import com.todo.todo.home.presenter.RemoveNotePresenter;
 import com.todo.todo.home.presenter.ToDoPresenter;
@@ -60,12 +62,17 @@ import com.todo.todo.util.DownloadImage;
 import com.todo.todo.util.DownloadImageInterface;
 import com.todo.todo.util.ProgressUtil;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import static android.widget.Toast.LENGTH_SHORT;
 
 public class ToDoActivity extends BaseActivity
-        implements NavigationView.OnNavigationItemSelectedListener, AdapterView.OnItemClickListener, View.OnClickListener ,ToDoActivityInteface {
+        implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener ,ToDoActivityInteface {
 
     private final int SELECT_PHOTO = 3;
     ToDoPresenter mTtoDoPresenter;
@@ -121,7 +128,26 @@ public class ToDoActivity extends BaseActivity
 
         mRecyclerView.setLayoutManager(new GridLayoutManager(getApplicationContext(), 2));
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+        mRecyclerView.addOnItemTouchListener(
+                new RecyclerItemClickListener(getApplicationContext(), new RecyclerItemClickListener.OnItemClickListener() {
+                    @Override public void onItemClick(View view, int position) {
 
+
+                        Intent intent =new Intent(ToDoActivity.this,UpdateNoteActivity.class);
+                        Bundle bun=new Bundle();
+                        bun.putString(Constants.RequestParam.KEY_ID, String.valueOf(toDoItemModels.get(position).get_id()));
+                        bun.putString(Constants.RequestParam.KEY_NOTE,toDoItemModels.get(position).get_note());
+                        bun.putString(Constants.RequestParam.KEY_TITLE,toDoItemModels.get(position).get_title());
+                        bun.putString(Constants.RequestParam.KEY_REMINDER,toDoItemModels.get(position).get_reminder());
+                        bun.putString(Constants.RequestParam.KEY_STARTDATE,toDoItemModels.get(position).get_startdate());
+                        intent.putExtra(Constants.BundleKey.USER_USER_UID,mUserUID);
+                        intent.putExtra(Constants.BundleKey.MEW_NOTE,bun);
+                        startActivityForResult(intent,2);
+                        overridePendingTransition(R.anim.fadein,R.anim.fadeout);
+                      //  Toast.makeText(this, "selected"+position, Toast.LENGTH_SHORT).show();
+                        // TODO Handle item click
+                    }
+                }));
         FacebookSdk.sdkInitialize(getApplicationContext());
        /* FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(this);
@@ -154,19 +180,15 @@ public class ToDoActivity extends BaseActivity
             @Override
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
                 int position = viewHolder.getAdapterPosition();
-
+                RemoveNotePresenter removeNotePresenter=new RemoveNotePresenter(getApplicationContext());
                 if (direction == ItemTouchHelper.LEFT){
-                    RemoveNotePresenter removeNotePresenter=new RemoveNotePresenter(getApplicationContext());
-                    removeNotePresenter.removeData(toDoItemModels,position);
-                    adapter.removeItem(position);
+                    removeNotePresenter.removeFirebaseData(toDoItemModels,mUserUID,position);
 
-                } /*else {
-                    removeView();
-                    edit_position = position;
-                    alertDialog.setTitle("Edit Country");
-                    et_country.setText(countries.get(position));
-                    alertDialog.show();
-                }*/
+                } else {
+                   /* removeNotePresenter.getArchiveData(toDoItemModels.get(position),mUserUID,position);
+                    adapter.removeItem(position);
+                  */  //removeView();
+                     }
             }
 
             @Override
@@ -183,16 +205,16 @@ public class ToDoActivity extends BaseActivity
                         p.setColor(Color.parseColor("#388E3C"));
                         RectF background = new RectF((float) itemView.getLeft(), (float) itemView.getTop(), dX,(float) itemView.getBottom());
                         c.drawRect(background,p);
-                        //   icon = BitmapFactory.decodeResource(getResources(), R.drawable.ic_archive);
+                          // icon = BitmapFactory.decodeResource(getResources(), R.drawable.ic_archive);
                         RectF icon_dest = new RectF((float) itemView.getLeft() + width ,(float) itemView.getTop() + width,(float) itemView.getLeft()+ 2*width,(float)itemView.getBottom() - width);
-                        //  c.drawBitmap(icon,null,icon_dest,p);
+                      //   c.drawBitmap(icon,null,icon_dest,p);
                     } else {
                         p.setColor(Color.parseColor("#D32F2F"));
                         RectF background = new RectF((float) itemView.getRight() + dX, (float) itemView.getTop(),(float) itemView.getRight(), (float) itemView.getBottom());
                         c.drawRect(background,p);
-                        //   icon = BitmapFactory.decodeResource(getResources(), R.drawable.ic_archive );
+                       //   icon = BitmapFactory.decodeResource(getResources(), R.drawable.ic_archive );
                         RectF icon_dest = new RectF((float) itemView.getRight() - 2*width ,(float) itemView.getTop() + width,(float) itemView.getRight() - width,(float)itemView.getBottom() - width);
-                        //c.drawBitmap(icon,null,icon_dest,p);
+                      //  c.drawBitmap(icon,null,icon_dest,p);
                     }
                 }
                 super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
@@ -252,12 +274,16 @@ public class ToDoActivity extends BaseActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_notes) {
-
+            mRecyclerView.setAdapter(adapter);
 
             // Handle the camera action
         } else if (id == R.id.nav_reminders) {
-
-
+            Calendar c = Calendar.getInstance();
+            SimpleDateFormat df = new SimpleDateFormat("EEE,MMMd,yy");
+           String date= df.format(c.getTime());
+            List<ToDoItemModel> remindrsToDO =getTodaysReminder(date);
+            CustomGrid  adapter2 =new CustomGrid(ToDoActivity.this,remindrsToDO) ;
+            mRecyclerView.setAdapter(adapter2);
 
         } else if (id == R.id.nav_create_new_label) {
 
@@ -297,27 +323,7 @@ public class ToDoActivity extends BaseActivity
     }
 
     @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        //mAnimation = AnimationUtils.loadAnimation(getApplicationContext().getApplicationContext(), R.anim.animation);
-
-        Intent intent =new Intent(ToDoActivity.this,UpdateNoteActivity.class);
-        Bundle bun=new Bundle();
-        bun.putString(Constants.RequestParam.KEY_ID, String.valueOf(toDoItemModels.get(position).get_id()));
-        bun.putString(Constants.RequestParam.KEY_NOTE,toDoItemModels.get(position).get_note());
-        bun.putString(Constants.RequestParam.KEY_TITLE,toDoItemModels.get(position).get_title());
-        bun.putString(Constants.RequestParam.KEY_REMINDER,toDoItemModels.get(position).get_reminder());
-        bun.putString(Constants.RequestParam.KEY_STARTDATE,toDoItemModels.get(position).get_startdate());
-        intent.putExtra(Constants.BundleKey.USER_USER_UID,mUserUID);
-        intent.putExtra(Constants.BundleKey.MEW_NOTE,bun);
-        startActivityForResult(intent,2);
-
-        Toast.makeText(this, "selected"+position, Toast.LENGTH_SHORT).show();
-
-    }
-
-    @Override
     public void onClick(View v) {
-
         switch (v.getId()){
             case R.id.imageView_grid_linear:
                 //Convert Grid view to linear
@@ -339,6 +345,7 @@ public class ToDoActivity extends BaseActivity
                 Intent intent =new Intent(ToDoActivity.this,NewNoteActivity.class);
                 intent.putExtra(Constants.BundleKey.USER_USER_UID,mUserUID);
                 startActivityForResult(intent,2);
+                overridePendingTransition(R.anim.fadein,R.anim.fadeout);
                 break;
             case R.id.imageView_nav_profile:
                 Intent picker = new Intent();
@@ -368,8 +375,10 @@ public class ToDoActivity extends BaseActivity
 
         if(toDoItemModels.size()!=0){
 
-            adapter =new CustomGrid(ToDoActivity.this, toDoItemModels);
+            adapter =new CustomGrid(ToDoActivity.this,toDoItemModels) ;
+
             mRecyclerView.setAdapter(adapter);
+
 
         }else {
             Toast.makeText(this, "No data Present", Toast.LENGTH_SHORT).show();
@@ -492,6 +501,18 @@ public class ToDoActivity extends BaseActivity
 
     private void onSwipeRight() {
         Toast.makeText(this, "right", Toast.LENGTH_SHORT).show();
+    }
+
+
+    public  List<ToDoItemModel> getTodaysReminder(String date){
+        List<ToDoItemModel> tempToDoModels=new ArrayList<>();
+        for (ToDoItemModel todoItem :toDoItemModels) {
+            if(todoItem.get_reminder().equals(date)){
+                tempToDoModels.add(todoItem);
+            }
+        }
+
+        return tempToDoModels;
     }
 
 }

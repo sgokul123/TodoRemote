@@ -3,63 +3,68 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
+
     android:layout_height="match_parent">
 
     <android.support.v7.widget.CardView
         android:id="@+id/cardview_notes"
         android:layout_width="match_parent"
         android:layout_height="150dp"
-        android:layout_marginTop="@dimen/diamen_5dp"
-        android:layout_marginRight="@dimen/diamen_5dp"
         android:layout_marginLeft="@dimen/diamen_5dp"
+        android:layout_marginRight="@dimen/diamen_5dp"
+        android:layout_marginTop="@dimen/diamen_5dp"
+
         android:stateListAnimator="@anim/animation"
         app:cardCornerRadius="@dimen/diamen_20dp"
 
         >
+
         <RelativeLayout
+            android:background="@color/light_gray"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-        <android.support.v7.widget.AppCompatTextView
-            android:id="@+id/textview_card_title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/diamen_20dp"
-            android:layout_marginTop="@dimen/diamen_10dp"
-            android:text="Title"
-            android:textSize="@dimen/diamen_20sp"
-            android:maxLines="1"
-            android:textStyle="bold"
-            android:layout_marginRight="@dimen/diamen_10dp"
-            />
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/textview_card_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/diamen_20dp"
+                android:layout_marginRight="@dimen/diamen_10dp"
+                android:layout_marginTop="@dimen/diamen_10dp"
+                android:maxLines="1"
+                android:text="Title"
+                android:textColor="@color/text_color_white"
+                android:textSize="@dimen/diamen_20sp"
+                android:textStyle="bold" />
+
             <android.support.v7.widget.AppCompatTextView
                 android:id="@+id/textview_notes"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Note"
+                android:textColor="@android:color/white"
+                android:layout_below="@+id/textview_card_title"
                 android:layout_marginLeft="@dimen/diamen_20dp"
                 android:layout_marginRight="@dimen/diamen_20dp"
-                android:textSize="@dimen/diamen_20sp"
                 android:layout_marginTop="@dimen/diamen_10dp"
-                android:layout_below="@+id/textview_card_title"
-                android:maxLines="2"
                 android:ellipsize="end"
-                />
+                android:maxLines="2"
+                android:text="Note"
+                android:textSize="@dimen/diamen_20sp" />
+
             <android.support.v7.widget.AppCompatTextView
                 android:id="@+id/textView_reminder"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textColor="@android:color/white"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="@dimen/diamen_10dp"
+
                 android:layout_marginLeft="@dimen/diamen_20dp"
                 android:layout_marginRight="@dimen/diamen_20dp"
-
-                android:layout_marginBottom="@dimen/diamen_10dp"
-                android:layout_alignParentBottom="true"
-                android:text="Reminder"
-              />
-
+                android:text="Reminder" />
 
 
         </RelativeLayout>
-
 
 
     </android.support.v7.widget.CardView>

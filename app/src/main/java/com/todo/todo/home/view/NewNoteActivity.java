@@ -10,6 +10,8 @@ import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.AppCompatTextView;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.DatePicker;
 import android.widget.Toast;
 
@@ -66,6 +68,7 @@ public class NewNoteActivity extends BaseActivity implements View.OnClickListene
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initialise();
+
     }
 
     public  void myCalender(){
@@ -125,8 +128,7 @@ public class NewNoteActivity extends BaseActivity implements View.OnClickListene
     }
 
     private void updateLabel() {
-
-        String myFormat = "EEE,MMM d,yy"; //In which you need put here
+        String myFormat = "EEE,MMMd,yy"; //In which you need put here
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
         textViewReminder.setText(sdf.format(myCalendar.getTime()));
 

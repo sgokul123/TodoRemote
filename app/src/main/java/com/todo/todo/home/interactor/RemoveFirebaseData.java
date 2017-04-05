@@ -5,6 +5,7 @@ import android.util.Log;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.todo.todo.home.model.ToDoItemModel;
+import com.todo.todo.util.Connection;
 
 import java.util.List;
 
@@ -19,28 +20,39 @@ public class RemoveFirebaseData {
     ToDoInteractor mToDoInteractor;
     int pos=0;
     public RemoveFirebaseData() {
-
+        mDatabase = FirebaseDatabase.getInstance();
     }
 
-    public  void removeData(List<ToDoItemModel> toDoItemModels, String startdate, int index){
-        mDatabase = FirebaseDatabase.getInstance();
+    public  void removeData(List<ToDoItemModel> toDoItemModels, String mUserUID, String startdate, int index){
         mRef = mDatabase.getReference().child("usersdata");
         pos=index;
+
         for (ToDoItemModel todoNote :toDoItemModels) {
             try{
                 Log.i(TAG, "setSize: "+pos);
                 todoNote.set_id(pos);
-                mRef.child(uid).child(todoModel.get_startdate()).child(String.valueOf(size)).setValue(todoModel);
-
+                mRef.child(mUserUID).child(todoNote.get_startdate()).child(String.valueOf(pos)).setValue(todoNote);
+                pos=pos+1;
             }catch (Exception f){
 
                 Log.i(TAG, "setData: ");
             }
         }
+        mRef.child(mUserUID).child(startdate).child(String.valueOf(pos)).setValue(null);
 
     }
     private void setData(String uid, int size, ToDoItemModel todoModel) {
 
 
+    }
+
+    public void updateFirebaseData(ToDoItemModel toDoItemModel, String mUserUID, String startdate, int index) {
+        mRef = mDatabase.getReference().child("usersdata");
+        try{
+            mRef.child(mUserUID).child(toDoItemModel.get_startdate()).child(String.valueOf(index)).setValue(toDoItemModel);
+
+        }catch (Exception f){
+            Log.i(TAG, "setData: ");
+        }
     }
 }

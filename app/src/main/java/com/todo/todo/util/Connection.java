@@ -14,13 +14,7 @@ public class Connection {
 
         this.context=context;
     }
-
-    public Connection() {
-
-    }
-
     public boolean isNetworkConnected() {
-
 
         ConnectivityManager cm = (ConnectivityManager) context.getSystemService(context.CONNECTIVITY_SERVICE);
 

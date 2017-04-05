@@ -50,6 +50,7 @@
                 android:id="@+id/edittext_password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:inputType="textPassword"
                 android:maxLines="1"
                 android:text="dipak123"
                 android:textColor="@android:color/black"
@@ -113,6 +114,7 @@
             android:layout_marginTop="@dimen/diamen_25dp"
             android:layout_below="@+id/registation"
             android:layout_toRightOf="@+id/login_button"/>
+
     </RelativeLayout>
 </ScrollView>
 </RelativeLayout>
