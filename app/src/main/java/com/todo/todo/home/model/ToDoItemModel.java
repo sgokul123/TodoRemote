@@ -13,32 +13,42 @@ public class ToDoItemModel {
     String _reminder;
     String _note;
     String _startdate;
-
+    String _Archive;
 
 
     public ToDoItemModel() {
     }
 
-    public ToDoItemModel(int _id, String _title, String _reminder, String _note) {
+    public ToDoItemModel(int _id, String _title, String _reminder, String _note,String _Archive ) {
         this._id = _id;
         this._title = _title;
         this._reminder = _reminder;
         this._note = _note;
+        this._Archive=_Archive;
     }
-
-    public ToDoItemModel(String _title, String _note, String _reminder, String _startdate) {
+    public ToDoItemModel(String _title, String _note, String _reminder, String _startdate,String _Archive) {
         this._title = _title;
         this._reminder = _reminder;
         this._note = _note;
         this._startdate = _startdate;
+        this._Archive=_Archive;
     }
 
-    public ToDoItemModel(int _id, String _title, String _note,  String _reminder,String _startdate) {
+    public ToDoItemModel(int _id, String _title, String _note,  String _reminder,String _startdate,String _Archive) {
         this._id = _id;
         this._title = _title;
         this._reminder = _reminder;
         this._note = _note;
         this._startdate = _startdate;
+        this._Archive=_Archive;
+    }
+
+    public String get_Archive() {
+        return _Archive;
+    }
+
+    public void set_Archive(String _Archive) {
+        this._Archive = _Archive;
     }
 
     public String get_startdate() {
@@ -48,7 +58,6 @@ public class ToDoItemModel {
     public void set_startdate(String _startdate) {
         this._startdate = _startdate;
     }
-
 
     public int get_id() {
         return _id;

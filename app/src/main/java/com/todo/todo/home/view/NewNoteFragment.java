@@ -15,7 +15,7 @@ import android.widget.Toast;
 
 import com.todo.todo.R;
 import com.todo.todo.home.model.ToDoItemModel;
-import com.todo.todo.home.presenter.ToDoPresenter;
+import com.todo.todo.home.presenter.ToDoActivityPresenter;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -26,7 +26,7 @@ public class NewNoteFragment extends Fragment implements View.OnClickListener,No
     AppCompatImageView imageViewBack,imageViewPin,imageViewReminder,imageViewSave;
     AppCompatTextView textViewedited,textViewReminder;
     AppCompatEditText editTextNote,editTextTitle;
-    ToDoPresenter toDoPresenter;
+    ToDoActivityPresenter toDoActivityPresenter;
     ProgressDialog progressDialog;
     Calendar myCalendar;
     private  String StrTitle,StrReminder,StrNote;
@@ -110,8 +110,8 @@ public class NewNoteFragment extends Fragment implements View.OnClickListener,No
                 toDoItemModel.set_reminder(StrReminder);
                 textViewReminder.setText("");
                 Toast.makeText(getActivity(), toDoItemModel +"", Toast.LENGTH_SHORT).show();
-                toDoPresenter=new ToDoPresenter(new ToDoActivity(),getActivity());
-               // toDoPresenter.PutNote(toDoItemModel);
+                toDoActivityPresenter =new ToDoActivityPresenter(new ToDoActivity(),getActivity());
+               // toDoActivityPresenter.PutNote(toDoItemModel);
 
              //   getActivity().getFragmentManager().beginTransaction().remove().commit();
                /* Intent intent=new Intent(NewNoteActivity.this,ToDoActivity.class);

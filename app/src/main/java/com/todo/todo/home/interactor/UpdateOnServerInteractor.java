@@ -10,7 +10,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.todo.todo.database.DatabaseHandler;
 import com.todo.todo.home.model.ToDoItemModel;
-import com.todo.todo.home.presenter.ToDoPresenter;
+import com.todo.todo.home.presenter.ToDoActivityPresenter;
 
 import java.util.List;
 
@@ -20,16 +20,16 @@ import java.util.List;
 
 public class UpdateOnServerInteractor implements  UpdateFirebaseInteractorInterface  {
         private String TAG="UpdateOnServerInteractor";
-    ToDoPresenter toDoPresenter;
+    ToDoActivityInteractor toDoActivityInteractor;
     Context mContext;
     private  String mUid;
     FirebaseDatabase mDatabase;
     private  int mModelSize=0;
     DatabaseReference mRef;
     List<ToDoItemModel> allLocalNotes;
-    public UpdateOnServerInteractor(Context context, ToDoPresenter toDoPresenter) {
+    public UpdateOnServerInteractor(Context context, ToDoActivityInteractor toDoActivityPresenter) {
         this.mContext=context;
-        this.toDoPresenter=toDoPresenter;
+        this.toDoActivityInteractor = toDoActivityPresenter;
         mDatabase = FirebaseDatabase.getInstance();
     }
     @Override
@@ -37,7 +37,7 @@ public class UpdateOnServerInteractor implements  UpdateFirebaseInteractorInterf
         final DatabaseHandler db=new DatabaseHandler(mContext);
         mUid=uid;
         allLocalNotes=localNotes;
-        toDoPresenter.showProgressDialog();
+        //toDoActivityPresenter.showProgressDialog();
         mRef = mDatabase.getReference().child("usersdata").child(mUid);
 
         mRef.addValueEventListener(new ValueEventListener() {
@@ -63,18 +63,18 @@ public class UpdateOnServerInteractor implements  UpdateFirebaseInteractorInterf
                         }
 
                     }else{
-                        toDoPresenter.callPresenterNotesAfterUpdateServer(mUid);
-                        toDoPresenter.closeProgressDialog();
+                        toDoActivityInteractor.callPresenterNotesAfterUpdateServer(mUid);
+                      //  toDoActivityInteractor.closeProgressDialog();
                     }
                 }
                 else {
-                    toDoPresenter.closeProgressDialog();
+               //     toDoActivityInteractor.closeProgressDialog();
                 }
             }
             @Override
             public void onCancelled(DatabaseError error) {
                 Log.i(TAG, "onCancelled: ");
-                toDoPresenter.closeProgressDialog();
+             //   toDoActivityInteractor.closeProgressDialog();
             }
         });
 

@@ -2,7 +2,6 @@ package com.todo.todo.login.view;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.os.Bundle;
@@ -17,8 +16,8 @@ import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
-import com.facebook.Profile;
-import com.facebook.ProfileTracker;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
 import com.facebook.appevents.AppEventsLogger;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
@@ -38,6 +37,13 @@ import com.todo.todo.registration.view.RegistrationFragment;
 import com.todo.todo.util.Constants;
 import com.todo.todo.util.ProgressUtil;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Arrays;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -51,50 +57,22 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
     AppCompatEditText mEditTextEmail,mEditTextPassword;
     AppCompatTextView textview1,textViewSignUp;
     SharedPreferences pref;
-    SharedPreferences.Editor editor;
+    SharedPreferences.Editor mSharedPref_editor;
     ProgressUtil progressDialog;
-    LoginButton loginButton;
-    SignInButton signgoogleInButton;
+    LoginButton mFacebookLoginButton;
+    SignInButton googleSignInButton;
     private  String TAG ="LoginActivity";
-    private String mStrPass;
-    private String mStrEmail="";
-    private String mStrName="Sonawane Gokul";
-    private Uri mImageUrl= Uri.parse("");
+    private String mStrUserPassword;
+    private String mStrUserEmail ="";
+    private String mStrUserName ="Sonawane Gokul";
+    private Uri mProfileImageUrl = Uri.parse("");
     private Pattern mPattern;
-    private LoginLoginPresenter login;
+    private LoginLoginPresenter loginLoginPresenter;
     private Matcher mMatcher;
     // Instance of Facebook Class
     private GoogleApiClient mGoogleApiClient;
-    private CallbackManager callbackManager;
-
-    @Override
-    public void initialise() {
-        setContentView(R.layout.activity_login);
-
-        FacebookSdk.sdkInitialize(getApplicationContext());
-        AppEventsLogger.activateApp(this);
-        callbackManager = CallbackManager.Factory.create();
-        // mButtonfbLogin=(AppCompatButton) findViewById(R.id.button_fb_login);
-        signgoogleInButton = (SignInButton) findViewById(R.id.gsign_in_button);
-        signgoogleInButton.setSize(SignInButton.SIZE_STANDARD);
-        signgoogleInButton.setOnClickListener(this);
-        mButtonLogin =(AppCompatButton) findViewById(R.id.button_signin);
-        mEditTextEmail=(AppCompatEditText) findViewById(R.id.edittext_email);
-        mEditTextPassword=(AppCompatEditText) findViewById(R.id.edittext_password);
-        textview1=(AppCompatTextView) findViewById(R.id.textview_forgot);
-        textViewSignUp=(AppCompatTextView) findViewById(R.id.registation);
-        mButtonLogin.setOnClickListener(this);
-        textViewSignUp.setOnClickListener(this);
-        Log.i(TAG, "onCreate: ");
-
-        progressDialog=new ProgressUtil(this);
-        login = new LoginLoginPresenter(LoginActivity.this );
-        loginButton = (LoginButton)findViewById(R.id.login_button);
-        loginButton.setReadPermissions("email");
-        pref = getSharedPreferences("testapp", MODE_PRIVATE);
-        editor = pref.edit();
-    }
-
+    private CallbackManager mFBCallbackManager;
+    List<String> listPermission = Arrays.asList("email", "public_profile");
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -106,6 +84,46 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
         animationToRight.setRepeatCount(Animation.INFINITE);
         textview1.setAnimation(animationToRight);*/
     }
+    @Override
+    public void initialise() {
+        setContentView(R.layout.activity_login);
+
+        //facebook Login API call
+        FacebookSdk.sdkInitialize(getApplicationContext());
+        AppEventsLogger.activateApp(this);
+        mFBCallbackManager = CallbackManager.Factory.create();
+        // mButtonfbLogin=(AppCompatButton) findViewById(R.id.button_fb_login);
+
+        progressDialog=new ProgressUtil(this);
+        googleSignInButton = (SignInButton) findViewById(R.id.gsign_in_button);
+        googleSignInButton.setSize(SignInButton.SIZE_STANDARD);
+
+        mFacebookLoginButton = (LoginButton)findViewById(R.id.facebook_login_button);
+        mFacebookLoginButton.setReadPermissions("public_profile email");
+
+        mButtonLogin =(AppCompatButton) findViewById(R.id.button_signin);
+        mEditTextEmail=(AppCompatEditText) findViewById(R.id.edittext_email);
+        mEditTextPassword=(AppCompatEditText) findViewById(R.id.edittext_password);
+        textview1=(AppCompatTextView) findViewById(R.id.textview_forgot);
+        textViewSignUp=(AppCompatTextView) findViewById(R.id.registation);
+
+        Log.i(TAG, "onCreate: ");
+        //call to data Access before load activity
+        loginLoginPresenter = new LoginLoginPresenter(LoginActivity.this );
+
+        pref = getSharedPreferences("testapp", MODE_PRIVATE);
+        mSharedPref_editor = pref.edit();
+        setOnClickListener();
+    }
+
+    @Override
+    public void setOnClickListener() {
+        googleSignInButton.setOnClickListener(this);
+        mButtonLogin.setOnClickListener(this);
+        textViewSignUp.setOnClickListener(this);
+
+    }
+
     //check is User  Login
 
     @Override
@@ -113,7 +131,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
 
         switch (v.getId())
         {
-            case R.id.login_button:
+            case R.id.facebook_login_button:
                // LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("public_profile"));
 
                 break;
@@ -138,40 +156,91 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
 
     }
 
+
+    private Bundle getFacebookData(JSONObject object) {
+        try {
+            Bundle bundle = new Bundle();
+            String id = object.getString("id");
+
+            try {
+                URL profile_pic = new URL("https://graph.facebook.com/" + id + "/picture?width=200&height=150");
+                Log.i("profile_pic", profile_pic + "");
+                bundle.putString("profile_pic", profile_pic.toString());
+
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+                return null;
+            }
+
+            bundle.putString("idFacebook", id);
+            if (object.has("first_name"))
+                bundle.putString("first_name", object.getString("first_name"));
+            if (object.has("last_name"))
+                bundle.putString("last_name", object.getString("last_name"));
+            if (object.has("email"))
+                bundle.putString("email", object.getString("email"));
+            if (object.has("gender"))
+                bundle.putString("gender", object.getString("gender"));
+            if (object.has("birthday"))
+                bundle.putString("birthday", object.getString("birthday"));
+            if (object.has("location"))
+                bundle.putString("location", object.getJSONObject("location").getString("name"));
+
+            return bundle;
+        }
+        catch(JSONException e) {
+            Log.d(TAG,"Error parsing JSON");
+            return null;
+        }
+    }
+
+
     //Facebook Social Login
     public  void facebookLogin(){
 
-        loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+        mFacebookLoginButton.registerCallback(mFBCallbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
-            // mImageUrl=profile.getProfilePictureUri(20,20);
-                // Log.i(TAG, "onSuccess: "+mImageUrl);
-                //Facebbok Login
 
-                ProfileTracker profileTracker = new ProfileTracker() {
+
+                System.out.println("onSuccess");
+
+                String accessToken = loginResult.getAccessToken().getToken();
+                Log.i("accessToken", accessToken);
+
+                GraphRequest request = GraphRequest.newMeRequest(loginResult.getAccessToken(), new GraphRequest.GraphJSONObjectCallback() {
+
                     @Override
-                    protected void onCurrentProfileChanged(
-                            Profile oldProfile,
-                            Profile currentProfile) {
-                        mStrName=currentProfile.getName();
-                        // App code
+                    public void onCompleted(JSONObject object, GraphResponse response) {
+                        Log.i("LoginActivity", response.toString());
+                        // Get facebook data from login
+                        Bundle bFacebookData = getFacebookData(object);
+                        int index;
+                        String emailid=bFacebookData.getString("email");
+                        index=emailid.indexOf("@");
+                        mSharedPref_editor.putString(Constants.BundleKey.USER_REGISTER, "true");
+                        mSharedPref_editor.putString(Constants.BundleKey.USER_USER_UID, emailid.substring(0,index)+bFacebookData.getString("idFacebook"));
+                        mSharedPref_editor.putString(Constants.BundleKey.USER_EMAIL,emailid);
+                        mSharedPref_editor.putString(Constants.BundleKey.PROFILE_PIC, bFacebookData.getString("profile_pic"));
+                        mSharedPref_editor.putString(Constants.ProfileeKey.FIRST_NAME, bFacebookData.getString("first_name"));
+                        mSharedPref_editor.putString(Constants.ProfileeKey.LAST_NAME, bFacebookData.getString("last_name"));
+                        mSharedPref_editor.putString(Constants.BundleKey.FACEBOOK_LOGIN, "true");
+                        mSharedPref_editor.commit();
+                        Log.i(TAG, "onCompleted: "+bFacebookData.getString("id"));
+                        Toast.makeText(LoginActivity.this, "id :"+bFacebookData.getString("first_name"), Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(LoginActivity.this, ToDoActivity.class);
+                        intent.putExtra(Constants.BundleKey.USER_EMAIL, mStrUserEmail);
+                        intent.putExtra(Constants.BundleKey.USER_NAME, mStrUserName);
+                        startActivity(intent);
+                        finish();
                     }
-                };
-                Log.i(TAG, "onSuccess: ");
-                editor.putString(Constants.BundleKey.USER_REGISTER,"true");
-                editor.putString(Constants.BundleKey.USER_EMAIL,mStrEmail);
-                editor.putString(Constants.BundleKey.USER_NAME,mStrName);
-                editor.putString(Constants.BundleKey.FACEBOOK_LOGIN,"true");
-                editor.commit();
+                });
+                Bundle parameters = new Bundle();
+                parameters.putString("fields", "id, first_name, last_name, email,gender, birthday, location"); // Parámetros que pedimos a facebook
+                request.setParameters(parameters);
+                request.executeAsync();
 
-
-                Intent intent=new Intent(LoginActivity.this,ToDoActivity.class);
-                intent.putExtra(Constants.BundleKey.USER_EMAIL,mStrEmail);
-                intent.putExtra(Constants.BundleKey.USER_NAME,mStrName);
-                startActivity(intent);
-                finish();
             }
-
             @Override
             public void onCancel() {
                 Toast.makeText(LoginActivity.this, "Login attempt canceled", Toast.LENGTH_SHORT).show();
@@ -184,8 +253,6 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
         });
 
     }
-
-    //Google Social Login
     public  void googleLogin(){
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -198,12 +265,6 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
 
     }
 
-    //connection check
-    private boolean isNetworkConnected() {
-        ConnectivityManager cm = (ConnectivityManager) getSystemService(getApplicationContext().CONNECTIVITY_SERVICE);
-
-        return cm.getActiveNetworkInfo() != null;
-    }
 
     private void signIn() {
         Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
@@ -214,7 +275,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        callbackManager.onActivityResult(requestCode, resultCode, data);
+        mFBCallbackManager.onActivityResult(requestCode, resultCode, data);
         if (requestCode == RC_SIGN_IN) {
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
             handleSignInResult(result);
@@ -229,16 +290,18 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
             // mStatusTextView.setText(getString(R.string.signed_in_fmt, acct.getDisplayName()));
             //   updateUI(true);
             //Google Login
-
-            editor.putString(Constants.BundleKey.USER_REGISTER,"true");
-            editor.putString(Constants.BundleKey.USER_EMAIL,mStrEmail);
-            editor.putString(Constants.BundleKey.USER_NAME,mStrName);
-            editor.putString(Constants.BundleKey.GOOGLE_LOGIN,"true");
-            editor.commit();
+            String googleemailid=acct.getEmail();
+            Log.i(TAG, "handleSignInResult: "+acct.getPhotoUrl());
+            mSharedPref_editor.putString(Constants.BundleKey.USER_REGISTER,"true");
+            mSharedPref_editor.putString(Constants.BundleKey.USER_EMAIL,acct.getEmail() );
+            mSharedPref_editor.putString(Constants.ProfileeKey.FIRST_NAME, acct.getDisplayName());
+            mSharedPref_editor.putString(Constants.BundleKey.USER_USER_UID,googleemailid.substring(0,googleemailid.indexOf("@"))+acct.getId());
+            mSharedPref_editor.putString(Constants.BundleKey.GOOGLE_LOGIN,"true");
+            mSharedPref_editor.commit();
 
             Intent intent=new Intent(LoginActivity.this,ToDoActivity.class);
-            intent.putExtra(Constants.BundleKey.USER_EMAIL,mStrEmail);
-            intent.putExtra(Constants.BundleKey.USER_NAME,mStrName);
+            intent.putExtra(Constants.BundleKey.USER_EMAIL, mStrUserEmail);
+            intent.putExtra(Constants.BundleKey.USER_NAME, mStrUserName);
             startActivity(intent);
             finish();
 
@@ -252,13 +315,13 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
     }
     private void doAuthentication() {
         mPattern = Pattern.compile(EMAIL_PATTERN);
-        mStrEmail = mEditTextEmail.getText().toString();
-        mStrPass = mEditTextPassword.getText().toString();
-        Log.i(TAG, "doAuthentication: "+mStrEmail);
-        if (!(mStrEmail.equals("") && mStrPass.equals(""))) {
-            mMatcher = mPattern.matcher(mStrEmail);
+        mStrUserEmail = mEditTextEmail.getText().toString();
+        mStrUserPassword = mEditTextPassword.getText().toString();
+        Log.i(TAG, "doAuthentication: "+ mStrUserEmail);
+        if (!(mStrUserEmail.equals("") && mStrUserPassword.equals(""))) {
+            mMatcher = mPattern.matcher(mStrUserEmail);
             if (mMatcher.matches()) {
-                login.getLogin(mStrEmail,mStrPass);
+                loginLoginPresenter.getLogin(mStrUserEmail, mStrUserPassword);
             } else {
                 Toast.makeText(getApplicationContext(), "Please Enter Valid Email ...", Toast.LENGTH_SHORT).show();
 
@@ -274,16 +337,16 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
         Toast.makeText(this, "Success...."+userUid, Toast.LENGTH_SHORT).show();
         Log.i(TAG, "loginSuccess: "+userUid);
 
-        editor.putString(Constants.BundleKey.USER_REGISTER,"true");
-        editor.putString(Constants.BundleKey.USER_EMAIL,registrationModel.getMailid());
-        editor.putString(Constants.BundleKey.USER_USER_UID,userUid);
-        editor.putString(Constants.ProfileeKey.FIRST_NAME,registrationModel.getUserFirstName());
-        editor.putString(Constants.ProfileeKey.LAST_NAME,registrationModel.getUserLastName());
-        editor.putString(Constants.ProfileeKey.MOBILE_NO,registrationModel.getMobileNo());
-        editor.putString(Constants.ProfileeKey.PROFILE_IMAGE_URL,registrationModel.getUserProfileImgurl());
+        mSharedPref_editor.putString(Constants.BundleKey.USER_REGISTER,"true");
+        mSharedPref_editor.putString(Constants.BundleKey.USER_EMAIL,registrationModel.getMailid());
+        mSharedPref_editor.putString(Constants.BundleKey.USER_USER_UID,userUid);
+        mSharedPref_editor.putString(Constants.ProfileeKey.FIRST_NAME,registrationModel.getUserFirstName());
+        mSharedPref_editor.putString(Constants.ProfileeKey.LAST_NAME,registrationModel.getUserLastName());
+        mSharedPref_editor.putString(Constants.ProfileeKey.MOBILE_NO,registrationModel.getMobileNo());
+        mSharedPref_editor.putString(Constants.ProfileeKey.PROFILE_IMAGE_URL,registrationModel.getUserProfileImgurl());
 
-        editor.putString(Constants.BundleKey.USER_NAME,mStrName);
-        editor.commit();
+        mSharedPref_editor.putString(Constants.BundleKey.USER_NAME, mStrUserName);
+        mSharedPref_editor.commit();
         ///  show registration page again
 
         Intent intent=new Intent(LoginActivity.this,ToDoActivity.class);
@@ -310,13 +373,13 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-//for google social login
+//for google social loginLoginPresenter
 
         Log.d(TAG, "onConnectionFailed:" + connectionResult);
     }
 
 
-    //google social login signout
+    //google social loginLoginPresenter signout
   /*  private void signOut() {
         Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
                 new ResultCallback<Status>() {

@@ -38,7 +38,6 @@ public class RemoveNotePresenter  {
                 newtoDoItemModels.add(todo);
             }
         }
-
         if(newtoDoItemModels!=null){
             Connection con=new Connection(mContext);
             if(con.isNetworkConnected()){

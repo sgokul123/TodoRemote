@@ -27,4 +27,5 @@
     <dimen name="diamen_15dp">15dp</dimen>
     <dimen name="diamen_5dp">5dp</dimen>
     <dimen name="dimen_10dp">10dp</dimen>
+    <dimen name="diamen_70dp">70dp</dimen>
 </resources>

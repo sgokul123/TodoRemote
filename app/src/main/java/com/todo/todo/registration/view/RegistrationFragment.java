@@ -223,18 +223,18 @@ public class RegistrationFragment extends Fragment implements View.OnClickListen
         if(editText==mEditTextMobile){
 
             if(mEditTextMobile.getText().toString().length()==10){
-                mTextlayoutmobil.setError(null);
-              //  Log.i(TAG, "isValid: ");
+                mEditTextMobile.setError(null);
+              //  Log.i(TAG, "isValid: ");mTextlayoutmobil
             }
             else if(mEditTextMobile.getText().toString().equals("")) {
 
               //  mTextlayoutmobil.setErrorEnabled(true);
-                mTextlayoutmobil.setError("Mobile Number Should not blank");
-               // mEditTextMobile.setError("Mobile Number Should not blank");
+                mEditTextMobile.setError("Mobile Number Should not blank");
+               // mEditTextMobile.setError("Mobile Number Should not blank");mTextlayoutmobil
                 }
                 else{
                // mTextlayoutmobil.setErrorEnabled(true);
-                mTextlayoutmobil.setError("Mobile Number Must be 10 Digit");
+                mEditTextMobile.setError("Mobile Number Must be 10 Digit");
                    /// mEditTextMobile.setError("Mobile Number Must be 10 Digit");
              //   mEditTextMobile.setSelection(mEditTextMobile.getText().length());
                 }
@@ -245,31 +245,31 @@ public class RegistrationFragment extends Fragment implements View.OnClickListen
             mMatcher = mPattern.matcher(mEditTextEmail.getText().toString());
             if(mEditTextEmail.getText().toString().equals("")){
 
-             //   mTextlayoutemail.setErrorEnabled(true);
-                mTextlayoutemail.setError("Email should not be blank");
+             //   mTextlayoutemail.setErrorEnabled(true);mTextlayoutemail
+                mEditTextEmail.setError("Email should not be blank");
                 //mEditTextEmail.setError("Email should not be blank");
                 Log.i(TAG, "isValid: ");
 
             }else if(!mMatcher.matches()){
           //      mTextlayoutemail.setErrorEnabled(true);
-                mTextlayoutemail.setError("Email is Not Valid");
+                mEditTextEmail.setError("Email is Not Valid");
                // mEditTextEmail.setError("Email is Not Valid");
              //   mEditTextEmail.setSelection(mEditTextEmail.getText().length());
             }else {
-                mTextlayoutemail.setError(null);
+               // mEditTextEmail.setError(null);
             }
 
         }
         //Name validation
         else if(editText==mEditTextName){
             if(mEditTextName.getText().toString().equals("")){
-            //    mTextlayoutname.setErrorEnabled(true);
-                mTextlayoutname.setError("Mobile Number Must be 10 Digit");
+            //    mTextlayoutname.setErrorEnabled(true);mTextlayoutname
+                mEditTextName.setError("Mobile Number Must be 10 Digit");
                // mEditTextName.setError("Name should not blank");
               //  mEditTextName.setSelection(mEditTextName.getText().length());
             }
             else {
-                mTextlayoutname.setError(null);
+               // mEditTextName.setError(null);
             }
 
         }
@@ -277,12 +277,12 @@ public class RegistrationFragment extends Fragment implements View.OnClickListen
         else if(editText==mEditTextLName){
             if(mEditTextLName.getText().toString().equals("")){
                 //    mTextlayoutlname.setErrorEnabled(true);
-                mTextlayoutlname.setError("Mobile Number Must be 10 Digit");
-                // mEditTextLName.setError("Name should not blank");
+                //mTextlayoutlname.setError("Mobile Number Must be 10 Digit");
+                 mEditTextLName.setError("Name should not blank");
                 //  mEditTextLName.setSelection(mEditTextName.getText().length());
             }
             else {
-                mTextlayoutlname.setError(null);
+              //  mTextlayoutlname.setError(null);
             }
 
         }

@@ -5,7 +5,6 @@ import android.util.Log;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.todo.todo.home.model.ToDoItemModel;
-import com.todo.todo.util.Connection;
 
 import java.util.List;
 
@@ -17,7 +16,7 @@ public class RemoveFirebaseData {
     private  static  String TAG ="RemoveFirebaseData";
     FirebaseDatabase mDatabase;
     DatabaseReference mRef;
-    ToDoInteractor mToDoInteractor;
+    ToDoActivityInteractor mToDoActivityInteractor;
     int pos=0;
     public RemoveFirebaseData() {
         mDatabase = FirebaseDatabase.getInstance();

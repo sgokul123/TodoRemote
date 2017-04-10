@@ -11,7 +11,7 @@ import java.util.List;
  */
 
 public interface ToDoPresenterInteface  extends ToDoActivityInteface, NoteInterface {
-    public  void callPresenterNotesAfterUpdateServer(String uid);
+
     public  void getPresenterNotes(String uid);
     public  void getCallBackNotes(List<ToDoItemModel> toDoItemModels);
     public  void sendCallBackNotes(List<ToDoItemModel> toDoItemModels);

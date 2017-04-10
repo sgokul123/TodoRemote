@@ -6,11 +6,9 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.ValueEventListener;
 import com.todo.todo.home.model.ToDoItemModel;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -21,10 +19,10 @@ public class FireBaseGetIndex  {
     private String TAG ="FireBaseGetIndex";
     FirebaseDatabase mDatabase;
     DatabaseReference mRef;
-    ToDoInteractor mToDoInteractor;
+    ToDoActivityInteractor mToDoActivityInteractor;
     UpdateOnServerInteractor mUpdateOnServerInteractor;
-    public FireBaseGetIndex(ToDoInteractor toDoInteractor) {
-        this.mToDoInteractor=toDoInteractor;
+    public FireBaseGetIndex(ToDoActivityInteractor toDoActivityInteractor) {
+        this.mToDoActivityInteractor = toDoActivityInteractor;
 
     }
 
@@ -42,16 +40,16 @@ public class FireBaseGetIndex  {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
-                    if (mToDoInteractor != null) {
+                    if (mToDoActivityInteractor != null) {
                         int size= (int) dataSnapshot.getChildrenCount();
                         Log.i(TAG, "onDataChange: "+size);
-                        mToDoInteractor.setData(size);
-                        mToDoInteractor = null;
+                        mToDoActivityInteractor.setData(size);
+                        mToDoActivityInteractor = null;
                     }
                 }
                 else {
-                    mToDoInteractor.setData(0);
-                    mToDoInteractor = null;
+                    mToDoActivityInteractor.setData(0);
+                    mToDoActivityInteractor = null;
                 }
             }
             @Override

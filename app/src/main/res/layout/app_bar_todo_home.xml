@@ -19,19 +19,19 @@
             android:background="@color/toolbar_back"
             app:popupTheme="@style/AppTheme.PopupOverlay"
             >
-
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center_vertical"
+                android:id="@+id/layoutToolbar"
                 >
 
             <android.support.v7.widget.AppCompatTextView
                 android:id="@+id/textview_title_toolbar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="@dimen/diamen_20sp"
-
+                android:textSize="@dimen/diamen_30sp"
+                android:layout_marginRight="@dimen/diamen_50dp"
                 android:text="Notes"
                 android:layout_centerVertical="true"
                 android:layout_alignParentLeft="true"
@@ -39,35 +39,29 @@
                 android:layout_marginBottom="@dimen/diamen_10dp"
                 />
                 <android.support.v7.widget.AppCompatEditText
-                    android:id="@+id/edittext_title_toolbar"
-                    android:layout_width="wrap_content"
-                    android:layout_toRightOf="@+id/textview_title_toolbar"
-                    android:layout_height="35dp"
-                    android:layout_marginRight="@dimen/diamen_10dp"
+                    android:id="@+id/edittext_search_toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:background="@drawable/input"
                     android:hint="Search here.."
-                   android:layout_toLeftOf="@+id/imageView_grid_linear"
+                    app:paddingStart="@dimen/diamen_20dp"
                     android:layout_marginTop="@dimen/diamen_10dp"
-                    android:layout_marginBottom="0dp"
+                    android:layout_marginRight="@dimen/diamen_10dp"
+                    android:layout_toLeftOf="@+id/imageView_grid_linear"
                     android:textColor="@android:color/black"
-                    android:paddingLeft="10dp"
                     android:drawableRight="@android:drawable/ic_menu_search"
                     android:inputType="textVisiblePassword"
+                    android:visibility="gone"
                     />
 
-           <!-- <android.support.v7.widget.AppCompatImageView
-                android:id="@+id/imageView_search"
-                android:layout_width="wrap_content"
-                android:layout_height="@dimen/diamen_30dp"
-                app:srcCompat="@android:drawable/ic_search_category_default"
-                android:layout_toStartOf="@+id/imageView_grid_linear"
-                android:layout_toLeftOf="@+id/imageView_grid_linear"
-                android:layout_marginRight="@dimen/diamen_20dp"
-                android:layout_marginEnd="@dimen/diamen_20dp"
-                android:layout_marginTop="@dimen/diamen_15dp"
-                android:tint="@android:color/white"
-                />-->
-
+                <android.support.v7.widget.AppCompatImageView
+                    android:id="@+id/imageView_search_bar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/dimen_10dp"
+                    android:layout_marginTop="@dimen/diamen_15dp"
+                    android:layout_toLeftOf="@+id/imageView_grid_linear"
+                    app:srcCompat="@android:drawable/ic_search_category_default" />
                 <android.support.v7.widget.AppCompatImageView
                     android:id="@+id/imageView_grid_linear"
                     android:layout_width="wrap_content"
@@ -80,6 +74,32 @@
                     app:srcCompat="@drawable/list_view" />
 
             </RelativeLayout>
+            <!--<LinearLayout
+                android:id="@+id/layout_toolbar_search"
+                android:layout_width="match_parent"
+                android:orientation="horizontal"
+                android:visibility="gone"
+              android:layout_marginLeft="@dimen/diamen_10dp"
+                android:layout_marginRight="@dimen/diamen_20dp"
+                android:layout_height="match_parent">
+
+                 <android.support.v7.widget.AppCompatEditText
+                 android:id="@+id/edittext_title_toolbar"
+                 android:layout_width="match_parent"
+                 android:layout_height="wrap_content"
+                 android:background="@drawable/input"
+                 android:hint="Search here.."
+                 android:layout_marginTop="@dimen/diamen_10dp"
+                 android:layout_marginLeft="@dimen/diamen_10dp"
+                 android:layout_marginRight="@dimen/diamen_10dp"
+                 android:layout_toLeftOf="@+id/imageView_grid_linear"
+                 android:textColor="@android:color/black"
+                android:layout_toRightOf="@+id/textview_title_toolbar"
+                 android:drawableRight="@android:drawable/ic_menu_search"
+                 android:inputType="textVisiblePassword"
+                 />
+
+            </LinearLayout>-->
 
         </android.support.v7.widget.Toolbar>
 

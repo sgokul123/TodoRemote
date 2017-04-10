@@ -1,69 +1,71 @@
 package com.todo.todo.home.view;
 
 import android.app.DatePickerDialog;
-import android.app.ProgressDialog;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.AppCompatTextView;
 import android.util.Log;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.DatePicker;
 import android.widget.Toast;
 
 import com.todo.todo.R;
 import com.todo.todo.base.BaseActivity;
 import com.todo.todo.home.model.ToDoItemModel;
-import com.todo.todo.home.presenter.ToDoPresenter;
+import com.todo.todo.home.presenter.ToDoActivityPresenter;
 import com.todo.todo.util.Constants;
 import com.todo.todo.util.ProgressUtil;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.Locale;
 
 public class NewNoteActivity extends BaseActivity implements View.OnClickListener,NoteInterface{
-    private  String TAG="NewNoteActivity";
-    AppCompatImageView imageViewBack,imageViewPin,imageViewReminder,imageViewSave;
-    AppCompatTextView textViewedited,textViewReminder;
-    AppCompatEditText editTextNote,editTextTitle;
-    private ToDoPresenter toDoPresenter;
+    AppCompatImageView mImageViewBack, mImageViewPin, mImageViewReminder, mImageViewSave;
+    AppCompatTextView mTextViewReminder;
+    AppCompatEditText mEditTextNote, mEditTextTitle;
     ProgressUtil progressDialog;
     Calendar myCalendar;
     ToDoItemModel mToDoItemModel;
+    private  String TAG="NewNoteActivity";
+    private ToDoActivityPresenter toDoActivityPresenter;
     private  String StrTitle,StrReminder,StrNote;
     private  DatePickerDialog.OnDateSetListener date;
     private  String mUsre_UID;
 
 
-
     @Override
     public void initialise() {
+
         setContentView(R.layout.activity_new_note);
-        imageViewBack=(AppCompatImageView) findViewById(R.id.imageView_back_arrow);
-        imageViewPin=(AppCompatImageView) findViewById(R.id.imageView_pin);
-        imageViewReminder=(AppCompatImageView) findViewById(R.id.imageView_reminder);
-        imageViewSave=(AppCompatImageView) findViewById(R.id.imageView_save);
-        textViewReminder=(AppCompatTextView) findViewById(R.id.textview_reminder_text);
-        editTextTitle=(AppCompatEditText) findViewById(R.id.edittext_title);
-        editTextNote=(AppCompatEditText) findViewById(R.id.edittet_note);
+
+        mImageViewBack =(AppCompatImageView) findViewById(R.id.imageView_back_arrow);
+        mImageViewPin =(AppCompatImageView) findViewById(R.id.imageView_pin);
+        mImageViewReminder =(AppCompatImageView) findViewById(R.id.imageView_reminder);
+        mImageViewSave =(AppCompatImageView) findViewById(R.id.imageView_save);
+        mTextViewReminder =(AppCompatTextView) findViewById(R.id.textview_reminder_text);
+        mEditTextTitle =(AppCompatEditText) findViewById(R.id.edittext_title);
+        mEditTextNote =(AppCompatEditText) findViewById(R.id.edittet_note);
         progressDialog=new ProgressUtil(this);
 
-        imageViewBack.setOnClickListener(this);
-        imageViewPin.setOnClickListener(this);
-        imageViewReminder.setOnClickListener(this);
-        imageViewSave.setOnClickListener(this);
         Log.i(TAG, "initialise: "+getCurrentDate());
         mUsre_UID=getIntent().getStringExtra(Constants.BundleKey.USER_USER_UID);
         Log.i(TAG, "initialise: "+mUsre_UID);
         myCalender();
-
+        setOnClickListener();
     }
+
+    @Override
+    public void setOnClickListener() {
+
+        mImageViewBack.setOnClickListener(this);
+        mImageViewPin.setOnClickListener(this);
+        mImageViewReminder.setOnClickListener(this);
+        mImageViewSave.setOnClickListener(this);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -104,20 +106,22 @@ public class NewNoteActivity extends BaseActivity implements View.OnClickListene
                         myCalendar.get(Calendar.DAY_OF_MONTH)).show();
                 break;
             case R.id.imageView_save:
+
                 mToDoItemModel =new ToDoItemModel();
-                StrNote=editTextNote.getText().toString();
+                StrNote= mEditTextNote.getText().toString();
                 mToDoItemModel.set_note(StrNote);
-                StrTitle=editTextTitle.getText().toString();
+                StrTitle= mEditTextTitle.getText().toString();
                 mToDoItemModel.set_title(StrTitle);
-                StrReminder=textViewReminder.getText().toString();
+                StrReminder= mTextViewReminder.getText().toString();
                 mToDoItemModel.set_reminder(StrReminder);
 
                 mToDoItemModel.set_startdate(getCurrentDate());
-
-                toDoPresenter=new ToDoPresenter(NewNoteActivity.this,this);
+                mToDoItemModel.set_Archive("false");
+                toDoActivityPresenter =new ToDoActivityPresenter(this,this);
 
                 Log.i(TAG, "onClick: "+mUsre_UID+"  date"+getCurrentDate());
-                toDoPresenter.loadNotetoFirebase(mUsre_UID,getCurrentDate(),mToDoItemModel);
+                toDoActivityPresenter.loadNotetoFirebase(mUsre_UID,getCurrentDate(),mToDoItemModel);
+
                 break;
             default:
 
@@ -128,9 +132,10 @@ public class NewNoteActivity extends BaseActivity implements View.OnClickListene
     }
 
     private void updateLabel() {
-        String myFormat = "EEE,MMMd,yy"; //In which you need put here
+
+        String myFormat = Constants.NotesType.DATE_FORMAT; //In which you need put here
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
-        textViewReminder.setText(sdf.format(myCalendar.getTime()));
+        mTextViewReminder.setText(sdf.format(myCalendar.getTime()));
 
     }
 
@@ -145,12 +150,12 @@ public class NewNoteActivity extends BaseActivity implements View.OnClickListene
 
         progressDialog.showProgress("Adding new Note...");
 
-
     }
 
     @Override
     public void getResponce(boolean flag) {
         if(flag){
+
             Toast.makeText(this, "succcess", Toast.LENGTH_SHORT).show();
             Bundle bun=new Bundle();
             bun.putString(Constants.RequestParam.KEY_ID, String.valueOf(mToDoItemModel.get_id()));
@@ -169,32 +174,13 @@ public class NewNoteActivity extends BaseActivity implements View.OnClickListene
 
     }
 
-        public  String  getCurrentDate(){
-            String date="";
-            Calendar c = Calendar.getInstance();
-            SimpleDateFormat df = new SimpleDateFormat("EEE,MMMd,yy");
-            date= df.format(c.getTime());
-            date=date.trim();
-            return date;
-        }
+    public  String  getCurrentDate(){
+        String date="";
+        Calendar c = Calendar.getInstance();
+        SimpleDateFormat df = new SimpleDateFormat(Constants.NotesType.DATE_FORMAT);
+        date= df.format(c.getTime());
+        date=date.trim();
+        return date;
+    }
 
-       /* public  String getTimestamp(){
-            String timestamp="";
-             try {
-                int day, second, minute, hour;
-                GregorianCalendar calendar = new GregorianCalendar();
-                 day = calendar.get(Calendar.DAY_OF_MONTH);
-                second = calendar.get(Calendar.SECOND);
-                minute = calendar.get(Calendar.MINUTE);
-                hour = calendar.get(Calendar.HOUR);
-
-                 timestamp = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss")
-                        .parse(calendar.get(Calendar.MONTH)+"/"+day+"/"+calendar.get(Calendar.YEAR)+" "+hour+":"+minute+":"+second)
-                        .getTime()+"";
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return timestamp;
-        }*/
 }

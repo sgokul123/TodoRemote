@@ -10,6 +10,7 @@ public class Constants {
         public static final String USER_NAME = "name";
         public static final String USER_USER_UID = "uid";
         public static final String USER_REGISTER = "register";
+        public static final String PROFILE_PIC = "profilepic";
         public static final String MEW_NOTE = "note";
         public static final String GOOGLE_LOGIN = "google";
         public static final String FACEBOOK_LOGIN = "facebook";
@@ -24,18 +25,25 @@ public class Constants {
 
     }
         public  interface  RequestParam{
-        public static final String DATABASE_NAME ="mylManager";
-        public static final String USER_TABLE_NAME= "fellowshipPeriod";
-        public static final String LOCAL_NOTES_TABLE_NAME ="localNotes";
-            public static final String NOTES_TABLE_NAME ="TooDos";
+        public static final String DATABASE_NAME ="mylManagekrs";
+        public static final String USER_TABLE_NAME= "fellowshipPeriodk";
+        public static final String LOCAL_NOTES_TABLE_NAME ="loalpNotkes";
+            public static final String NOTES_TABLE_NAME ="TooDokos";
         public static final String KEY_ID ="id";
         public static final String KEY_TITLE ="title";
         public static final String KEY_NOTE ="notes";
         public static final String KEY_REMINDER ="reminder";
         public static final String KEY_STARTDATE ="startdate";
+            public static final String KEY_ARCHIVE ="archive";
 
 
     }
+    public interface NotesType {
+        public static final String REMINDER_NOTES = "Reminders";
+        public static final String ARCHIVE_NOTES = "Archived";
+        public static final String  ALL_NOTES= "Notes";
+        public static final String DATE_FORMAT = "EEE,MMMd,yy";
 
+    }
 
 }

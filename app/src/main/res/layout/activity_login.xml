@@ -33,9 +33,9 @@
                 android:id="@+id/edittext_email"
                 android:textColor="@android:color/black"                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="@dimen/dimen_10dp"
                 android:maxLines="1"
-                android:text="gokulsonawane9@gmail.com"
+                android:text="pradipsonawane@gmail.com"
                 />
         </android.support.design.widget.TextInputLayout>
         <android.support.design.widget.TextInputLayout
@@ -52,7 +52,7 @@
                 android:layout_height="wrap_content"
                 android:inputType="textPassword"
                 android:maxLines="1"
-                android:text="dipak123"
+                android:text="pradip123"
                 android:textColor="@android:color/black"
 
                 />
@@ -97,14 +97,14 @@
                 />
 
         <com.facebook.login.widget.LoginButton
-            android:id="@+id/login_button"
+            android:id="@+id/facebook_login_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
 
            android:layout_marginLeft="@dimen/diamen_30dp"
-            android:layout_marginTop="30dp"
-            android:layout_marginBottom="30dp"
+            android:layout_marginTop="@dimen/diamen_30dp"
+            android:layout_marginBottom="@dimen/diamen_30dp"
             android:layout_below="@+id/registation"/>
         <com.google.android.gms.common.SignInButton
             android:id="@+id/gsign_in_button"
@@ -113,7 +113,7 @@
             android:layout_marginLeft="@dimen/diamen_30dp"
             android:layout_marginTop="@dimen/diamen_25dp"
             android:layout_below="@+id/registation"
-            android:layout_toRightOf="@+id/login_button"/>
+            android:layout_toRightOf="@+id/facebook_login_button"/>
 
     </RelativeLayout>
 </ScrollView>

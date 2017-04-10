@@ -1,10 +1,12 @@
 package com.todo.todo.update.presenter;
 
 import android.content.Context;
+import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.Log;
 
 import com.todo.todo.home.model.ToDoItemModel;
 import com.todo.todo.update.interactor.UpdateNoteInteractor;
-import com.todo.todo.update.view.UpdateNoteActivity;
+import com.todo.todo.update.view.UpdateNoteActivityInterface;
 import com.todo.todo.util.Connection;
 
 /**
@@ -12,39 +14,52 @@ import com.todo.todo.util.Connection;
  */
 
 public class UpdateNotePresenter implements  UpdateNotePresenterInterface {
-    UpdateNoteActivity mUpdateNoteActivity;
+    private  static String TAG ="UpdateNotePresenter";
+    UpdateNoteActivityInterface updateNoteActivityInterface;
     UpdateNoteInteractor mUpdateNoteInteractor;
+    ItemTouchHelper.SimpleCallback simpleCallback1;
     Context mContext;
-    public UpdateNotePresenter(Context context,UpdateNoteActivity updateNoteActivity) {
-        this.mUpdateNoteActivity=updateNoteActivity;
+    public UpdateNotePresenter(Context context,UpdateNoteActivityInterface updateNoteActivity) {
+        this.updateNoteActivityInterface =updateNoteActivity;
         mUpdateNoteInteractor=new UpdateNoteInteractor(context,this);
         this.mContext=context;
     }
 
+    public UpdateNotePresenter(Context context, ItemTouchHelper.SimpleCallback simpleCallback1) {
+        this.mContext=context;
+        this.simpleCallback1=simpleCallback1;
+        mUpdateNoteInteractor=new UpdateNoteInteractor(context,this);
+    }
+
     @Override
     public void closeProgress() {
-        mUpdateNoteActivity.closeProgress();
+        updateNoteActivityInterface.closeProgress();
     }
 
     @Override
     public void showProgress() {
-        mUpdateNoteActivity.showProgress();
+        updateNoteActivityInterface.showProgress();
     }
 
     @Override
     public void getResponce(boolean flag) {
-        mUpdateNoteActivity.getResponce(flag);
+        updateNoteActivityInterface.getResponce(flag);
     }
 
     @Override
     public void updateNote(String uid, String date, ToDoItemModel toDoItemModel) {
-        Connection con=new Connection(mContext);
-        if(con.isNetworkConnected()){
             mUpdateNoteInteractor.updateFirbaseData(uid,date,toDoItemModel);
-        }
-       else {
+    }
 
-        }
+    @Override
+    public void getAchiveNote(String uid, String date, ToDoItemModel toDoItemModel) {
+        Log.i(TAG, "getAchiveNote: ");
+        mUpdateNoteInteractor.getArchiveFirebaseData(uid,date,toDoItemModel);
+    }
 
+    @Override
+    public void getUndoAchiveNote(String uid, String date, ToDoItemModel toDoItemModel) {
+
+        mUpdateNoteInteractor.undoArchivedFirbaseData(uid,date,toDoItemModel);
     }
 }

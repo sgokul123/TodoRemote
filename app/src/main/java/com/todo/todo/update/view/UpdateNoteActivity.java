@@ -14,8 +14,6 @@ import android.widget.Toast;
 import com.todo.todo.R;
 import com.todo.todo.base.BaseActivity;
 import com.todo.todo.home.model.ToDoItemModel;
-import com.todo.todo.home.presenter.ToDoPresenter;
-import com.todo.todo.home.view.NoteInterface;
 import com.todo.todo.update.presenter.UpdateNotePresenter;
 import com.todo.todo.util.Constants;
 import com.todo.todo.util.ProgressUtil;
@@ -27,7 +25,7 @@ import java.util.Locale;
 /**
  * Created by bridgeit on 29/3/17.
  */
-    public class UpdateNoteActivity extends BaseActivity implements View.OnClickListener,UpdateNoteActivityInterface {
+    public class  UpdateNoteActivity extends BaseActivity implements View.OnClickListener,UpdateNoteActivityInterface {
         private  String TAG="NewNoteActivity";
         AppCompatImageView imageViewBack,imageViewPin,imageViewReminder,imageViewSave;
         AppCompatTextView textViewedited,textViewReminder;
@@ -38,9 +36,7 @@ import java.util.Locale;
         ToDoItemModel mToDoItemModel;
         private  String StrTitle,StrReminder,StrNote,StrStartDate;
         private  DatePickerDialog.OnDateSetListener date;
-        private  String mUsre_UID,Note_id;
-
-
+        private  String mUsre_UID,Note_id,mIsArchive;
 
         @Override
         public void initialise() {
@@ -54,18 +50,23 @@ import java.util.Locale;
             editTextNote=(AppCompatEditText) findViewById(R.id.edittet_note);
 
             progressDialog=new ProgressUtil(this);
-            imageViewBack.setOnClickListener(this);
-            imageViewPin.setOnClickListener(this);
-            imageViewReminder.setOnClickListener(this);
-            imageViewSave.setOnClickListener(this);
 
             mUsre_UID=getIntent().getStringExtra(Constants.BundleKey.USER_USER_UID);
             Bundle ban=getIntent().getBundleExtra(Constants.BundleKey.MEW_NOTE);
             setData(ban);
             Log.i(TAG, "initialise: "+mUsre_UID);
             myCalender();
-
+            setOnClickListener();
         }
+
+    @Override
+    public void setOnClickListener() {
+        imageViewBack.setOnClickListener(this);
+        imageViewPin.setOnClickListener(this);
+        imageViewReminder.setOnClickListener(this);
+        imageViewSave.setOnClickListener(this);
+
+    }
 
     private void setData(Bundle ban) {
         textViewReminder.setText(ban.getString(Constants.RequestParam.KEY_REMINDER));
@@ -73,7 +74,10 @@ import java.util.Locale;
         editTextNote.setText(ban.getString(Constants.RequestParam.KEY_NOTE));
         StrStartDate=ban.getString(Constants.RequestParam.KEY_STARTDATE);
         Note_id=ban.getString(Constants.RequestParam.KEY_ID);
+        mIsArchive=ban.getString(Constants.RequestParam.KEY_ARCHIVE);
+        if(mIsArchive.equals("true")){
 
+        }
     }
 
     @Override
@@ -124,7 +128,8 @@ import java.util.Locale;
                     mToDoItemModel.set_reminder(StrReminder);
                     mToDoItemModel.set_startdate(StrStartDate);
                     mToDoItemModel.set_id(Integer.parseInt(Note_id));
-                    updateNotePresenter=new UpdateNotePresenter(getApplicationContext(),UpdateNoteActivity.this);
+                    mToDoItemModel.set_Archive(mIsArchive);
+                    updateNotePresenter=new UpdateNotePresenter(getApplicationContext(),this);
                     Log.i(TAG, "onClick: ");
                     updateNotePresenter.updateNote(mUsre_UID,StrStartDate,mToDoItemModel);
                     break;
@@ -138,8 +143,7 @@ import java.util.Locale;
 
         private void updateLabel() {
 
-            String myFormat = "EEE,MMM d,yy"; //In which you need put here
-            SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
+            SimpleDateFormat sdf = new SimpleDateFormat(Constants.NotesType.DATE_FORMAT, Locale.US);
             textViewReminder.setText(sdf.format(myCalendar.getTime()));
 
         }

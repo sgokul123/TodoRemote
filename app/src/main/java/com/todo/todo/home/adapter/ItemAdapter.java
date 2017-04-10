@@ -1,8 +1,6 @@
 package com.todo.todo.home.adapter;
 
 import android.content.Context;
-import android.content.Intent;
-import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -13,15 +11,10 @@ import android.view.animation.AnimationUtils;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.todo.todo.R;
-import com.todo.todo.database.DatabaseHandler;
-import com.todo.todo.home.interactor.RemoveFirebaseData;
 import com.todo.todo.home.model.ToDoItemModel;
 import com.todo.todo.home.view.ToDoActivity;
-import com.todo.todo.update.view.UpdateNoteActivity;
-import com.todo.todo.util.Constants;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +22,7 @@ import java.util.List;
 /**
  * Created by bridgeit on 22/3/17.
  */
-public class CustomGrid extends RecyclerView.Adapter<CustomGrid.MyViewHolder>implements Filterable{
+public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.MyViewHolder>implements Filterable{
 
     private  String TAG ="NoteAdapter";
     private Context mContext;
@@ -41,7 +34,7 @@ public class CustomGrid extends RecyclerView.Adapter<CustomGrid.MyViewHolder>imp
     private List<ToDoItemModel> mOriginaltoDoItemModels;
 
 
-    public CustomGrid(ToDoActivity toDoActivity, List<ToDoItemModel> toDoItemModels) {
+    public ItemAdapter(ToDoActivity toDoActivity, List<ToDoItemModel> toDoItemModels) {
         this. mContext = toDoActivity;
         // this.toDoItemModels = toDoItemModels;
         this.mdisplayedtoDoItemModels = toDoItemModels;
@@ -52,7 +45,7 @@ public class CustomGrid extends RecyclerView.Adapter<CustomGrid.MyViewHolder>imp
 
 
     @Override
-    public CustomGrid.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ItemAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_card, parent, false);
 
        // mCardView.setOnClickListener(this);
@@ -64,7 +57,7 @@ public class CustomGrid extends RecyclerView.Adapter<CustomGrid.MyViewHolder>imp
         notifyItemRangeChanged(position, mdisplayedtoDoItemModels.size());
     }
     @Override
-    public void onBindViewHolder(CustomGrid.MyViewHolder holder, int position) {
+    public void onBindViewHolder(ItemAdapter.MyViewHolder holder, int position) {
         mAnimation = AnimationUtils.loadAnimation(mContext.getApplicationContext(), R.anim.slide_down);
         mCardView.setAnimation(mAnimation);
         mCardView.startAnimation(mAnimation);
@@ -80,6 +73,10 @@ public class CustomGrid extends RecyclerView.Adapter<CustomGrid.MyViewHolder>imp
         return mdisplayedtoDoItemModels.size();
     }
 
+    public void reduNote(ToDoItemModel todoModelRedu, int position) {
+        mdisplayedtoDoItemModels.add(position,todoModelRedu);
+        notifyDataSetChanged();
+    }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         TextView textViewTitle,textViewnote,textViewReminder;
