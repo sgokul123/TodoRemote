@@ -51,11 +51,14 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.MyViewHolder>i
        // mCardView.setOnClickListener(this);
         return new MyViewHolder(itemView);
     }
+
+
     public void removeItem(int position) {
         mdisplayedtoDoItemModels.remove(position);
         notifyItemRemoved(position);
         notifyItemRangeChanged(position, mdisplayedtoDoItemModels.size());
     }
+
     @Override
     public void onBindViewHolder(ItemAdapter.MyViewHolder holder, int position) {
         mAnimation = AnimationUtils.loadAnimation(mContext.getApplicationContext(), R.anim.slide_down);
@@ -88,10 +91,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.MyViewHolder>i
                 textViewTitle = (TextView) itemView.findViewById(R.id.textview_card_title);
                  textViewnote = (TextView) itemView.findViewById(R.id.textview_notes);
                  textViewReminder = (TextView) itemView.findViewById(R.id.textView_reminder);
-
         }
-
-
 
     }
 

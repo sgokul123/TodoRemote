@@ -94,29 +94,6 @@ public class ToDoActivity extends BaseActivity
     private  boolean issearch=false;
     private  boolean mLinear=false;
 
-    public static Bitmap getRoundedRectBitmap(Bitmap bitmap, int pixels) {
-        Bitmap result = null;
-        try {
-            result = Bitmap.createBitmap(100, 100, Bitmap.Config.ARGB_8888);
-            Canvas canvas = new Canvas(result);
-
-            int color = 0xff424242;
-            Paint paint = new Paint();
-            Rect rect = new Rect(0, 0, 200, 200);
-
-            paint.setAntiAlias(true);
-            canvas.drawARGB(0, 0, 0, 0);
-            paint.setColor(color);
-            canvas.drawCircle(50, 50, 50, paint);
-            paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
-            canvas.drawBitmap(bitmap, rect, rect, paint);
-
-        } catch (NullPointerException e) {
-        } catch (OutOfMemoryError o) {
-        }
-        return result;
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -142,7 +119,7 @@ public class ToDoActivity extends BaseActivity
         mProgressDialog=new ProgressUtil(this);
         setSupportActionBar(mToolbar);
 
-        pref = getSharedPreferences("testapp", MODE_PRIVATE);
+        pref = getSharedPreferences(ProfileeKey.SHAREDPREFERANCES_KEY, MODE_PRIVATE);
         editor = pref.edit();
         mUserUID=pref.getString(Constants.BundleKey.USER_USER_UID,"null");
         Log.i(TAG, "initialise: "+mUserUID);
@@ -302,34 +279,7 @@ public class ToDoActivity extends BaseActivity
                 snackbar.setDuration(5000);
                 snackbar.show();
             }
-            @Override
-            public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
 
-                Bitmap icon;
-                if(actionState == ItemTouchHelper.ACTION_STATE_SWIPE){
-                    View itemView = viewHolder.itemView;
-                    float height = (float) itemView.getBottom() - (float) itemView.getTop();
-                    float width = height / 3;
-                    if(dX < 0){
-
-                        paint.setColor(Color.parseColor("#D32F2F"));
-                        RectF background = new RectF((float) itemView.getRight() + dX, (float) itemView.getTop(),(float) itemView.getRight(), (float) itemView.getBottom());
-                        c.drawRect(background, paint);
-                        //  icon = BitmapFactory.decodeResource(getResources(), R.drawable.ic_delete );
-                        RectF icon_dest = new RectF((float) itemView.getRight() - 2*width ,(float) itemView.getTop() + width,(float) itemView.getRight() - width,(float)itemView.getBottom() - width);
-                        //     c.drawBitmap(icon,null,icon_dest,paint);
-                    } else {
-
-                        paint.setColor(Color.parseColor("#388E3C"));
-                        RectF background = new RectF((float) itemView.getLeft(), (float) itemView.getTop(), dX,(float) itemView.getBottom());
-                        c.drawRect(background, paint);
-                        //  icon = BitmapFactory.decodeResource(getResources(), R.drawable.ic_delete);
-                        RectF icon_dest = new RectF((float) itemView.getLeft() + width ,(float) itemView.getTop() + width,(float) itemView.getLeft()+ 2*width,(float)itemView.getBottom() - width);
-                        //       c.drawBitmap(icon,null,icon_dest,paint);
-                    }
-                }
-                super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
-            }
         };
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
         itemTouchHelper.attachToRecyclerView(mToDoRecyclerView);
@@ -403,6 +353,7 @@ public class ToDoActivity extends BaseActivity
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
+        setVisibilityTollBar(false);
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
@@ -578,8 +529,10 @@ public class ToDoActivity extends BaseActivity
                     Log.i(TAG, "onActivityResult: "+ mPrfilefilePath);
                     Bitmap bitmap = null;
                     try {
+
                         bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(),mPrfilefilePath);
-                        Bitmap conv_bm = getRoundedRectBitmap(bitmap, 3000);
+                        Bitmap scaled = Bitmap.createScaledBitmap(bitmap, 100, 100, true);
+                        Bitmap conv_bm = getRoundedRectBitmap(scaled, 3000);
                         mImageView_ProfileImage.setImageBitmap(conv_bm);
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -640,6 +593,7 @@ public class ToDoActivity extends BaseActivity
         }
     }
 
+
     public void addTextListener(){
 
         mEditText_Search.addTextChangedListener(new TextWatcher() {
@@ -667,6 +621,8 @@ public class ToDoActivity extends BaseActivity
         });
     }
 
+
+    //get Reminders todo
     public  List<ToDoItemModel> getTodaysReminder(String date){
         List<ToDoItemModel> tempToDoModels=new ArrayList<>();
         if(toDoAllItemModels!=null) {
@@ -679,6 +635,7 @@ public class ToDoActivity extends BaseActivity
         return tempToDoModels;
     }
 
+    //get All notes
     public  List<ToDoItemModel> getAllToDo(){
         List<ToDoItemModel> tempToDoModels=new ArrayList<>();
         if(toDoAllItemModels!=null){
@@ -691,6 +648,7 @@ public class ToDoActivity extends BaseActivity
         return tempToDoModels;
     }
 
+    //get Archived todo notes
     public  List<ToDoItemModel> getArchivedToDos(){
         List<ToDoItemModel> tempToDoModels=new ArrayList<>();
         if(toDoAllItemModels!=null) {
@@ -704,6 +662,7 @@ public class ToDoActivity extends BaseActivity
         return tempToDoModels;
     }
 
+    //hide keyboard
     void hideKeyboard(){
 
         if (getCurrentFocus() != null) {
@@ -711,4 +670,29 @@ public class ToDoActivity extends BaseActivity
             imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
         }
     }
+
+        //get crop images circular
+    public static Bitmap getRoundedRectBitmap(Bitmap bitmap, int pixels) {
+        Bitmap result = null;
+        try {
+            result = Bitmap.createBitmap(100, 100, Bitmap.Config.ARGB_8888);
+            Canvas canvas = new Canvas(result);
+
+            int color = 0xff424242;
+            Paint paint = new Paint();
+            Rect rect = new Rect(0, 0, 200, 200);
+
+            paint.setAntiAlias(true);
+            canvas.drawARGB(0, 0, 0, 0);
+            paint.setColor(color);
+            canvas.drawCircle(50, 50, 50, paint);
+            paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
+            canvas.drawBitmap(bitmap, rect, rect, paint);
+
+        } catch (NullPointerException e) {
+        } catch (OutOfMemoryError o) {
+        }
+        return result;
+    }
+
 }

@@ -17,10 +17,10 @@ import java.util.List;
 
 
 public class DatabaseHandler extends SQLiteOpenHelper {
-    private static final int DATABASE_VERSION = 1;
-    private String TAG = "RegistrationDatabase";
-    private ToDoActivityInteractor todoActivityInteractor;
 
+    private String TAG = "RegistrationDatabase";
+    private static final int DATABASE_VERSION = 1;
+    private ToDoActivityInteractor todoActivityInteractor;
     private ToDoActivityPresenter toDoActivityPresenter;
 
     public DatabaseHandler(Context context, ToDoActivityInteractor todoActivityInteractor) {
@@ -48,10 +48,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + Constants.RequestParam.KEY_ID + " INTEGER PRIMARY KEY," + Constants.RequestParam.KEY_TITLE + " TEXT," + Constants.RequestParam.KEY_NOTE + " TEXT,"
                 + Constants.RequestParam.KEY_REMINDER + " TEXT," + Constants.RequestParam.KEY_STARTDATE + " TEXT," + Constants.RequestParam.KEY_ARCHIVE + " TEXT" + ")";
         db.execSQL(CREATE_ToDoS_TABLE);
-        String CREATE_LOCAL_ToDoS_TABLE = "CREATE TABLE IF NOT EXISTS " + Constants.RequestParam.LOCAL_NOTES_TABLE_NAME + "("
+
+       /* String CREATE_LOCAL_ToDoS_TABLE = "CREATE TABLE IF NOT EXISTS " + Constants.RequestParam.LOCAL_NOTES_TABLE_NAME + "("
                 + Constants.RequestParam.KEY_ID + " INTEGER PRIMARY KEY," + Constants.RequestParam.KEY_TITLE + " TEXT," + Constants.RequestParam.KEY_NOTE + " TEXT,"
                 + Constants.RequestParam.KEY_REMINDER + " TEXT," + Constants.RequestParam.KEY_STARTDATE + " TEXT," + Constants.RequestParam.KEY_ARCHIVE + " TEXT" + ")";
-        db.execSQL(CREATE_LOCAL_ToDoS_TABLE);
+        db.execSQL(CREATE_LOCAL_ToDoS_TABLE);*/
     }
 
     // Upgrading database  
@@ -60,7 +61,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         // Drop older table if existed  
         db.execSQL("DROP TABLE IF EXISTS " + Constants.RequestParam.NOTES_TABLE_NAME);
         //drop local database
-        db.execSQL("DROP TABLE IF EXISTS " + Constants.RequestParam.LOCAL_NOTES_TABLE_NAME);
+     //   db.execSQL("DROP TABLE IF EXISTS " + Constants.RequestParam.LOCAL_NOTES_TABLE_NAME);
         // Create tables again  
         onCreate(db);
     }
@@ -69,6 +70,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
         // Drop older table if existed
         db.execSQL("DROP TABLE IF EXISTS " + Constants.RequestParam.NOTES_TABLE_NAME);
+
         String CREATE_ToDoS_TABLE = "CREATE TABLE IF NOT EXISTS " + Constants.RequestParam.NOTES_TABLE_NAME + "("
                 + Constants.RequestParam.KEY_ID + " INTEGER PRIMARY KEY," + Constants.RequestParam.KEY_TITLE + " TEXT," + Constants.RequestParam.KEY_NOTE + " TEXT,"
                 + Constants.RequestParam.KEY_REMINDER + " TEXT," + Constants.RequestParam.KEY_STARTDATE + " TEXT," + Constants.RequestParam.KEY_ARCHIVE + " TEXT" + ")";
@@ -93,8 +95,10 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             // Inserting Row
 
             db.insert(Constants.RequestParam.NOTES_TABLE_NAME, null, values);
+
             Log.i(TAG, "addToDo: success");
             todoActivityInteractor.getResponce(true);
+
             //2nd argument is String containing nullColumnHack
 
         } catch (Exception e) {
@@ -169,7 +173,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
         Cursor cursor = db.query(Constants.RequestParam.NOTES_TABLE_NAME, new String[]{Constants.RequestParam.KEY_ID,
                         Constants.RequestParam.KEY_TITLE, Constants.RequestParam.KEY_NOTE, Constants.RequestParam.KEY_REMINDER, Constants.RequestParam.KEY_STARTDATE, Constants.RequestParam.KEY_ARCHIVE}, Constants.RequestParam.KEY_ID + "=?",
-                new String[]{String.valueOf(id)}, null, null, null, null);
+                new String[]{String.valueOf(id)}, null,null, null, null);
         if (cursor != null)
             cursor.moveToFirst();
 

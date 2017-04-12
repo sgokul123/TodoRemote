@@ -18,6 +18,7 @@ public class Constants {
         public static final String USER_PROFILE_SERVER = "serverimage";
     }
     public interface ProfileeKey {
+        public static final String SHAREDPREFERANCES_KEY = "testapp";
         public static final String MOBILE_NO = "mobileno";
         public static final String FIRST_NAME = "firstname";
         public static final String LAST_NAME = "lastname";

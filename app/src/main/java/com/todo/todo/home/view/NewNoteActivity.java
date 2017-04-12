@@ -24,7 +24,7 @@ import java.util.Locale;
 
 public class NewNoteActivity extends BaseActivity implements View.OnClickListener,NoteInterface{
     AppCompatImageView mImageViewBack, mImageViewPin, mImageViewReminder, mImageViewSave;
-    AppCompatTextView mTextViewReminder;
+    AppCompatTextView mTextViewReminder,mTextViewEditedAt;
     AppCompatEditText mEditTextNote, mEditTextTitle;
     ProgressUtil progressDialog;
     Calendar myCalendar;
@@ -34,7 +34,7 @@ public class NewNoteActivity extends BaseActivity implements View.OnClickListene
     private  String StrTitle,StrReminder,StrNote;
     private  DatePickerDialog.OnDateSetListener date;
     private  String mUsre_UID;
-
+    String formattedDate;
 
     @Override
     public void initialise() {
@@ -48,8 +48,12 @@ public class NewNoteActivity extends BaseActivity implements View.OnClickListene
         mTextViewReminder =(AppCompatTextView) findViewById(R.id.textview_reminder_text);
         mEditTextTitle =(AppCompatEditText) findViewById(R.id.edittext_title);
         mEditTextNote =(AppCompatEditText) findViewById(R.id.edittet_note);
+        mTextViewEditedAt=(AppCompatTextView) findViewById(R.id.textview_editedat_at);
         progressDialog=new ProgressUtil(this);
-
+        Calendar c = Calendar.getInstance();
+        SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss");
+        formattedDate= df.format(c.getTime());
+        mTextViewEditedAt.setText(formattedDate);
         Log.i(TAG, "initialise: "+getCurrentDate());
         mUsre_UID=getIntent().getStringExtra(Constants.BundleKey.USER_USER_UID);
         Log.i(TAG, "initialise: "+mUsre_UID);

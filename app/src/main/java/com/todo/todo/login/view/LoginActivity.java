@@ -111,7 +111,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
         //call to data Access before load activity
         loginLoginPresenter = new LoginLoginPresenter(LoginActivity.this );
 
-        pref = getSharedPreferences("testapp", MODE_PRIVATE);
+        pref = getSharedPreferences(Constants.ProfileeKey.SHAREDPREFERANCES_KEY, MODE_PRIVATE);
         mSharedPref_editor = pref.edit();
         setOnClickListener();
     }

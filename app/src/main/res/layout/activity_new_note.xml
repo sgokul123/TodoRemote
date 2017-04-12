@@ -89,18 +89,20 @@
             android:layout_marginLeft="@dimen/diamen_20dp"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/diamen_10dp"
-android:layout_marginRight="@dimen/diamen_30dp"
+            android:layout_marginRight="@dimen/diamen_30dp"
             android:layout_above="@+id/view_second"/>
+
         <View
             android:id="@+id/view_second"
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:layout_above="@+id/textview_editedat"
+            android:layout_above="@+id/textview_editedat_at"
             android:background="@color/cardview_dark_background"
+
             android:layout_marginBottom="@dimen/diamen_10dp"
             />
         <android.support.v7.widget.AppCompatTextView
-            android:id="@+id/textview_editedat"
+            android:id="@+id/textview_editedat_at"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Edited 2:56 PM"

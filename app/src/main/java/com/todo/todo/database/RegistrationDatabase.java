@@ -26,22 +26,25 @@ public class RegistrationDatabase extends SQLiteOpenHelper {
     private static final String KEY_PASSWORD = "password";
     private static final String KEY_EMAIL = "email";
     private  String TAG ="RegistrationDatabase";
+
     SQLiteDatabase db;
     RegistrationInteractor registrationInteractor;
 
     public RegistrationDatabase(Context context, RegistrationInteractor registrationInteractor) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
         //3rd argument to be passed is CursorFactory instance
-      this.  registrationInteractor =registrationInteractor;
+        this.  registrationInteractor =registrationInteractor;
     }
 
     // Creating Tables  
     @Override
     public void onCreate(SQLiteDatabase db) {
         Log.i(TAG, "onCreate: db");
+
         String CREATE_ToDoS_TABLE = "CREATE TABLE IF NOT EXISTS " + TABLE_USERS + "("
                 + KEY_ID + " INTEGER PRIMARY KEY," + KEY_NAME + " TEXT,"+ KEY_LNAME+ " TEXT," + KEY_PHONE + " TEXT,"
                 + KEY_EMAIL + " TEXT," + KEY_PASSWORD + " TEXT,"+ KEY_URL  + " TEXT" +")";
+
         db.execSQL(CREATE_ToDoS_TABLE);
     }
 
@@ -50,13 +53,15 @@ public class RegistrationDatabase extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // Drop older table if existed  
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_USERS);  // Create tables again
+
         onCreate(db);
     }
+
     // code to add the new ToDo
     public void addUser(RegistrationModel registrationModel) {
         try {
 
-           db = this.getWritableDatabase();
+            db = this.getWritableDatabase();
             //Log.i(TAG, "addToDo: start");
             ContentValues values = new ContentValues();
             values.put(KEY_NAME, registrationModel.getUserFirstName()); // ToDo Name
@@ -84,7 +89,7 @@ public class RegistrationDatabase extends SQLiteOpenHelper {
     }
 
     // code to get the single ToDo  
-        public RegistrationModel getUser(int id) {
+    public RegistrationModel getUser(int id) {
         SQLiteDatabase db = this.getReadableDatabase();
 
         Cursor cursor = db.query(TABLE_USERS, new String[] { KEY_ID,
@@ -129,7 +134,7 @@ public class RegistrationDatabase extends SQLiteOpenHelper {
         return registrationModelList;
     }
 
-  /*  // code to update the single ToDo
+   /* // code to update the single ToDo
     public int updateUser(RegistrationModel registrationModel) {
         SQLiteDatabase db = this.getWritableDatabase();
 
@@ -143,14 +148,14 @@ public class RegistrationDatabase extends SQLiteOpenHelper {
         values.put(KEY_URL, registrationModel.getUserProfileImgurl());
         // updating row  
         return db.update(TABLE_USERS, values, KEY_ID + " = ?",
-              //  new String[] { String.valueOf(registrationModel.getId()) });
+                  new String[] { String.valueOf(registrationModel.getId()) });
     }
 
     // Deleting single ToDo  
     public void deleteUser(RegistrationModel registrationModel) {
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete(TABLE_USERS, KEY_ID + " = ?",
-                new String[] { String.valueOf(registrationModel.getId()) });
+           new String[] { String.valueOf(registrationModel.getId()) });
         db.close();
     }*/
 

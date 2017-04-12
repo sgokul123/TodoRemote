@@ -18,6 +18,8 @@
         android:layout_height="@dimen/diamen_70dp"
         android:layout_marginLeft="@dimen/diamen_20dp"
         android:layout_marginTop="@dimen/diamen_10dp"
+        adjustViewBounds="true"
+        android:scaleType="fitCenter"
         android:background="@drawable/circleimage"
 
         />

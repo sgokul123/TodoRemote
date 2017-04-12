@@ -25,6 +25,7 @@ import java.util.Locale;
 /**
  * Created by bridgeit on 29/3/17.
  */
+
     public class  UpdateNoteActivity extends BaseActivity implements View.OnClickListener,UpdateNoteActivityInterface {
         private  String TAG="NewNoteActivity";
         AppCompatImageView imageViewBack,imageViewPin,imageViewReminder,imageViewSave;
@@ -37,9 +38,12 @@ import java.util.Locale;
         private  String StrTitle,StrReminder,StrNote,StrStartDate;
         private  DatePickerDialog.OnDateSetListener date;
         private  String mUsre_UID,Note_id,mIsArchive;
+    private AppCompatTextView mTextViewEditedAt;
+    private String formattedDate;
 
-        @Override
+    @Override
         public void initialise() {
+
             setContentView(R.layout.activity_new_note);
             imageViewBack=(AppCompatImageView) findViewById(R.id.imageView_back_arrow);
             imageViewPin=(AppCompatImageView) findViewById(R.id.imageView_pin);
@@ -48,7 +52,12 @@ import java.util.Locale;
             textViewReminder=(AppCompatTextView) findViewById(R.id.textview_reminder_text);
             editTextTitle=(AppCompatEditText) findViewById(R.id.edittext_title);
             editTextNote=(AppCompatEditText) findViewById(R.id.edittet_note);
-
+            mTextViewEditedAt=(AppCompatTextView) findViewById(R.id.textview_editedat_at);
+            progressDialog=new ProgressUtil(this);
+            Calendar c = Calendar.getInstance();
+            SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss");
+            formattedDate= df.format(c.getTime());
+            mTextViewEditedAt.setText(formattedDate);
             progressDialog=new ProgressUtil(this);
 
             mUsre_UID=getIntent().getStringExtra(Constants.BundleKey.USER_USER_UID);
@@ -61,6 +70,7 @@ import java.util.Locale;
 
     @Override
     public void setOnClickListener() {
+
         imageViewBack.setOnClickListener(this);
         imageViewPin.setOnClickListener(this);
         imageViewReminder.setOnClickListener(this);
@@ -69,6 +79,7 @@ import java.util.Locale;
     }
 
     private void setData(Bundle ban) {
+
         textViewReminder.setText(ban.getString(Constants.RequestParam.KEY_REMINDER));
         editTextTitle.setText(ban.getString(Constants.RequestParam.KEY_TITLE));
         editTextNote.setText(ban.getString(Constants.RequestParam.KEY_NOTE));
@@ -82,11 +93,13 @@ import java.util.Locale;
 
     @Override
         protected void onCreate(Bundle savedInstanceState) {
+
             super.onCreate(savedInstanceState);
             initialise();
         }
 
         public  void myCalender(){
+
             myCalendar = Calendar.getInstance();
             date = new DatePickerDialog.OnDateSetListener() {
                 @Override
@@ -148,8 +161,6 @@ import java.util.Locale;
 
         }
 
-
-
     @Override
     public void closeProgress() {
         progressDialog.dismissProgress();
@@ -179,7 +190,5 @@ import java.util.Locale;
             }
 
         }
-
-
 
     }
