@@ -35,12 +35,19 @@ import java.util.Locale;
         ProgressUtil progressDialog;
         Calendar myCalendar;
         ToDoItemModel mToDoItemModel;
-        private  String StrTitle,StrReminder,StrNote,StrStartDate;
+        private  String StrTitle,StrReminder,StrNote,StrStartDate,StrSetTime;
         private  DatePickerDialog.OnDateSetListener date;
         private  String mUsre_UID,Note_id,mIsArchive;
     private AppCompatTextView mTextViewEditedAt;
     private String formattedDate;
 
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+
+        super.onCreate(savedInstanceState);
+        initialise();
+    }
     @Override
         public void initialise() {
 
@@ -54,10 +61,7 @@ import java.util.Locale;
             editTextNote=(AppCompatEditText) findViewById(R.id.edittet_note);
             mTextViewEditedAt=(AppCompatTextView) findViewById(R.id.textview_editedat_at);
             progressDialog=new ProgressUtil(this);
-            Calendar c = Calendar.getInstance();
-            SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss");
-            formattedDate= df.format(c.getTime());
-            mTextViewEditedAt.setText(formattedDate);
+
             progressDialog=new ProgressUtil(this);
 
             mUsre_UID=getIntent().getStringExtra(Constants.BundleKey.USER_USER_UID);
@@ -83,20 +87,17 @@ import java.util.Locale;
         textViewReminder.setText(ban.getString(Constants.RequestParam.KEY_REMINDER));
         editTextTitle.setText(ban.getString(Constants.RequestParam.KEY_TITLE));
         editTextNote.setText(ban.getString(Constants.RequestParam.KEY_NOTE));
+        mTextViewEditedAt.setText(ban.getString(Constants.RequestParam.KEY_SETTIME));
         StrStartDate=ban.getString(Constants.RequestParam.KEY_STARTDATE);
         Note_id=ban.getString(Constants.RequestParam.KEY_ID);
         mIsArchive=ban.getString(Constants.RequestParam.KEY_ARCHIVE);
+        StrSetTime=ban.getString(Constants.RequestParam.KEY_SETTIME);
+
         if(mIsArchive.equals("true")){
 
         }
     }
 
-    @Override
-        protected void onCreate(Bundle savedInstanceState) {
-
-            super.onCreate(savedInstanceState);
-            initialise();
-        }
 
         public  void myCalender(){
 
@@ -120,6 +121,7 @@ import java.util.Locale;
 
             switch (v.getId()){
                 case R.id.imageView_back_arrow:
+
                     finish();
                     break;
                 case R.id.imageView_pin:
@@ -142,6 +144,7 @@ import java.util.Locale;
                     mToDoItemModel.set_startdate(StrStartDate);
                     mToDoItemModel.set_id(Integer.parseInt(Note_id));
                     mToDoItemModel.set_Archive(mIsArchive);
+                    mToDoItemModel.set_Settime(StrSetTime);
                     updateNotePresenter=new UpdateNotePresenter(getApplicationContext(),this);
                     Log.i(TAG, "onClick: ");
                     updateNotePresenter.updateNote(mUsre_UID,StrStartDate,mToDoItemModel);
@@ -180,6 +183,7 @@ import java.util.Locale;
                 bun.putString(Constants.RequestParam.KEY_NOTE,mToDoItemModel.get_note());
                 bun.putString(Constants.RequestParam.KEY_TITLE,mToDoItemModel.get_title());
                 bun.putString(Constants.RequestParam.KEY_REMINDER,mToDoItemModel.get_reminder());
+                bun.putString(Constants.RequestParam.KEY_SETTIME,mToDoItemModel.get_Settime());
                 Intent intent=new Intent();
                 intent.putExtra(Constants.BundleKey.MEW_NOTE,bun);
                 setResult(2,intent);

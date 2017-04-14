@@ -118,7 +118,7 @@ public class NewNoteActivity extends BaseActivity implements View.OnClickListene
                 mToDoItemModel.set_title(StrTitle);
                 StrReminder= mTextViewReminder.getText().toString();
                 mToDoItemModel.set_reminder(StrReminder);
-
+                mToDoItemModel.set_Settime(mTextViewEditedAt.getText().toString());
                 mToDoItemModel.set_startdate(getCurrentDate());
                 mToDoItemModel.set_Archive("false");
                 toDoActivityPresenter =new ToDoActivityPresenter(this,this);

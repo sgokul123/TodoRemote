@@ -5,16 +5,13 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
-import android.graphics.RectF;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
@@ -27,6 +24,7 @@ import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.text.Editable;
@@ -34,18 +32,14 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Filter;
 import android.widget.Toast;
 
 import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.OnProgressListener;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 import com.todo.todo.R;
 import com.todo.todo.base.BaseActivity;
 import com.todo.todo.home.adapter.ItemAdapter;
@@ -56,14 +50,19 @@ import com.todo.todo.home.presenter.ToDoActivityPresenter;
 import com.todo.todo.login.view.LoginActivity;
 import com.todo.todo.update.presenter.UpdateNotePresenter;
 import com.todo.todo.update.view.UpdateNoteActivity;
+import com.todo.todo.util.AsyncTaskLoadImage;
 import com.todo.todo.util.Connection;
 import com.todo.todo.util.Constants;
 import com.todo.todo.util.Constants.ProfileeKey;
 import com.todo.todo.util.DownloadImage;
 import com.todo.todo.util.DownloadImageInterface;
 import com.todo.todo.util.ProgressUtil;
+import com.todo.todo.util.Utility;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.text.Annotation;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -71,28 +70,29 @@ import java.util.List;
 
 public class ToDoActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener ,ToDoActivityInteface {
-    private final int SELECT_PHOTO = 3;
-    ToDoActivityPresenter mToDoActivityPresenter;
-    ProgressUtil mProgressDialog;
-    AppCompatTextView mTextView_Email,mTextView_Name, mTextView_Title;
-    AppCompatEditText mEditText_Search;
-    Toolbar mToolbar;
-    boolean isReminderAdapter=false;
-    boolean isArchivedAdapter=false;
-    RecyclerView mToDoRecyclerView;
-    AppCompatImageView mImageView_Linear_Grid, mImageView_ProfileImage,mImageViewsearch;
-    FloatingActionButton mFloatingActionButton;
-    SharedPreferences pref;
-    SharedPreferences.Editor editor;
-    Uri mPrfilefilePath;
-    ItemAdapter itemAdapter,mReminderAdapter,mArchivedAdapter;
-    List<ToDoItemModel> toDoItemModels;
-    List<ToDoItemModel> toDoAllItemModels, mRemindrsToDO, mArchivedNotes;
-    private Paint paint = new Paint();
     private  String TAG ="ToDoActivity";
     private  String mEmail_id,mUserUID;
     private  boolean issearch=false;
     private  boolean mLinear=false;
+    private final int SELECT_PHOTO = 3;
+    ToDoActivityPresenter mToDoActivityPresenter;
+    ProgressUtil mProgressDialog;
+    AppCompatTextView mTextView_Email,mTextView_Name, mTextView_Title;
+    AppCompatEditText mEditText_Search, mEditTextsearch;
+    Toolbar mToolbar,mToolSearch;
+    boolean isReminderAdapter=false;
+    boolean isArchivedAdapter=false;
+    RecyclerView mToDoRecyclerView;
+    AppCompatImageView mImageView_Linear_Grid, mImageView_ProfileImage,mImageViewsearch, mImageViewsearchBack;
+    FloatingActionButton mFloatingActionButton;
+    SharedPreferences pref;
+    SharedPreferences.Editor editor;
+    Uri mPrfilefilePath;
+    StaggeredGridLayoutManager staggeredGridLayoutManager;
+    ItemAdapter itemAdapter,mReminderAdapter,mArchivedAdapter;
+    List<ToDoItemModel> toDoItemModels;
+    List<ToDoItemModel> toDoAllItemModels, mRemindrsToDO, mArchivedNotes;
+        Utility util;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,11 +103,9 @@ public class ToDoActivity extends BaseActivity
 
     @Override
     public void initialise() {
-
         setContentView(R.layout.activity_to_do);
 
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
-        //LinearLayout layoutToolbar = (LinearLayout)  mToolbar.findViewById(R.id.layoutToolbar);
 
         mFloatingActionButton =(FloatingActionButton) findViewById(R.id.fab);
         mImageView_Linear_Grid =(AppCompatImageView) findViewById(R.id.imageView_grid_linear);
@@ -115,24 +113,31 @@ public class ToDoActivity extends BaseActivity
         mToDoRecyclerView = (RecyclerView) findViewById(R.id.gridview_notes);
         mTextView_Title =(AppCompatTextView) findViewById(R.id.textview_title_toolbar);
         mEditText_Search =(AppCompatEditText) findViewById(R.id.edittext_search_toolbar);
-        FacebookSdk.sdkInitialize(getApplicationContext());
+         mEditTextsearch =(AppCompatEditText) findViewById(R.id.edittext_search_toolbar);
+         mImageViewsearchBack =(AppCompatImageView) findViewById(R.id.imageView_back_search);
+
+        FacebookSdk.sdkInitialize(getApplicationContext());             //Facebook Social Login sdk initialize
         mProgressDialog=new ProgressUtil(this);
         setSupportActionBar(mToolbar);
-
+        util=new Utility(this);
         pref = getSharedPreferences(ProfileeKey.SHAREDPREFERANCES_KEY, MODE_PRIVATE);
         editor = pref.edit();
         mUserUID=pref.getString(Constants.BundleKey.USER_USER_UID,"null");
         Log.i(TAG, "initialise: "+mUserUID);
+
+        // get call to database if User ID is not Null
         if(!mUserUID.equals("null")){
             mToDoActivityPresenter =new ToDoActivityPresenter(this,this);
             mToDoActivityPresenter.getPresenterNotes(mUserUID);
         }
+
         mToDoRecyclerView.setLayoutManager(new GridLayoutManager(getApplicationContext(), 2));
         mToDoRecyclerView.setItemAnimator(new DefaultItemAnimator());
         mToDoRecyclerView.addOnItemTouchListener(
                 new RecyclerItemClickListener(getApplicationContext(), new RecyclerItemClickListener.OnItemClickListener() {
                     @Override public void onItemClick(View view, int position) {
-                        setVisibilityTollBar(false);
+                        mToolSearch.setVisibility(View.GONE);
+                        mToolbar.setVisibility(View.VISIBLE);
                         String typeOfNotes=mTextView_Title.getText().toString();
                         List<ToDoItemModel> updateModels=getUpdateModels(typeOfNotes);
                         Intent intent =new Intent(ToDoActivity.this,UpdateNoteActivity.class);
@@ -143,6 +148,7 @@ public class ToDoActivity extends BaseActivity
                         bun.putString(Constants.RequestParam.KEY_REMINDER, updateModels.get(position).get_reminder());
                         bun.putString(Constants.RequestParam.KEY_STARTDATE, updateModels.get(position).get_startdate());
                         bun.putString(Constants.RequestParam.KEY_ARCHIVE, updateModels.get(position).get_Archive());
+                        bun.putString(Constants.RequestParam.KEY_SETTIME, updateModels.get(position).get_Settime());
                         intent.putExtra(Constants.BundleKey.USER_USER_UID,mUserUID);
                         intent.putExtra(Constants.BundleKey.MEW_NOTE,bun);
                         startActivityForResult(intent,2);
@@ -183,46 +189,13 @@ public class ToDoActivity extends BaseActivity
 
     @Override
     public void setOnClickListener() {
-        mImageView_ProfileImage.setOnClickListener(this);
+
         mFloatingActionButton.setOnClickListener(this);
         mImageView_Linear_Grid.setOnClickListener(this);
         mImageViewsearch.setOnClickListener(this);
     }
 
-    /* public Bitmap getBitmap(URL url){
-         final Bitmap[] bitmaps = {null};
-         Picasso.with(getApplicationContext())
-                 .load(pref.getString(Constants.BundleKey.PROFILE_PIC,"ghfgh"))
-                 .into(new Target() {
-                     @Override
-                     public void onBitmapLoaded (Bitmap bitmap, Picasso.LoadedFrom from){
-                         bitmaps[0] =bitmap;
-                     }
-                     @Override
-                     public void onBitmapFailed(Drawable errorDrawable) {
-                     }
-                     @Override
-                     public void onPrepareLoad(Drawable placeHolderDrawable) {
-
-                     }
-                 });
-
-
-         Target target = new Target() {
-             @Override
-             public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-             }
-
-             @Override
-             public void onBitmapFailed(Drawable errorDrawable) {
-             }
-
-             @Override
-             public void onPrepareLoad(Drawable placeHolderDrawable) {
-             }
-         };
-         return bitmaps[0];
-     }*/
+     //swipe view delete / Archive
     private void initSwipe(){
         ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
 
@@ -290,24 +263,24 @@ public class ToDoActivity extends BaseActivity
         if(pref.contains(Constants.BundleKey.USER_EMAIL))
         {
             getemail =pref.getString(Constants.BundleKey.USER_EMAIL, "abcd@gmail.com");
-            getName=pref.getString(ProfileeKey.FIRST_NAME, "Gokul")+" "+pref.getString(ProfileeKey.LAST_NAME,"Sonawane");
+            getName=pref.getString(ProfileeKey.FIRST_NAME, "Gokul")+" "+pref.getString(ProfileeKey.LAST_NAME,"");
             mEmail_id=getemail;
             Log.i(TAG, "onCreate:  email"+getemail);
 
             Connection con=new Connection(getApplicationContext());
             if(con.isNetworkConnected()) {
                 if (pref.contains(Constants.BundleKey.PROFILE_PIC) && !pref.getString(Constants.BundleKey.PROFILE_PIC, "null").equals("null")) {
-                      /* try {
-                            URL url = new URL(pref.getString(Constants.BundleKey.PROFILE_PIC, "null"));
-                           //Bitmap resized = Bitmap.createScaledBitmap(getBitmap(url), 100, 100, true);
-                           Bitmap conv_bm = getRoundedRectBitmap(getBitmap(url), 1000);
-                           mImageView_ProfileImage.setImageBitmap(conv_bm);
-                          } catch (MalformedURLException e) {
+                       try {
+                            URL urls = new URL(pref.getString(Constants.BundleKey.PROFILE_PIC, "null"));
+                           new AsyncTaskLoadImage(this).execute(String.valueOf(urls));
+                           } catch (MalformedURLException e) {
                             e.printStackTrace();
                         } catch (IOException e) {
                          e.printStackTrace();
-                       }*/
+                       }
+
                 } else if (pref.contains(Constants.BundleKey.USER_PROFILE_SERVER)) {
+                    mImageView_ProfileImage.setOnClickListener(this);
                     DownloadImage.downloadImage(pref.getString(Constants.BundleKey.USER_PROFILE_SERVER, "myProfiles/sample.jpg"), new DownloadImageInterface() {
                         @Override
                         public void getImage(Bitmap bitmap) {
@@ -320,6 +293,7 @@ public class ToDoActivity extends BaseActivity
                 }
             }else
             {
+                mImageView_ProfileImage.setOnClickListener(this);
                 if(pref.contains(Constants.BundleKey.USER_PROFILE_LOCAL)){
                     mPrfilefilePath = Uri.parse(pref.getString(Constants.BundleKey.USER_PROFILE_LOCAL,"null"));
                     if(!image_Url.equals("null")){
@@ -350,6 +324,8 @@ public class ToDoActivity extends BaseActivity
         }
     }
 
+
+    //Item selected event
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
@@ -444,7 +420,18 @@ public class ToDoActivity extends BaseActivity
                 startActivityForResult(Intent.createChooser(picker, "Select Picture"), SELECT_PHOTO);
                 break;
             case R.id.imageView_search_bar:
-                setVisibilityTollBar(true);
+                mToolSearch=(Toolbar) findViewById(R.id.toolbarsearch);
+                mToolbar.setVisibility(View.GONE);
+                mToolSearch.setVisibility(View.VISIBLE);
+                Animation animate=AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fadeout);
+                mToolSearch.setAnimation(animate);
+                mToolSearch.startAnimation(animate);
+                mImageViewsearchBack.setOnClickListener(this);
+            //    setVisibilityTollBar(true);
+                break;
+            case R.id.imageView_back_search:
+                mToolSearch.setVisibility(View.GONE);
+                mToolbar.setVisibility(View.VISIBLE);
                 break;
             default:
                 //Default
@@ -506,20 +493,23 @@ public class ToDoActivity extends BaseActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-       /* if(requestCode==2){
+        Connection con =new Connection(getApplicationContext());
+        if(!con.isNetworkConnected()){
+            if(requestCode==2){
                 Bundle ban=data.getBundleExtra(Constants.BundleKey.MEW_NOTE);
                 ToDoItemModel toDoItemModel=new ToDoItemModel();
-            toDoItemModel.set_id(Integer.parseInt(ban.getString(Constants.RequestParam.KEY_ID)));
-            toDoItemModel.set_title(ban.getString(Constants.RequestParam.KEY_TITLE));
-            toDoItemModel.set_note(ban.getString(Constants.RequestParam.KEY_NOTE));
-            toDoItemModel.set_reminder(ban.getString(Constants.RequestParam.KEY_REMINDER));
-            toDoItemModel.set_startdate(ban.getString(Constants.RequestParam.KEY_STARTDATE));
-            toDoAllItemModels.add(toDoItemModel);
-            NoteAdapter itemAdapter=new NoteAdapter(ToDoActivity.this, toDoAllItemModels);
-            Log.i(TAG, "onActivityResult: "+toDoItemModel.get_title());
-            mToDoRecyclerView.setAdapter(itemAdapter);
+                toDoItemModel.set_id(Integer.parseInt(ban.getString(Constants.RequestParam.KEY_ID)));
+                toDoItemModel.set_title(ban.getString(Constants.RequestParam.KEY_TITLE));
+                toDoItemModel.set_note(ban.getString(Constants.RequestParam.KEY_NOTE));
+                toDoItemModel.set_reminder(ban.getString(Constants.RequestParam.KEY_REMINDER));
+                toDoItemModel.set_startdate(ban.getString(Constants.RequestParam.KEY_STARTDATE));
+                toDoAllItemModels.add(toDoItemModel);
 
-        }*/
+                itemAdapter.addNote(toDoItemModel);
+
+            }
+        }
+
 
         if (resultCode == RESULT_OK) {
             if (requestCode == SELECT_PHOTO) {
@@ -540,12 +530,14 @@ public class ToDoActivity extends BaseActivity
                     editor.putString(Constants.BundleKey.USER_PROFILE_LOCAL, String.valueOf(mPrfilefilePath));
                     editor.putString(Constants.BundleKey.USER_PROFILE_SERVER, String.valueOf("myProfiles/"+mEmail_id.substring(0,mEmail_id.indexOf("@"))+".jpg"));
                     editor.commit();
-                    uploadFile();
+                   util. uploadFile(mPrfilefilePath,mEmail_id);
                 }
             }
         }
 
     }
+
+/*
 
     private void uploadFile(){
         //if there is a file to upload
@@ -558,29 +550,21 @@ public class ToDoActivity extends BaseActivity
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                            //if the upload is successfull
-                            //hiding the progress dialog
+                             //hiding the progress dialog
                             mProgressDialog.dismissProgress();
-
-                            //and displaying a success toast
-                            Toast.makeText(getApplicationContext(), "File Uploaded ", Toast.LENGTH_LONG).show();
-                        }
+                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception exception) {
-                            //if the upload is not successfull
-                            //hiding the progress dialog
+                             //hiding the progress dialog
                             mProgressDialog.dismissProgress();
 
-                            //and displaying error message
-                            Toast.makeText(getApplicationContext(), exception.getMessage(), Toast.LENGTH_LONG).show();
                         }
                     })
                     .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                            //calculating progress percentage
                             double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
                             //displaying percentage in progress dialog
                             mProgressDialog.showProgress("Uploaded " + ((int) progress) + "%...");
@@ -592,6 +576,8 @@ public class ToDoActivity extends BaseActivity
             Log.i(TAG, "uploadFile: ");  //you can display an error toast
         }
     }
+
+*/
 
 
     public void addTextListener(){
@@ -620,7 +606,6 @@ public class ToDoActivity extends BaseActivity
             }
         });
     }
-
 
     //get Reminders todo
     public  List<ToDoItemModel> getTodaysReminder(String date){
@@ -695,4 +680,11 @@ public class ToDoActivity extends BaseActivity
         return result;
     }
 
+    public void setImage(Bitmap bitmap) {
+          Bitmap resized = Bitmap.createScaledBitmap(bitmap, 100, 100, true);
+        Bitmap conv_bm = getRoundedRectBitmap(resized, 1000);
+         mImageView_ProfileImage.setImageBitmap(conv_bm);
+
+
+    }
 }

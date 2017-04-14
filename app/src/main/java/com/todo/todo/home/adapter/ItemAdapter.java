@@ -81,6 +81,11 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.MyViewHolder>i
         notifyDataSetChanged();
     }
 
+    public void addNote(ToDoItemModel toDoItemModel) {
+        mdisplayedtoDoItemModels.add(toDoItemModel);
+        notifyDataSetChanged();
+    }
+
     public class MyViewHolder extends RecyclerView.ViewHolder {
         TextView textViewTitle,textViewnote,textViewReminder;
 

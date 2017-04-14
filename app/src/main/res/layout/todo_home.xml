@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     android:orientation="vertical"
     tools:showIn="@layout/app_bar_todo_home"
@@ -13,14 +13,11 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/gridview_notes"
         android:layout_marginTop="@dimen/diamen_65dp"
-        android:gravity="center"
         android:layout_marginLeft="@dimen/diamen_5dp"
         android:layout_marginRight="@dimen/diamen_5dp"
         android:layout_marginBottom="@dimen/diamen_5dp"
-
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         >
 
     </android.support.v7.widget.RecyclerView>

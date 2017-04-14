@@ -14,33 +14,44 @@ public class ToDoItemModel {
     String _note;
     String _startdate;
     String _Archive;
-
+    String _Settime;
 
     public ToDoItemModel() {
     }
 
-    public ToDoItemModel(int _id, String _title, String _reminder, String _note,String _Archive ) {
+    public ToDoItemModel(int _id, String _title, String _reminder, String _note,String _Archive ,String _Settime) {
         this._id = _id;
         this._title = _title;
         this._reminder = _reminder;
         this._note = _note;
         this._Archive=_Archive;
+        this._Settime=_Settime;
     }
-    public ToDoItemModel(String _title, String _note, String _reminder, String _startdate,String _Archive) {
+    public ToDoItemModel(String _title, String _note, String _reminder, String _startdate,String _Archive,String _Settime) {
         this._title = _title;
         this._reminder = _reminder;
         this._note = _note;
         this._startdate = _startdate;
         this._Archive=_Archive;
+        this._Settime=_Settime;
     }
 
-    public ToDoItemModel(int _id, String _title, String _note,  String _reminder,String _startdate,String _Archive) {
+    public ToDoItemModel(int _id, String _title, String _note,  String _reminder,String _startdate,String _Archive,String _Settime) {
         this._id = _id;
         this._title = _title;
         this._reminder = _reminder;
         this._note = _note;
         this._startdate = _startdate;
         this._Archive=_Archive;
+        this._Settime=_Settime;
+    }
+
+    public String get_Settime() {
+        return _Settime;
+    }
+
+    public void set_Settime(String _Settime) {
+        this._Settime = _Settime;
     }
 
     public String get_Archive() {

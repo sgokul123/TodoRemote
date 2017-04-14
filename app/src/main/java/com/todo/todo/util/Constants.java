@@ -36,9 +36,8 @@ public class Constants {
         public static final String KEY_REMINDER ="reminder";
         public static final String KEY_STARTDATE ="startdate";
             public static final String KEY_ARCHIVE ="archive";
-
-
-    }
+       public static final String KEY_SETTIME = "settime";
+        }
     public interface NotesType {
         public static final String REMINDER_NOTES = "Reminders";
         public static final String ARCHIVE_NOTES = "Archived";

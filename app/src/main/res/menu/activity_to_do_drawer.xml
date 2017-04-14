@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <group android:checkableBehavior="single">
+
         <item
             android:id="@+id/nav_notes"
             android:icon="@drawable/ic_wallet"
@@ -22,22 +22,24 @@
             android:id="@+id/nav_deleted"
             android:icon="@drawable/ic_menu_manage"
             android:title="Deleted" />
-    </group>
+
 
     <item android:title="">
-        <menu>
 
-            <item
+        <item
                 android:id="@+id/nav_share"
                 android:icon="@drawable/ic_sharing_big_symbol"
                 android:title="Share" />
 
-            <item
-                android:id="@+id/nav_logout"
-                android:icon="@drawable/ic_logout"
-                android:title="LogOut"
-                />
-        </menu>
+    </item>
+    <item android:title="">
+    <menu>
+        <item
+            android:id="@+id/nav_logout"
+            android:icon="@drawable/ic_logout"
+            android:title="LogOut"
+            />
+    </menu>
     </item>
 
 </menu>

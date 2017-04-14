@@ -18,6 +18,7 @@
             android:layout_height="?attr/actionBarSize"
             android:background="@color/toolbar_back"
             app:popupTheme="@style/AppTheme.PopupOverlay"
+
             >
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -26,33 +27,19 @@
                 android:id="@+id/layoutToolbar"
                 >
 
-            <android.support.v7.widget.AppCompatTextView
-                android:id="@+id/textview_title_toolbar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="@dimen/diamen_30sp"
-                android:layout_marginRight="@dimen/diamen_50dp"
-                android:text="Notes"
-                android:layout_centerVertical="true"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:layout_marginBottom="@dimen/diamen_10dp"
-                />
-                <android.support.v7.widget.AppCompatEditText
-                    android:id="@+id/edittext_search_toolbar"
-                    android:layout_width="match_parent"
+                <android.support.v7.widget.AppCompatTextView
+                    android:id="@+id/textview_title_toolbar"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/input"
-                    android:hint="Search here.."
-                    app:paddingStart="@dimen/diamen_20dp"
-                    android:layout_marginTop="@dimen/diamen_10dp"
-                    android:layout_marginRight="@dimen/diamen_10dp"
-                    android:layout_toLeftOf="@+id/imageView_grid_linear"
-                    android:textColor="@android:color/black"
-                    android:drawableRight="@android:drawable/ic_menu_search"
-                    android:inputType="textVisiblePassword"
-                    android:visibility="gone"
+                    android:textSize="@dimen/diamen_30sp"
+                    android:layout_marginRight="@dimen/diamen_50dp"
+                    android:text="Notes"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:layout_marginBottom="@dimen/diamen_10dp"
                     />
+
 
                 <android.support.v7.widget.AppCompatImageView
                     android:id="@+id/imageView_search_bar"
@@ -74,32 +61,65 @@
                     app:srcCompat="@drawable/list_view" />
 
             </RelativeLayout>
-            <!--<LinearLayout
-                android:id="@+id/layout_toolbar_search"
+
+
+        </android.support.v7.widget.Toolbar>
+
+    </android.support.design.widget.AppBarLayout>
+
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay"
+        >
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbarsearch"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@android:color/white"
+            app:popupTheme="@style/AppTheme.PopupOverlay"
+            android:visibility="gone"
+            >
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:orientation="horizontal"
-                android:visibility="gone"
-              android:layout_marginLeft="@dimen/diamen_10dp"
-                android:layout_marginRight="@dimen/diamen_20dp"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:id="@+id/layoutToolbarsearch"
+                >
 
-                 <android.support.v7.widget.AppCompatEditText
-                 android:id="@+id/edittext_title_toolbar"
-                 android:layout_width="match_parent"
-                 android:layout_height="wrap_content"
-                 android:background="@drawable/input"
-                 android:hint="Search here.."
-                 android:layout_marginTop="@dimen/diamen_10dp"
-                 android:layout_marginLeft="@dimen/diamen_10dp"
-                 android:layout_marginRight="@dimen/diamen_10dp"
-                 android:layout_toLeftOf="@+id/imageView_grid_linear"
-                 android:textColor="@android:color/black"
-                android:layout_toRightOf="@+id/textview_title_toolbar"
-                 android:drawableRight="@android:drawable/ic_menu_search"
-                 android:inputType="textVisiblePassword"
-                 />
+                <android.support.v7.widget.AppCompatImageView
+                    android:id="@+id/imageView_back_search"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/dimen_20dp"
+                    android:layout_marginLeft="@dimen/diamen_40dp"
+                    android:layout_marginRight="@dimen/diamen_20dp"
+                    android:layout_marginTop="@dimen/diamen_10dp"
+                    app:srcCompat="@drawable/ic_previous" />
 
-            </LinearLayout>-->
+                <android.support.v7.widget.AppCompatEditText
+                    android:id="@+id/edittext_search_toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Search here.."
+                    android:layout_toRightOf="@+id/imageView_back_search"
+                    android:textColorHint="@android:color/black"
+                    android:background="@android:color/white"
+                    android:layout_marginTop="@dimen/diamen_10dp"
+                    android:layout_marginRight="@dimen/diamen_10dp"
+                    android:layout_toLeftOf="@+id/imageView_grid_linear"
+                    android:textColor="@android:color/black"
+                    android:layout_marginLeft="@dimen/diamen_10dp"
+                    android:drawableRight="@android:drawable/ic_menu_search"
+                    android:inputType="text"
+                    />
+                <View
+                   android:layout_width="match_parent"
+                    android:background="@android:color/black"
+                    android:layout_alignParentBottom="true"
+                    android:layout_height="1dp"/>
+            </RelativeLayout>
 
         </android.support.v7.widget.Toolbar>
 

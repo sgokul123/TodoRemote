@@ -143,29 +143,35 @@ public class ToDoActivityInteractor implements  TodoInteractorInterface {
 
 
         toDoPresenterInteface.showProgressDialog();
-        mRef = mDatabase.child("usersdata").child(uid);
-        mRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                GenericTypeIndicator<ArrayList<ToDoItemModel>> t = new GenericTypeIndicator<ArrayList<ToDoItemModel>>() {
-                };
+        try {
 
-                Log.i(TAG, "onDataChange: ");
-                ArrayList<ToDoItemModel> todoItemModel = new ArrayList<ToDoItemModel>();
-                for (DataSnapshot child : dataSnapshot.getChildren()) {
+
+            mRef = mDatabase.child("usersdata").child(uid);
+            mRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    GenericTypeIndicator<ArrayList<ToDoItemModel>> t = new GenericTypeIndicator<ArrayList<ToDoItemModel>>() {
+                    };
+
                     Log.i(TAG, "onDataChange: ");
-                    todoItemModel.addAll(child.getValue(t));
+                    ArrayList<ToDoItemModel> todoItemModel = new ArrayList<ToDoItemModel>();
+                    for (DataSnapshot child : dataSnapshot.getChildren()) {
+                        Log.i(TAG, "onDataChange: ");
+                        todoItemModel.addAll(child.getValue(t));
+                    }
+                    toDoPresenterInteface.getCallBackNotes(todoItemModel);
+                    toDoPresenterInteface.closeProgressDialog();
                 }
-                toDoPresenterInteface.getCallBackNotes(todoItemModel);
-                toDoPresenterInteface.closeProgressDialog();
-            }
-            @Override
-            public void onCancelled(DatabaseError error) {
-                Log.i(TAG, "onCancelled: ");
-                toDoPresenterInteface.closeProgressDialog();
-            }
-        });
 
+                @Override
+                public void onCancelled(DatabaseError error) {
+                    Log.i(TAG, "onCancelled: ");
+                    toDoPresenterInteface.closeProgressDialog();
+                }
+            });
+        }catch(Exception e){
+            toDoPresenterInteface.closeNoteProgressDialog();
+        }
     }
 
     @Override

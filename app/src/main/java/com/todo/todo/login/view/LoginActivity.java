@@ -132,7 +132,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
         switch (v.getId())
         {
             case R.id.facebook_login_button:
-               // LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("public_profile"));
+                // LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("public_profile"));
 
                 break;
             case R.id.button_signin:
@@ -155,7 +155,6 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
         }
 
     }
-
 
     private Bundle getFacebookData(JSONObject object) {
         try {
@@ -185,7 +184,6 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
                 bundle.putString("birthday", object.getString("birthday"));
             if (object.has("location"))
                 bundle.putString("location", object.getJSONObject("location").getString("name"));
-
             return bundle;
         }
         catch(JSONException e) {
@@ -225,6 +223,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
                         mSharedPref_editor.putString(Constants.ProfileeKey.FIRST_NAME, bFacebookData.getString("first_name"));
                         mSharedPref_editor.putString(Constants.ProfileeKey.LAST_NAME, bFacebookData.getString("last_name"));
                         mSharedPref_editor.putString(Constants.BundleKey.FACEBOOK_LOGIN, "true");
+                        mSharedPref_editor.putString(Constants.ProfileeKey.PROFILE_IMAGE_URL, "");
                         mSharedPref_editor.commit();
                         Log.i(TAG, "onCompleted: "+bFacebookData.getString("id"));
                         Toast.makeText(LoginActivity.this, "id :"+bFacebookData.getString("first_name"), Toast.LENGTH_SHORT).show();
@@ -241,6 +240,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
                 request.executeAsync();
 
             }
+
             @Override
             public void onCancel() {
                 Toast.makeText(LoginActivity.this, "Login attempt canceled", Toast.LENGTH_SHORT).show();
@@ -253,6 +253,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
         });
 
     }
+
     public  void googleLogin(){
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -278,12 +279,12 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
         mFBCallbackManager.onActivityResult(requestCode, resultCode, data);
         if (requestCode == RC_SIGN_IN) {
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
-            handleSignInResult(result);
+            handleGoogleSignInResult(result);
         }
 
     }
-    private void handleSignInResult(GoogleSignInResult result) {
-        Log.d(TAG, "handleSignInResult:" + result.isSuccess());
+    private void handleGoogleSignInResult(GoogleSignInResult result) {
+        Log.d(TAG, "handleGoogleSignInResult:" + result.isSuccess());
         if (result.isSuccess()) {
             // Signed in successfully, show authenticated UI.
             GoogleSignInAccount acct = result.getSignInAccount();
@@ -291,10 +292,12 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
             //   updateUI(true);
             //Google Login
             String googleemailid=acct.getEmail();
-            Log.i(TAG, "handleSignInResult: "+acct.getPhotoUrl());
+            Log.i(TAG, "handleGoogleSignInResult: "+acct.getPhotoUrl());
             mSharedPref_editor.putString(Constants.BundleKey.USER_REGISTER,"true");
             mSharedPref_editor.putString(Constants.BundleKey.USER_EMAIL,acct.getEmail() );
             mSharedPref_editor.putString(Constants.ProfileeKey.FIRST_NAME, acct.getDisplayName());
+            mSharedPref_editor.putString(Constants.BundleKey.PROFILE_PIC, String.valueOf(acct.getPhotoUrl()));
+            mSharedPref_editor.putString(Constants.ProfileeKey.PROFILE_IMAGE_URL, "");
             mSharedPref_editor.putString(Constants.BundleKey.USER_USER_UID,googleemailid.substring(0,googleemailid.indexOf("@"))+acct.getId());
             mSharedPref_editor.putString(Constants.BundleKey.GOOGLE_LOGIN,"true");
             mSharedPref_editor.commit();
@@ -313,6 +316,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
             Toast.makeText(this, "Signout", Toast.LENGTH_SHORT).show();
         }
     }
+
     private void doAuthentication() {
         mPattern = Pattern.compile(EMAIL_PATTERN);
         mStrUserEmail = mEditTextEmail.getText().toString();
@@ -324,13 +328,11 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
                 loginLoginPresenter.getLogin(mStrUserEmail, mStrUserPassword);
             } else {
                 Toast.makeText(getApplicationContext(), "Please Enter Valid Email ...", Toast.LENGTH_SHORT).show();
-
             }
         } else {
             Toast.makeText(getApplicationContext(), "Please Enter The User Name  And Password ... ", Toast.LENGTH_SHORT).show();
         }
     }
-
 
     @Override
     public void loginSuccess(RegistrationModel registrationModel, String userUid) {
@@ -344,7 +346,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
         mSharedPref_editor.putString(Constants.ProfileeKey.LAST_NAME,registrationModel.getUserLastName());
         mSharedPref_editor.putString(Constants.ProfileeKey.MOBILE_NO,registrationModel.getMobileNo());
         mSharedPref_editor.putString(Constants.ProfileeKey.PROFILE_IMAGE_URL,registrationModel.getUserProfileImgurl());
-
+        mSharedPref_editor.putString(Constants.BundleKey.USER_PROFILE_SERVER,"true");
         mSharedPref_editor.putString(Constants.BundleKey.USER_NAME, mStrUserName);
         mSharedPref_editor.commit();
         ///  show registration page again

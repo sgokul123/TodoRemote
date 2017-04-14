@@ -13,10 +13,8 @@
         android:layout_marginLeft="@dimen/diamen_5dp"
         android:layout_marginRight="@dimen/diamen_5dp"
         android:layout_marginTop="@dimen/diamen_5dp"
-
         android:stateListAnimator="@anim/animation"
         app:cardCornerRadius="@dimen/diamen_20dp"
-
         >
 
         <RelativeLayout
