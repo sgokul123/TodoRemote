@@ -1,4 +1,4 @@
-package com.todo.todo.home.view;
+package com.todo.todo.addnote.view;
 
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
@@ -16,12 +16,13 @@ import android.widget.Toast;
 import com.todo.todo.R;
 import com.todo.todo.home.model.ToDoItemModel;
 import com.todo.todo.home.presenter.ToDoActivityPresenter;
+import com.todo.todo.home.view.ToDoActivity;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
-public class NewNoteFragment extends Fragment implements View.OnClickListener,NoteInterface{
+public class NewNoteFragment extends Fragment implements View.OnClickListener,NoteInterface {
     private  String TAG ="NewNoteFragment";
     AppCompatImageView imageViewBack,imageViewPin,imageViewReminder,imageViewSave;
     AppCompatTextView textViewedited,textViewReminder;
@@ -101,36 +102,29 @@ public class NewNoteFragment extends Fragment implements View.OnClickListener,No
                 ToDoItemModel toDoItemModel =new ToDoItemModel();
 
                 StrNote=editTextNote.getText().toString();
-                toDoItemModel.set_note(StrNote);
+                toDoItemModel.setNote(StrNote);
                 editTextNote.setText("");
                 StrTitle=editTextTitle.getText().toString();
-                toDoItemModel.set_title(StrTitle);
+                toDoItemModel.setTitle(StrTitle);
                 editTextTitle.setText("");
                 StrReminder=textViewReminder.getText().toString();
-                toDoItemModel.set_reminder(StrReminder);
+                toDoItemModel.setReminder(StrReminder);
                 textViewReminder.setText("");
                 Toast.makeText(getActivity(), toDoItemModel +"", Toast.LENGTH_SHORT).show();
                 toDoActivityPresenter =new ToDoActivityPresenter(new ToDoActivity(),getActivity());
-               // toDoActivityPresenter.PutNote(toDoItemModel);
 
-             //   getActivity().getFragmentManager().beginTransaction().remove().commit();
-               /* Intent intent=new Intent(NewNoteActivity.this,ToDoActivity.class);
-                startActivity(intent);*/
-                break;
+               break;
             default:
-
                 break;
-
         }
 
     }
 
     private void updateLabel() {
 
-        String myFormat = "dd/MM/yy"; //In which you need put here
+        String myFormat = "dd/MM/yy";            //In which you need put here
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
         textViewReminder.setText(sdf.format(myCalendar.getTime()));
-
     }
 
     @Override

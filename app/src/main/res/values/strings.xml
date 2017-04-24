@@ -11,4 +11,16 @@
     <string name="userName">pradipsonawane@gmail.com</string>
     <string name="user_password">pradip123</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="google_client_key_id">850919446578-99256ps8i0g1kv1kgh8iv7ikt21rv9gu.apps.googleusercontent.com</string>
+    <string name="geturl_path">myProfiles/sample.jpg</string>
+    <string name="flag_false">false</string>
+    <string name="null_string">null</string>
+    <string name="select_pick">Select Picture</string>
+    <string name="load_data">Please Wait while loading data</string>
+    <string name="success">succcess</string>
+    <string name="flag_true">true</string>
+    <string name="loading">Loading...</string>
+    <string name="updated">succcessfully Updated...</string>
+    <string name="fail_update">fail to Update...</string>
+
 </resources>

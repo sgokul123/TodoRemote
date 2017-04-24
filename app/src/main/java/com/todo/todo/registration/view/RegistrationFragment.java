@@ -84,13 +84,10 @@ public class RegistrationFragment extends Fragment implements View.OnClickListen
         model.setMobileNo(mEditTextMobile.getText().toString());
         model.setUserPassword(mEditTextPassword.getText().toString());
         model.setUserProfileImgurl(mEditTextName.getText().toString());//giv url
-       // model.setUserLastName();
 
         Log.i(TAG, "onClick: "+model.getMailid());
 
-    //    registrationPresenter=new RegistrationPresenter(getActivity(),RegistrationFragment.this);
-       // registrationPresenter.setNewUser(model);
-       if(validateAll()){
+        if(validateAll()){
            registrationPresenter=new RegistrationPresenter(getActivity(),this);
            registrationPresenter.setNewUser(model);
            Toast.makeText(getActivity(), "success", Toast.LENGTH_SHORT).show();
@@ -136,33 +133,25 @@ public class RegistrationFragment extends Fragment implements View.OnClickListen
         public boolean validateAll(){
 
         boolean mobil=false,name=false,lname=false,pass=false,email=false;
-
-                //mobile
-                if(mEditTextMobile.getText().toString().length()==10){
-                    //  Log.i(TAG, "isValid: ");
-                    mobil=true;
+               if(mEditTextMobile.getText().toString().length()==10){
+                     mobil=true;
                     Log.i(TAG, "validateAll: mobil");
                 }
-            //Mail validation
                 mPattern = Pattern.compile(EMAIL_PATTERN);
                 mMatcher = mPattern.matcher(mEditTextEmail.getText().toString());
                  if(mMatcher.matches()){
                      email=true;
                      Log.i(TAG, "validateAll:email ");
                 }
-            //Name validation
 
                 if(!mEditTextName.getText().toString().equals("")){
                     name=true;
                     Log.i(TAG, "validateAll: name");
-                    //  mEditTextName.setSelection(mEditTextName.getText().length());
                 }
-            //Last Name validation
 
             if(!mEditTextLName.getText().toString().equals("")){
                 lname=true;
                 Log.i(TAG, "validateAll: name");
-                //  mEditTextName.setSelection(mEditTextName.getText().length());
             }
             //Password validation
 
@@ -209,7 +198,6 @@ public class RegistrationFragment extends Fragment implements View.OnClickListen
 
         }
         if(hasFocus){
-            //Toast.makeText(getActivity(), "got the focus", Toast.LENGTH_LONG).show();
         }else {
             Toast.makeText(getActivity(), "lost the focus", Toast.LENGTH_LONG).show();
             isValid (editText);
@@ -224,19 +212,14 @@ public class RegistrationFragment extends Fragment implements View.OnClickListen
 
             if(mEditTextMobile.getText().toString().length()==10){
                 mEditTextMobile.setError(null);
-              //  Log.i(TAG, "isValid: ");mTextlayoutmobil
             }
             else if(mEditTextMobile.getText().toString().equals("")) {
 
-              //  mTextlayoutmobil.setErrorEnabled(true);
+
                 mEditTextMobile.setError("Mobile Number Should not blank");
-               // mEditTextMobile.setError("Mobile Number Should not blank");mTextlayoutmobil
                 }
                 else{
-               // mTextlayoutmobil.setErrorEnabled(true);
                 mEditTextMobile.setError("Mobile Number Must be 10 Digit");
-                   /// mEditTextMobile.setError("Mobile Number Must be 10 Digit");
-             //   mEditTextMobile.setSelection(mEditTextMobile.getText().length());
                 }
         }
         //Mail validation
@@ -245,78 +228,56 @@ public class RegistrationFragment extends Fragment implements View.OnClickListen
             mMatcher = mPattern.matcher(mEditTextEmail.getText().toString());
             if(mEditTextEmail.getText().toString().equals("")){
 
-             //   mTextlayoutemail.setErrorEnabled(true);mTextlayoutemail
+
                 mEditTextEmail.setError("Email should not be blank");
-                //mEditTextEmail.setError("Email should not be blank");
                 Log.i(TAG, "isValid: ");
 
             }else if(!mMatcher.matches()){
-          //      mTextlayoutemail.setErrorEnabled(true);
+
                 mEditTextEmail.setError("Email is Not Valid");
-               // mEditTextEmail.setError("Email is Not Valid");
-             //   mEditTextEmail.setSelection(mEditTextEmail.getText().length());
+
             }else {
-               // mEditTextEmail.setError(null);
+
             }
 
         }
         //Name validation
         else if(editText==mEditTextName){
             if(mEditTextName.getText().toString().equals("")){
-            //    mTextlayoutname.setErrorEnabled(true);mTextlayoutname
+
                 mEditTextName.setError("Mobile Number Must be 10 Digit");
-               // mEditTextName.setError("Name should not blank");
-              //  mEditTextName.setSelection(mEditTextName.getText().length());
             }
             else {
-               // mEditTextName.setError(null);
             }
 
         }
         //Name validation
         else if(editText==mEditTextLName){
             if(mEditTextLName.getText().toString().equals("")){
-                //    mTextlayoutlname.setErrorEnabled(true);
-                //mTextlayoutlname.setError("Mobile Number Must be 10 Digit");
                  mEditTextLName.setError("Name should not blank");
-                //  mEditTextLName.setSelection(mEditTextName.getText().length());
             }
             else {
-              //  mTextlayoutlname.setError(null);
             }
 
         }
         //Password validation
         else if(editText==mEditTextPassword){
             if(mEditTextPassword.getText().toString().equals("")){
-             //   mTextlayoutpass1.setErrorEnabled(true);
-            //    mTextlayoutpass1.setError("should not blank");
                 mEditTextPassword.setError("should not blank");
-           //     mEditTextPassword.setSelection(mEditTextPassword.getText().length());
             }else if(mEditTextPassword.getText().toString().length()<=5){
-              //  mTextlayoutpass1.setErrorEnabled(true);
-               // mTextlayoutpass1.setError("should not be less then 6 laters");
                 mEditTextPassword.setError("should not be less then 6 laters");
             }else {
-                //mTextlayoutpass1.setError(null);
             }
         }
        //Re-entered Pasword
         else if(editText==mEditTextPassword2){
             if(mEditTextPassword.getText().toString().equals("")){
-             //   mTextlayoutpasss2.setErrorEnabled(true);
-              ///  mTextlayoutpasss2.setError("should not blank");
                mEditTextPassword.setError("should not blank");
-             //   mEditTextPassword.setSelection(mEditTextPassword.getText().length());
             }
            else if(mEditTextPassword.getText().toString().equals(mEditTextPassword2.getText().toString())){
-                //mTextlayoutpasss2.setError(null);
                 Log.i(TAG, "isValid: ");
             }else{
-               // mTextlayoutpasss2.setErrorEnabled(true);
-              //  mTextlayoutpasss2.setError("Re-Entered Password Not Matched");
                 mEditTextPassword2.setError("Re-Entered Password Not Matched");
-               // mEditTextPassword2.setSelection(mEditTextPassword2.getText().length());
             }
 
         }

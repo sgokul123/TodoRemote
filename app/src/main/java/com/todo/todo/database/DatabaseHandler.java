@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import com.todo.todo.addnote.interactor.AddNoteInteractorInteface;
 import com.todo.todo.home.interactor.ToDoActivityInteractor;
 import com.todo.todo.home.model.ToDoItemModel;
 import com.todo.todo.home.presenter.ToDoActivityPresenter;
@@ -22,7 +23,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final int DATABASE_VERSION = 1;
     private ToDoActivityInteractor todoActivityInteractor;
     private ToDoActivityPresenter toDoActivityPresenter;
-
+    AddNoteInteractorInteface mAddNoteInteractoreInteface;
     public DatabaseHandler(Context context, ToDoActivityInteractor todoActivityInteractor) {
         super(context, Constants.RequestParam.DATABASE_NAME, null, DATABASE_VERSION);
         //3rd argument to be passed is CursorFactory instance
@@ -38,6 +39,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         super(context, Constants.RequestParam.DATABASE_NAME, null, DATABASE_VERSION);
         //3rd argument to be passed is CursorFactory instance
         this.toDoActivityPresenter = toDoActivityPresenter;
+    }
+
+    public DatabaseHandler(Context mContext, AddNoteInteractorInteface addNoteInteractoreInteface) {
+        super(mContext, Constants.RequestParam.DATABASE_NAME, null, DATABASE_VERSION);
+        this.mAddNoteInteractoreInteface =addNoteInteractoreInteface;
     }
 
     // Creating Tables  
@@ -87,12 +93,12 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
             Log.i(TAG, "addToDo: start");
             ContentValues values = new ContentValues();
-            values.put(Constants.RequestParam.KEY_TITLE, toDoItemModel.get_title()); // ToDo Name
-            values.put(Constants.RequestParam.KEY_NOTE, toDoItemModel.get_note()); // ToDo Phone
-            values.put(Constants.RequestParam.KEY_REMINDER, toDoItemModel.get_reminder()); // ToDo REMINDER
-            values.put(Constants.RequestParam.KEY_STARTDATE, toDoItemModel.get_startdate()); // ToDo REMINDER
-            values.put(Constants.RequestParam.KEY_ARCHIVE, toDoItemModel.get_Archive());
-            values.put(Constants.RequestParam.KEY_SETTIME, toDoItemModel.get_Settime());
+            values.put(Constants.RequestParam.KEY_TITLE, toDoItemModel.getTitle()); // ToDo Name
+            values.put(Constants.RequestParam.KEY_NOTE, toDoItemModel.getNote()); // ToDo Phone
+            values.put(Constants.RequestParam.KEY_REMINDER, toDoItemModel.getReminder()); // ToDo REMINDER
+            values.put(Constants.RequestParam.KEY_STARTDATE, toDoItemModel.getStartdate()); // ToDo REMINDER
+            values.put(Constants.RequestParam.KEY_ARCHIVE, toDoItemModel.getArchive());
+            values.put(Constants.RequestParam.KEY_SETTIME, toDoItemModel.getSettime());
             // Inserting Row
 
             db.insert(Constants.RequestParam.NOTES_TABLE_NAME, null, values);
@@ -119,21 +125,21 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             db = this.getWritableDatabase();
             Log.i(TAG, "addToDo: start");
             ContentValues values = new ContentValues();
-            values.put(Constants.RequestParam.KEY_TITLE, toDoItemModel.get_title()); // ToDo Name
-            values.put(Constants.RequestParam.KEY_NOTE, toDoItemModel.get_note()); // ToDo Phone
-            values.put(Constants.RequestParam.KEY_REMINDER, toDoItemModel.get_reminder()); // ToDo REMINDER
-            values.put(Constants.RequestParam.KEY_STARTDATE, toDoItemModel.get_startdate()); // ToDo REMINDER
-            values.put(Constants.RequestParam.KEY_ARCHIVE, toDoItemModel.get_Archive());
-            values.put(Constants.RequestParam.KEY_SETTIME, toDoItemModel.get_Settime());
+            values.put(Constants.RequestParam.KEY_TITLE, toDoItemModel.getTitle()); // ToDo Name
+            values.put(Constants.RequestParam.KEY_NOTE, toDoItemModel.getNote()); // ToDo Phone
+            values.put(Constants.RequestParam.KEY_REMINDER, toDoItemModel.getReminder()); // ToDo REMINDER
+            values.put(Constants.RequestParam.KEY_STARTDATE, toDoItemModel.getStartdate()); // ToDo REMINDER
+            values.put(Constants.RequestParam.KEY_ARCHIVE, toDoItemModel.getArchive());
+            values.put(Constants.RequestParam.KEY_SETTIME, toDoItemModel.getSettime());
             // Inserting Row
 
             db.insert(Constants.RequestParam.LOCAL_NOTES_TABLE_NAME, null, values);
             Log.i(TAG, "addToDo: success");
-            todoActivityInteractor.getResponce(true);
+            mAddNoteInteractoreInteface.getResponce(true);
             //2nd argument is String containing nullColumnHack
 
         } catch (Exception e) {
-            todoActivityInteractor.getResponce(false);
+            mAddNoteInteractoreInteface.getResponce(false);
             Log.i(TAG, "addToDo: " + e);
         } finally {
             db.close(); // Closing database connection
@@ -150,12 +156,12 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             Log.i(TAG, "addToDo: start");
             for (ToDoItemModel toDoItemModel : toDoItemModels) {
                 ContentValues values = new ContentValues();
-                values.put(Constants.RequestParam.KEY_TITLE, toDoItemModel.get_title()); // ToDo Name
-                values.put(Constants.RequestParam.KEY_NOTE, toDoItemModel.get_note()); // ToDo Phone
-                values.put(Constants.RequestParam.KEY_REMINDER, toDoItemModel.get_reminder()); // ToDo REMINDER
-                values.put(Constants.RequestParam.KEY_STARTDATE, toDoItemModel.get_startdate()); // ToDo REMINDER
-                values.put(Constants.RequestParam.KEY_ARCHIVE, toDoItemModel.get_Archive()); // ToDo REMINDER
-                values.put(Constants.RequestParam.KEY_SETTIME, toDoItemModel.get_Settime());
+                values.put(Constants.RequestParam.KEY_TITLE, toDoItemModel.getTitle()); // ToDo Name
+                values.put(Constants.RequestParam.KEY_NOTE, toDoItemModel.getNote()); // ToDo Phone
+                values.put(Constants.RequestParam.KEY_REMINDER, toDoItemModel.getReminder()); // ToDo REMINDER
+                values.put(Constants.RequestParam.KEY_STARTDATE, toDoItemModel.getStartdate()); // ToDo REMINDER
+                values.put(Constants.RequestParam.KEY_ARCHIVE, toDoItemModel.getArchive()); // ToDo REMINDER
+                values.put(Constants.RequestParam.KEY_SETTIME, toDoItemModel.getSettime());
                 db.insert(Constants.RequestParam.NOTES_TABLE_NAME, null, values);
             }
 
@@ -200,13 +206,13 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         if (cursor.moveToFirst()) {
             do {
                 ToDoItemModel ToDo = new ToDoItemModel();
-                ToDo.set_id(Integer.parseInt(cursor.getString(0)));
-                ToDo.set_title(cursor.getString(1));
-                ToDo.set_note(cursor.getString(2));
-                ToDo.set_reminder(cursor.getString(3));
-                ToDo.set_startdate(cursor.getString(4));
-                ToDo.set_Archive(cursor.getString(5));
-                ToDo.set_Settime(cursor.getString(6));
+                ToDo.setId(Integer.parseInt(cursor.getString(0)));
+                ToDo.setTitle(cursor.getString(1));
+                ToDo.setNote(cursor.getString(2));
+                ToDo.setReminder(cursor.getString(3));
+                ToDo.setStartdate(cursor.getString(4));
+                ToDo.setArchive(cursor.getString(5));
+                ToDo.setSettime(cursor.getString(6));
                 // Adding ToDo to list  
                 ToDoList.add(ToDo);
             } while (cursor.moveToNext());
@@ -223,13 +229,13 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             do {
                 Log.i(TAG, "getAllToDos: " + cursor2.getColumnNames());
                 ToDoItemModel ToDo = new ToDoItemModel();
-                ToDo.set_id(Integer.parseInt(cursor2.getString(0)));
-                ToDo.set_title(cursor2.getString(1));
-                ToDo.set_note(cursor2.getString(2));
-                ToDo.set_reminder(cursor2.getString(3));
-                ToDo.set_startdate(cursor2.getString(4));
-                ToDo.set_Archive(cursor2.getString(5));
-                ToDo.set_Settime(cursor2.getString(6));
+                ToDo.setId(Integer.parseInt(cursor2.getString(0)));
+                ToDo.setTitle(cursor2.getString(1));
+                ToDo.setNote(cursor2.getString(2));
+                ToDo.setReminder(cursor2.getString(3));
+                ToDo.setStartdate(cursor2.getString(4));
+                ToDo.setArchive(cursor2.getString(5));
+                ToDo.setSettime(cursor2.getString(6));
                 // Adding ToDo to list
                 ToDoList.add(ToDo);
             } while (cursor2.moveToNext());
@@ -254,13 +260,13 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             do {
                 Log.i(TAG, "getAllToDos: " + cursor2.getColumnNames());
                 ToDoItemModel localNote = new ToDoItemModel();
-                localNote.set_id(Integer.parseInt(cursor2.getString(0)));
-                localNote.set_title(cursor2.getString(1));
-                localNote.set_note(cursor2.getString(2));
-                localNote.set_reminder(cursor2.getString(3));
-                localNote.set_startdate(cursor2.getString(4));
-                localNote.set_Archive(cursor2.getString(5));
-                localNote.set_Settime(cursor2.getString(6));
+                localNote.setId(Integer.parseInt(cursor2.getString(0)));
+                localNote.setTitle(cursor2.getString(1));
+                localNote.setNote(cursor2.getString(2));
+                localNote.setReminder(cursor2.getString(3));
+                localNote.setStartdate(cursor2.getString(4));
+                localNote.setArchive(cursor2.getString(5));
+                localNote.setSettime(cursor2.getString(6));
                 // Adding ToDo to list
                 localNotes.add(localNote);
             } while (cursor2.moveToNext());
@@ -274,15 +280,15 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
-        values.put(Constants.RequestParam.KEY_TITLE, toDoItemModel.get_note());
-        values.put(Constants.RequestParam.KEY_NOTE, toDoItemModel.get_title());
-        values.put(Constants.RequestParam.KEY_REMINDER, toDoItemModel.get_reminder());
-        values.put(Constants.RequestParam.KEY_STARTDATE, toDoItemModel.get_startdate());
-        values.put(Constants.RequestParam.KEY_ARCHIVE, toDoItemModel.get_Archive());
-        values.put(Constants.RequestParam.KEY_SETTIME, toDoItemModel.get_Settime());
+        values.put(Constants.RequestParam.KEY_TITLE, toDoItemModel.getNote());
+        values.put(Constants.RequestParam.KEY_NOTE, toDoItemModel.getTitle());
+        values.put(Constants.RequestParam.KEY_REMINDER, toDoItemModel.getReminder());
+        values.put(Constants.RequestParam.KEY_STARTDATE, toDoItemModel.getStartdate());
+        values.put(Constants.RequestParam.KEY_ARCHIVE, toDoItemModel.getArchive());
+        values.put(Constants.RequestParam.KEY_SETTIME, toDoItemModel.getSettime());
         // updating row  
         return db.update(Constants.RequestParam.NOTES_TABLE_NAME, values, Constants.RequestParam.KEY_ID + " = ?",
-                new String[]{String.valueOf(toDoItemModel.get_id())});
+                new String[]{String.valueOf(toDoItemModel.getId())});
     }
 
     //update Local data
@@ -291,15 +297,15 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(Constants.RequestParam.KEY_TITLE, toDoItemModel.get_note());
-        values.put(Constants.RequestParam.KEY_NOTE, toDoItemModel.get_title());
-        values.put(Constants.RequestParam.KEY_REMINDER, toDoItemModel.get_reminder());
-        values.put(Constants.RequestParam.KEY_STARTDATE, toDoItemModel.get_startdate());
-        values.put(Constants.RequestParam.KEY_ARCHIVE, toDoItemModel.get_Archive());
-        values.put(Constants.RequestParam.KEY_SETTIME, toDoItemModel.get_Settime());
+        values.put(Constants.RequestParam.KEY_TITLE, toDoItemModel.getNote());
+        values.put(Constants.RequestParam.KEY_NOTE, toDoItemModel.getTitle());
+        values.put(Constants.RequestParam.KEY_REMINDER, toDoItemModel.getReminder());
+        values.put(Constants.RequestParam.KEY_STARTDATE, toDoItemModel.getStartdate());
+        values.put(Constants.RequestParam.KEY_ARCHIVE, toDoItemModel.getArchive());
+        values.put(Constants.RequestParam.KEY_SETTIME, toDoItemModel.getSettime());
         // updating row
         return db.update(Constants.RequestParam.LOCAL_NOTES_TABLE_NAME, values, Constants.RequestParam.KEY_ID + " = ?",
-                new String[]{String.valueOf(toDoItemModel.get_id())});
+                new String[]{String.valueOf(toDoItemModel.getId())});
     }
     //delete local data
 
@@ -308,7 +314,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         for (ToDoItemModel todo : toDoItemModels) {
             db.delete(Constants.RequestParam.LOCAL_NOTES_TABLE_NAME, Constants.RequestParam.KEY_ID + " = ?",
-                    new String[]{String.valueOf(todo.get_id())});
+                    new String[]{String.valueOf(todo.getId())});
         }
         db.close();
     }
@@ -318,7 +324,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         Log.i(TAG, "deleteToDo: delete");
         db.delete(Constants.RequestParam.LOCAL_NOTES_TABLE_NAME, Constants.RequestParam.KEY_ID + " = ?",
-                new String[]{String.valueOf(toDoItemModel.get_id())});
+                new String[]{String.valueOf(toDoItemModel.getId())});
         db.close();
     }
 
@@ -327,9 +333,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         Log.i(TAG, "deleteToDo: delete");
         db.delete(Constants.RequestParam.NOTES_TABLE_NAME, Constants.RequestParam.KEY_ID + " = ?",
-                new String[]{String.valueOf(toDoItemModel.get_id())});
+                new String[]{String.valueOf(toDoItemModel.getId())});
         db.delete(Constants.RequestParam.LOCAL_NOTES_TABLE_NAME, Constants.RequestParam.KEY_ID + " = ?",
-                new String[]{String.valueOf(toDoItemModel.get_id())});
+                new String[]{String.valueOf(toDoItemModel.getId())});
         db.close();
     }
 

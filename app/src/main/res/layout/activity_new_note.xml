@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".home.view.NewNoteActivity">
+    tools:context=".addnote.view.NewNoteActivity">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -58,28 +58,31 @@
             android:id="@+id/input_layout_title"
             android:layout_below="@+id/view_first"
             android:layout_width="match_parent"
+            android:layout_marginRight="@dimen/diamen_20dp"
+            android:layout_marginLeft="@dimen/diamen_20dp"
             android:layout_marginTop="@dimen/diamen_20dp"
             android:layout_height="wrap_content">
             <android.support.v7.widget.AppCompatEditText
                 android:id="@+id/edittext_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
                 android:hint="Title"
                 android:textStyle="bold"
-
-                android:layout_marginTop="@dimen/diamen_20dp"
                 />
         </android.support.design.widget.TextInputLayout>
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
             android:layout_below="@+id/input_layout_title"
             android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/diamen_20dp"
+            android:layout_marginLeft="@dimen/diamen_20dp"
             android:layout_marginTop="@dimen/diamen_20dp">
             <android.support.v7.widget.AppCompatEditText
                 android:id="@+id/edittet_note"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-
+                android:background="@android:color/transparent"
                 android:hint="Note"
                 />
         </android.support.design.widget.TextInputLayout>

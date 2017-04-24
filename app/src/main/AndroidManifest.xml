@@ -5,6 +5,7 @@
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.GET_ACCOUNTS"/>
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
@@ -52,9 +53,11 @@
             android:name=".update.view.UpdateNoteActivity"
             android:label="@string/title_activity_to_do"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".home.view.NewNoteActivity"
+        <activity android:name=".addnote.view.NewNoteActivity"
             android:theme="@style/AppTheme.NoActionBar"
             />
+        <activity android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
+            android:theme="@style/Base.Theme.AppCompat"/>
     </application>
 
 </manifest>

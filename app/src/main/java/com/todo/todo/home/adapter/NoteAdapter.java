@@ -7,7 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.BaseAdapter;
 import android.widget.Filter;
 import android.widget.Filterable;
@@ -70,30 +69,22 @@ public class NoteAdapter extends BaseAdapter implements Filterable {
                 ToDoItemModel toDoItemModel = mdisplayedtoDoItemModels.get(position);
 
                 grid = new View(mContext);
-                Log.i(TAG, "getView: "+toDoItemModel.get_title());
+                Log.i(TAG, "getView: "+toDoItemModel.getTitle());
                 mCardView=(CardView) grid.findViewById(R.id.cardview_notes);
 
-                ///mCardView.setOnClickListener(this);
                 grid = inflater.inflate(R.layout.item_card, null);
                 TextView textViewTitle = (TextView) grid.findViewById(R.id.textview_card_title);
                 TextView textViewnote = (TextView) grid.findViewById(R.id.textview_notes);
                 TextView textViewReminder = (TextView) grid.findViewById(R.id.textView_reminder);
-                textViewTitle.setText(toDoItemModel.get_title());
-                textViewnote.setText(toDoItemModel.get_note());
-                textViewReminder.setText(toDoItemModel.get_reminder());
+                textViewTitle.setText(toDoItemModel.getTitle());
+                textViewnote.setText(toDoItemModel.getNote());
+                textViewReminder.setText(toDoItemModel.getReminder());
             } else {
                 grid = (View) convertView;
             }
 
             return grid;
         }
-
-  /*  @Override
-    public void onClick(View v) {
-        mAnimation = AnimationUtils.loadAnimation(mContext.getApplicationContext(), R.anim.animation);
-        mCardView.setAnimation(mAnimation);
-        mCardView.startAnimation(mAnimation);
-    }*/
 
     @Override
     public Filter getFilter() {
@@ -126,7 +117,7 @@ public class NoteAdapter extends BaseAdapter implements Filterable {
                 } else {
                     constraint = constraint.toString().toLowerCase();
                     for (int i = 0; i < mOriginaltoDoItemModels.size(); i++) {
-                        String data = mOriginaltoDoItemModels.get(i).get_title();
+                        String data = mOriginaltoDoItemModels.get(i).getTitle();
                         if (data.toLowerCase().startsWith(constraint.toString())) {
                             FilteredArrList.add(mOriginaltoDoItemModels.get(i));
                         }
@@ -137,20 +128,7 @@ public class NoteAdapter extends BaseAdapter implements Filterable {
                 }
                 return results;
             }
-               /* charText = charText.toLowerCase(Locale.getDefault());
-                worldpopulationlist.clear();
-                if (charText.length() == 0) {
-                    worldpopulationlist.addAll(arraylist);
-                } else {
-                    for (WorldPopulation wp : arraylist) {
-                        if (wp.getCountry().toLowerCase(Locale.getDefault())
-                                .contains(charText)) {
-                            worldpopulationlist.add(wp);
-                        }
-                    }
-                }
-                notifyDataSetChanged();
-                return results;*/
+
         };
         return filter;
     }

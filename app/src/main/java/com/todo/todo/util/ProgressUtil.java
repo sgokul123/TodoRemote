@@ -14,10 +14,15 @@ public class ProgressUtil {
     }
 
     public void showProgress(String message){
-        mProgressDialog.setMessage(message);
-        mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-        mProgressDialog.show();
-        mProgressDialog.setCancelable(false);
+
+        if(mProgressDialog!=null && !mProgressDialog.isShowing()  ) {
+
+            mProgressDialog.setMessage(message);
+            mProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            mProgressDialog.show();
+            mProgressDialog.setCancelable(false);
+
+        }
     }
 
     public void dismissProgress(){

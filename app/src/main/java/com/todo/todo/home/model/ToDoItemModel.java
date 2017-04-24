@@ -1,104 +1,102 @@
 package com.todo.todo.home.model;
 
-import android.content.Intent;
-
 /**
  * Created by bridgeit on 20/3/17.
  */
 
 public class ToDoItemModel {
 
-    int _id;
-    String _title;
-    String _reminder;
-    String _note;
-    String _startdate;
-    String _Archive;
-    String _Settime;
+    int id;
+    String title;
+    String reminder;
+    String note;
+    String startdate;
+    String archive;
+    String settime;
 
     public ToDoItemModel() {
     }
 
-    public ToDoItemModel(int _id, String _title, String _reminder, String _note,String _Archive ,String _Settime) {
-        this._id = _id;
-        this._title = _title;
-        this._reminder = _reminder;
-        this._note = _note;
-        this._Archive=_Archive;
-        this._Settime=_Settime;
+    public ToDoItemModel(int id, String title, String reminder, String note, String archive, String Settime) {
+        this.id = id;
+        this.title = title;
+        this.reminder = reminder;
+        this.note = note;
+        this.archive = archive;
+        this.settime = Settime;
     }
-    public ToDoItemModel(String _title, String _note, String _reminder, String _startdate,String _Archive,String _Settime) {
-        this._title = _title;
-        this._reminder = _reminder;
-        this._note = _note;
-        this._startdate = _startdate;
-        this._Archive=_Archive;
-        this._Settime=_Settime;
-    }
-
-    public ToDoItemModel(int _id, String _title, String _note,  String _reminder,String _startdate,String _Archive,String _Settime) {
-        this._id = _id;
-        this._title = _title;
-        this._reminder = _reminder;
-        this._note = _note;
-        this._startdate = _startdate;
-        this._Archive=_Archive;
-        this._Settime=_Settime;
+    public ToDoItemModel(String title, String note, String reminder, String startdate, String archive, String Settime) {
+        this.title = title;
+        this.reminder = reminder;
+        this.note = note;
+        this.startdate = startdate;
+        this.archive = archive;
+        this.settime = Settime;
     }
 
-    public String get_Settime() {
-        return _Settime;
+    public ToDoItemModel(int id, String title, String note, String reminder, String startdate, String archive, String Settime) {
+        this.id = id;
+        this.title = title;
+        this.reminder = reminder;
+        this.note = note;
+        this.startdate = startdate;
+        this.archive = archive;
+        this.settime = Settime;
     }
 
-    public void set_Settime(String _Settime) {
-        this._Settime = _Settime;
+    public String getSettime() {
+        return settime;
     }
 
-    public String get_Archive() {
-        return _Archive;
+    public void setSettime(String settime) {
+        this.settime = settime;
     }
 
-    public void set_Archive(String _Archive) {
-        this._Archive = _Archive;
+    public String getArchive() {
+        return archive;
     }
 
-    public String get_startdate() {
-        return _startdate;
+    public void setArchive(String archive) {
+        this.archive = archive;
     }
 
-    public void set_startdate(String _startdate) {
-        this._startdate = _startdate;
+    public String getStartdate() {
+        return startdate;
     }
 
-    public int get_id() {
-        return _id;
+    public void setStartdate(String startdate) {
+        this.startdate = startdate;
     }
 
-    public void set_id(int _id) {
-        this._id = _id;
+    public int getId() {
+        return id;
     }
 
-    public String get_title() {
-        return _title;
+    public void setId(int id) {
+        this.id = id;
     }
 
-    public void set_title(String _title) {
-        this._title = _title;
+    public String getTitle() {
+        return title;
     }
 
-    public String get_reminder() {
-        return _reminder;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
-    public void set_reminder(String _reminder) {
-        this._reminder = _reminder;
+    public String getReminder() {
+        return reminder;
     }
 
-    public String get_note() {
-        return _note;
+    public void setReminder(String reminder) {
+        this.reminder = reminder;
     }
 
-    public void set_note(String _note) {
-        this._note = _note;
+    public String getNote() {
+        return note;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
     }
 }

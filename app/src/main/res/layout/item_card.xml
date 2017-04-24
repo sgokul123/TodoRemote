@@ -2,14 +2,14 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:layout_width="match_parent"
+    android:layout_width="wrap_content"
 
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
     <android.support.v7.widget.CardView
         android:id="@+id/cardview_notes"
-        android:layout_width="match_parent"
-        android:layout_height="150dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/diamen_5dp"
         android:layout_marginRight="@dimen/diamen_5dp"
         android:layout_marginTop="@dimen/diamen_5dp"
@@ -45,7 +45,6 @@
                 android:layout_marginRight="@dimen/diamen_20dp"
                 android:layout_marginTop="@dimen/diamen_10dp"
                 android:ellipsize="end"
-                android:maxLines="2"
                 android:text="Note"
                 android:textSize="@dimen/diamen_20sp" />
 
@@ -53,12 +52,11 @@
                 android:id="@+id/textView_reminder"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-
-                android:layout_alignParentBottom="true"
                 android:layout_marginBottom="@dimen/diamen_10dp"
-
                 android:layout_marginLeft="@dimen/diamen_20dp"
+                android:layout_marginTop="@dimen/diamen_30dp"
                 android:layout_marginRight="@dimen/diamen_20dp"
+                android:layout_below="@+id/textview_notes"
                 android:text="Reminder" />
 
 

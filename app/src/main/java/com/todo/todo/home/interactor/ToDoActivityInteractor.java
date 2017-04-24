@@ -22,71 +22,36 @@ import java.util.List;
  * Created by bridgeit on 20/3/17.
  */
 
-public class ToDoActivityInteractor implements  TodoInteractorInterface {
+public class ToDoActivityInteractor implements TodoInteractorInterface {
     ToDoPresenterInteface toDoPresenterInteface;
     DatabaseHandler db;
     DatabaseReference mRef;
-    int size=0;
-    ToDoItemModel todoitemModel;
+    int size = 0;
+
     Context mContext;
-    private  String TAG ="ToDoActivityInteractor";
-    private  String uid,date;
+    private String TAG = "ToDoActivityInteractor";
+
     private DatabaseReference mDatabase;
+
     public ToDoActivityInteractor(ToDoPresenterInteface toDoPresenterInteface, Context context) {
         Log.i(TAG, "ToDoActivityInteractor: ");
         this.toDoPresenterInteface = toDoPresenterInteface;
-        this.mContext=context;
-        // db = new DatabaseHandler(mContext,ToDoActivityInteractor.this);
+        this.mContext = context;
         mDatabase = FirebaseDatabase.getInstance().getReference();
     }
 
     @Override
     public void getCallToDatabase() {
+
         // call to he database to retrive data load into grid view
         //it will responce all notes back to presenter
-         db = new DatabaseHandler(mContext,this);
+
+        db = new DatabaseHandler(mContext, this);
         toDoPresenterInteface.showProgressDialog();
         Log.i(TAG, "getCallToDatabase: ");
         List<ToDoItemModel> toDos = db.getAllToDos();
-
-        for (ToDoItemModel cn : toDos) {
-            String log = "Id: " + cn.get_id() + " ,note: " + cn.get_note() + " ,title: " +
-                    cn.get_title()+"reminder:  "+cn.get_reminder()+"startdate:  "+cn.get_startdate();
-            // Writing Contacts to log
-            Log.d("Name: ", log);
-        }
         toDoPresenterInteface.sendCallBackNotes(toDos);
         toDoPresenterInteface.closeProgressDialog();
-        //toDoPresenterInteface.getCallBackNotes();
-
-    }
-
-    @Override
-    public void storeNote(String date, ToDoItemModel toDoItemModel) {
-        Log.i(TAG, "storeNote: s  tore");
-        toDoPresenterInteface.showNoteProgressDialog();
-        db = new DatabaseHandler(mContext,this);
-        db.addNoteToLocal(toDoItemModel);
-
-    }
-
-
-    @Override
-    public void uploadNotes(String uid, String date, final ToDoItemModel toDoItemModel) {
-        Connection con=new Connection(mContext);
-        if(con.isNetworkConnected()){
-        toDoPresenterInteface.showNoteProgressDialog();
-        this.date=date;
-        this.uid=uid;
-        this.todoitemModel=toDoItemModel;
-        Log.i(TAG, "uploadNotes: call firebase");
-
-        FireBaseGetIndex fireBaseGetIndex=new FireBaseGetIndex(this);
-        fireBaseGetIndex.getIndex(uid,date);
-        }else{
-            Log.i(TAG, "loadNotetoFirebase: local");
-            storeNote(date,toDoItemModel);
-        }
     }
 
     @Override
@@ -96,70 +61,57 @@ public class ToDoActivityInteractor implements  TodoInteractorInterface {
     }
 
     @Override
-    public void setData(int size) {
-
-        try{
-            Log.i(TAG, "setSize: "+size);
-            todoitemModel.set_id(size);
-            mDatabase.child("usersdata").child(uid).child(date).child(String.valueOf(size)).setValue(todoitemModel);
-            toDoPresenterInteface.getResponce(true);
-            toDoPresenterInteface.closeNoteProgressDialog();
-
-        }catch (Exception f){
-
-            Log.i(TAG, "uploadNotes: exceptoion");
-            toDoPresenterInteface.closeNoteProgressDialog();
-            Log.i(TAG, "registerData: "+f);
-        }
-
-    }
-
-    @Override
     public void getToDoData(String uid) {
-        Connection con=new Connection(mContext);
-        if(con.isNetworkConnected()){
+
+        Connection con = new Connection(mContext);
+        if (con.isNetworkConnected()) {
+
             List<ToDoItemModel> localNotes;
             localNotes = new ArrayList<ToDoItemModel>();
-            DatabaseHandler db=new DatabaseHandler(mContext);
-            localNotes=  db.getLocalData();
-            if(localNotes.size()==0){
+
+            DatabaseHandler db = new DatabaseHandler(mContext);
+
+            localNotes = db.getLocalData();
+
+            if (localNotes.size() == 0) {
+
                 Log.i(TAG, "getToDoData: ");
                 getFireBaseDatabase(uid);
-            }
-            else{
-                UpdateOnServerInteractor updateOnServerInteractor=new UpdateOnServerInteractor(mContext,this);
-                updateOnServerInteractor.updatetoFirebase(uid,localNotes);
-            }
 
-        }
-        else{
+            } else {
+
+                UpdateLocalDataOnLocalDataOnServerInteractor updateLocalDataOnServerInteractor = new UpdateLocalDataOnLocalDataOnServerInteractor(mContext, this);
+                updateLocalDataOnServerInteractor.updatetoFirebase(uid, localNotes);
+            }
+        } else {
             Log.i(TAG, "getPresenterNotes: local");
             getCallToDatabase();
         }
     }
 
     @Override
-    public void getFireBaseDatabase(String uid) {
-
+    public void getFireBaseDatabase(final String uid) {
 
         toDoPresenterInteface.showProgressDialog();
         try {
 
-
-            mRef = mDatabase.child("usersdata").child(uid);
+            mRef = mDatabase.child("usersdata");
             mRef.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     GenericTypeIndicator<ArrayList<ToDoItemModel>> t = new GenericTypeIndicator<ArrayList<ToDoItemModel>>() {
                     };
 
-                    Log.i(TAG, "onDataChange: ");
-                    ArrayList<ToDoItemModel> todoItemModel = new ArrayList<ToDoItemModel>();
-                    for (DataSnapshot child : dataSnapshot.getChildren()) {
+                    if (dataSnapshot.hasChild(uid)) {
+                        DataSnapshot dataSnapsho = dataSnapshot.child(uid);
                         Log.i(TAG, "onDataChange: ");
-                        todoItemModel.addAll(child.getValue(t));
+                        ArrayList<ToDoItemModel> todoItemModel = new ArrayList<ToDoItemModel>();
+                        for (DataSnapshot child : dataSnapsho.getChildren()) {
+                            Log.i(TAG, "onDataChange: ");
+                            todoItemModel.addAll(child.getValue(t));
+                        }
+                        toDoPresenterInteface.getCallBackNotes(todoItemModel);
                     }
-                    toDoPresenterInteface.getCallBackNotes(todoItemModel);
                     toDoPresenterInteface.closeProgressDialog();
                 }
 
@@ -169,7 +121,8 @@ public class ToDoActivityInteractor implements  TodoInteractorInterface {
                     toDoPresenterInteface.closeProgressDialog();
                 }
             });
-        }catch(Exception e){
+
+        } catch (Exception e) {
             toDoPresenterInteface.closeNoteProgressDialog();
         }
     }

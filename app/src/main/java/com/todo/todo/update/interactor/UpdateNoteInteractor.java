@@ -2,18 +2,15 @@ package com.todo.todo.update.interactor;
 
 import android.content.Context;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.todo.todo.database.DatabaseHandler;
 import com.todo.todo.home.model.ToDoItemModel;
-import com.todo.todo.update.presenter.UpdateNotePresenter;
 import com.todo.todo.update.presenter.UpdateNotePresenterInterface;
 import com.todo.todo.util.Connection;
-
-/**
- * Created by bridgeit on 29/3/17.
- */
+import com.todo.todo.util.Constants;
 
 public class UpdateNoteInteractor implements  UpdateNoteInteractorInterface{
     private  String TAG ="UpdateNoteInteractor";
@@ -33,18 +30,17 @@ public class UpdateNoteInteractor implements  UpdateNoteInteractorInterface{
         mUpdateNotePresenter.showProgress();
         try {
 
-            mDatabase.child("usersdata").child(uid).child(date).child(String.valueOf(toDoItemModel.get_id())).setValue(toDoItemModel);
+            mDatabase.child(Constants.Stringkeys.FIREBASE_DATABASE_PARENT_CHILD).child(uid).child(date).child(String.valueOf(toDoItemModel.getId())).setValue(toDoItemModel);
             mUpdateNotePresenter.getResponce(true);
             mUpdateNotePresenter.closeProgress();
 
         }catch (Exception e){
             mUpdateNotePresenter.getResponce(false);
             mUpdateNotePresenter.closeProgress();
-            Log.i(TAG, "updateFirbaseData: ");
         }
         }
         else {
-
+            Toast.makeText(mContext, Constants.InternateConnnection.CHICK_CONNECTION, Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -53,16 +49,10 @@ public class UpdateNoteInteractor implements  UpdateNoteInteractorInterface{
         Connection con=new Connection(mContext);
 
         if(con.isNetworkConnected()){
-            // mUpdateNotePresenter.showProgress();
             try {
-                Log.i(TAG, "getArchiveFirebaseData: ");
-                toDoItemModel.set_Archive("false");
-                mDatabase.child("usersdata").child(uid).child(date).child(String.valueOf(toDoItemModel.get_id())).setValue(toDoItemModel);
-                //  mUpdateNotePresenter.getResponce(true);
-                //  mUpdateNotePresenter.closeProgress();
+                toDoItemModel.setArchive(Constants.Stringkeys.FLAG_FALSE);
+                mDatabase.child(Constants.Stringkeys.FIREBASE_DATABASE_PARENT_CHILD).child(uid).child(date).child(String.valueOf(toDoItemModel.getId())).setValue(toDoItemModel);
             }catch (Exception e){
-                //  mUpdateNotePresenter.getResponce(false);
-                // mUpdateNotePresenter.closeProgress();
                 Log.i(TAG, "updateFirbaseData: ");
             }
         }
@@ -83,18 +73,17 @@ public class UpdateNoteInteractor implements  UpdateNoteInteractorInterface{
         Connection con=new Connection(mContext);
 
         if(con.isNetworkConnected()){
-           // mUpdateNotePresenter.showProgress();
+            mUpdateNotePresenter.showProgress();
             try {
                 Log.i(TAG, "getArchiveFirebaseData: ");
-                toDoItemModel.set_Archive("true");
-                mDatabase.child("usersdata").child(uid).child(date).child(String.valueOf(toDoItemModel.get_id())).setValue(toDoItemModel);
-              //  mUpdateNotePresenter.getResponce(true);
-              //  mUpdateNotePresenter.closeProgress();
+                toDoItemModel.setArchive(Constants.Stringkeys.FLAGT_TRUE);
+                mDatabase.child(Constants.Stringkeys.FIREBASE_DATABASE_PARENT_CHILD).child(uid).child(date).child(String.valueOf(toDoItemModel.getId())).setValue(toDoItemModel);
+               mUpdateNotePresenter.getResponce(true);
+                mUpdateNotePresenter.closeProgress();
 
             }catch (Exception e){
-              //  mUpdateNotePresenter.getResponce(false);
-               // mUpdateNotePresenter.closeProgress();
-                Log.i(TAG, "updateFirbaseData: ");
+                mUpdateNotePresenter.getResponce(false);
+                mUpdateNotePresenter.closeProgress();
             }
         }
         else {

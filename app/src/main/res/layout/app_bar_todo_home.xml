@@ -105,13 +105,10 @@
                     android:hint="Search here.."
                     android:layout_toRightOf="@+id/imageView_back_search"
                     android:textColorHint="@android:color/black"
-                    android:background="@android:color/white"
                     android:layout_marginTop="@dimen/diamen_10dp"
                     android:layout_marginRight="@dimen/diamen_10dp"
-                    android:layout_toLeftOf="@+id/imageView_grid_linear"
                     android:textColor="@android:color/black"
                     android:layout_marginLeft="@dimen/diamen_10dp"
-                    android:drawableRight="@android:drawable/ic_menu_search"
                     android:inputType="text"
                     />
                 <View

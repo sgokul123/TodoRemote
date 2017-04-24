@@ -1,4 +1,4 @@
-package com.todo.todo.home.interactor;
+package com.todo.todo.addnote.interactor;
 
 import android.util.Log;
 
@@ -7,6 +7,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.todo.todo.home.interactor.UpdateLocalDataOnLocalDataOnServerInteractor;
 import com.todo.todo.home.model.ToDoItemModel;
 
 import java.util.List;
@@ -19,37 +20,33 @@ public class FireBaseGetIndex  {
     private String TAG ="FireBaseGetIndex";
     FirebaseDatabase mDatabase;
     DatabaseReference mRef;
-    ToDoActivityInteractor mToDoActivityInteractor;
-    UpdateOnServerInteractor mUpdateOnServerInteractor;
-    public FireBaseGetIndex(ToDoActivityInteractor toDoActivityInteractor) {
-        this.mToDoActivityInteractor = toDoActivityInteractor;
-
+    AddNoteInteractorInteface mAddNoteInteractorInteface;
+    UpdateLocalDataOnLocalDataOnServerInteractor mUpdateLocalDataOnServerInteractor;
+    public FireBaseGetIndex(AddNoteInteractorInteface addNoteInteractorInteface) {
+        this.mAddNoteInteractorInteface = addNoteInteractorInteface;
     }
 
-    public FireBaseGetIndex(UpdateOnServerInteractor updateOnServerInteractor) {
-        this.mUpdateOnServerInteractor=updateOnServerInteractor;
+    public FireBaseGetIndex(UpdateLocalDataOnLocalDataOnServerInteractor updateLocalDataOnServerInteractor) {
+        this.mUpdateLocalDataOnServerInteractor = updateLocalDataOnServerInteractor;
     }
 
+    public void getIndex(final String uid, final String date){
 
-
-    public void getIndex(String uid, final String date){
         mDatabase = FirebaseDatabase.getInstance();
-        mRef = mDatabase.getReference().child("usersdata").child(uid).child(date);
-
+        mRef = mDatabase.getReference().child("usersdata");
         mRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists()) {
-                    if (mToDoActivityInteractor != null) {
-                        int size= (int) dataSnapshot.getChildrenCount();
-                        Log.i(TAG, "onDataChange: "+size);
-                        mToDoActivityInteractor.setData(size);
-                        mToDoActivityInteractor = null;
+                if (dataSnapshot.child(uid).child(date).exists()) {
+                    if (mAddNoteInteractorInteface != null) {
+                        int size= (int) dataSnapshot.child(uid).child(date).getChildrenCount();
+                        mAddNoteInteractorInteface.setData(size);
+                        mAddNoteInteractorInteface = null;
                     }
                 }
                 else {
-                    mToDoActivityInteractor.setData(0);
-                    mToDoActivityInteractor = null;
+                    mAddNoteInteractorInteface.setData(0);
+                    mAddNoteInteractorInteface = null;
                 }
             }
             @Override
@@ -68,21 +65,15 @@ public class FireBaseGetIndex  {
         mRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                //  mUpdateOnServerInteractor.
                 if (dataSnapshot.exists()) {
 
                     if(LocalItemModels.size()>0){
 
                         ToDoItemModel todoModel=LocalItemModels.get(0);
                         LocalItemModels.remove(0);
-                        Log.i(TAG, "onDataChange: "+LocalItemModels.size());
-
-                        if (dataSnapshot.child(todoModel.get_startdate()).exists()) {
-                            int size= (int) dataSnapshot.child(todoModel.get_startdate()).getChildrenCount();
-                            Log.i(TAG, "onDataChange: "+size);
+                        if (dataSnapshot.child(todoModel.getStartdate()).exists()) {
+                            int size= (int) dataSnapshot.child(todoModel.getStartdate()).getChildrenCount();
                             setData(uid,size,todoModel);
-
-
                         }else {
                             setData(uid,0,todoModel);
                         }
@@ -91,7 +82,7 @@ public class FireBaseGetIndex  {
                     }
                 }
                 else {
-                    // mUpdateOnServerInteractor
+                    // mUpdateLocalDataOnServerInteractor
                 }
             }
             @Override
@@ -104,15 +95,13 @@ public class FireBaseGetIndex  {
     }
 
     private void setData(String uid, int size, ToDoItemModel todoModel) {
+
         mDatabase = FirebaseDatabase.getInstance();
         mRef = mDatabase.getReference().child("usersdata");
         try{
-            Log.i(TAG, "setSize: "+size);
-            todoModel.set_id(size);
-            mRef.child(uid).child(todoModel.get_startdate()).child(String.valueOf(size)).setValue(todoModel);
-
+            todoModel.setId(size);
+            mRef.child(uid).child(todoModel.getStartdate()).child(String.valueOf(size)).setValue(todoModel);
         }catch (Exception f){
-
             Log.i(TAG, "setData: ");
         }
     }

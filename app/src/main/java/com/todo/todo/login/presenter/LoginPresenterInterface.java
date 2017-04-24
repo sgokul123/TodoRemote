@@ -1,5 +1,6 @@
 package com.todo.todo.login.presenter;
 
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.todo.todo.registration.model.RegistrationModel;
 
 /**
@@ -12,5 +13,6 @@ public interface LoginPresenterInterface {
 
         public  void showProgress();
         public  void closeProgress();
-
+        public  void handleGoogleSignInResult(GoogleSignInAccount account, String uid);
+        public void facebookResponceUID(String uid);
 }

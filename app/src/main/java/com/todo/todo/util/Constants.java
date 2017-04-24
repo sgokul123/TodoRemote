@@ -44,6 +44,22 @@ public class Constants {
         public static final String  ALL_NOTES= "Notes";
         public static final String DATE_FORMAT = "EEE,MMMd,yy";
 
+
+    }
+    public interface Stringkeys {
+        public static final String FLAGT_TRUE = "true";
+        public static final String ARCHIVE_UNDO = "UNDO";
+        public static final String DEMO_EMAIL = "abcd@gmail.com";
+        public static final String FLAG_FALSE = "false";
+        public static final String NAME = "Gokul";
+        public static final String NULL_VALUIE = "null";
+        public static final String MASSEGE_IS_ARCHIVED = " Note is Archived...";
+        public static final String FIREBASE_DATABASE_PARENT_CHILD = "usersdata";
+    }
+
+    public interface InternateConnnection {
+        public static final String CHICK_CONNECTION = "Check Internate Connection...";
+
     }
 
 }
