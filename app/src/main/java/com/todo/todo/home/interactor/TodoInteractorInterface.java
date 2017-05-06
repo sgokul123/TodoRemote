@@ -12,4 +12,5 @@ public interface TodoInteractorInterface {
    public  void getToDoData(String uid);
     public  void getFireBaseDatabase(String uid);
     public  void callPresenterNotesAfterUpdateServer(String uid);
+    public  void getMoveNotes(String uid,String curDate,ToDoItemModel fromNote,ToDoItemModel desinationNote);
 }

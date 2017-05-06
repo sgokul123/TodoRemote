@@ -67,11 +67,11 @@ public class RemoveFirebaseDataInteractor {
         }
     }
 
-    public void getIndexUpdateNotes(List<ToDoItemModel> toDoItemModel, String mUserUID, int position) {
+    public void getIndexUpdateNotes(ToDoItemModel doItemModel, List<ToDoItemModel> toDoItemModel, String mUserUID, int position) {
 
-        db.deleteLocaltodoNote(toDoItemModel.get(position));
-        startdate=toDoItemModel.get(position).getStartdate();
-        index=toDoItemModel.get(position).getId();
+        db.deleteLocaltodoNote(doItemModel);
+        startdate=doItemModel.getStartdate();
+        index=doItemModel.getId();
         for (ToDoItemModel todo : toDoItemModel) {
             if(todo.getStartdate().equals(startdate) && todo.getId()>index){
                 newtoDoItemModels.add(todo);

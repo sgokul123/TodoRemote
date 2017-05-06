@@ -1,6 +1,8 @@
 package com.todo.todo.home.adapter;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -35,21 +37,18 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.MyViewHolder> 
     private Context mContext;
     private List<ToDoItemModel> mdisplayedtoDoItemModels;
     private List<ToDoItemModel> mOriginaltoDoItemModels;
-
+    ToDoActivity mToDoActivity;
 
     public ItemAdapter(ToDoActivity toDoActivity, List<ToDoItemModel> toDoItemModels) {
         this.mContext = toDoActivity;
+        this.mToDoActivity=toDoActivity;
         this.mdisplayedtoDoItemModels = toDoItemModels;
         this.mOriginaltoDoItemModels = toDoItemModels;
 
     }
-
-
     @Override
     public ItemAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_card, parent, false);
-
-
         return new MyViewHolder(itemView);
     }
 
@@ -71,6 +70,8 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.MyViewHolder> 
         holder.textViewReminder.setText(toDoItemModel.getReminder());
 
     }
+
+
 
     @Override
     public int getItemCount() {
@@ -133,7 +134,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.MyViewHolder> 
         return filter;
     }
 
-    public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
         TextView textViewTitle, textViewnote, textViewReminder;
 
         public MyViewHolder(View itemView) {
@@ -144,6 +145,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.MyViewHolder> 
             textViewnote = (TextView) itemView.findViewById(R.id.textview_notes);
             textViewReminder = (TextView) itemView.findViewById(R.id.textView_reminder);
             mCardView.setOnClickListener(this);
+            mCardView.setOnLongClickListener(this);
         }
 
         @Override
@@ -172,5 +174,55 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.MyViewHolder> 
                     break;
             }
         }
+
+        @Override
+        public boolean onLongClick(View v) {
+            final ToDoItemModel toDoItemModel=mdisplayedtoDoItemModels.get(getAdapterPosition());
+
+
+            if(toDoItemModel.getArchive().equals("true")){
+                final AlertDialog alertDialog = new AlertDialog.Builder(
+                        mContext).create();
+                alertDialog.setTitle("Alert Dialog");
+                alertDialog.setMessage("You want to Undo this Archived Note...");
+                // Setting OK Button
+                alertDialog.setButton("YES", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        mToDoActivity.getUndoArchivedNote(getAdapterPosition());
+                        alertDialog.dismiss();
+                    }
+                });
+                // Showing Alert Message
+                alertDialog.show();
+            }
+
+            else{
+                final AlertDialog alertDialog = new AlertDialog.Builder(
+                        mContext).create();
+                alertDialog.setTitle("Alert Dialog");
+                alertDialog.setMessage("Share this Card ...");
+                // Setting OK Button
+                alertDialog.setButton("YES", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+                        sharingIntent.setType("text/plain");
+                        String shareBody = "Title    :\n \n"+toDoItemModel.getTitle().toString()+"\n"+"\nDiscription     :\n\n"+toDoItemModel.getNote().toString();
+                        String shareSub =toDoItemModel.getNote().toString();
+                        sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, shareSub);
+                        sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
+                        mContext.startActivity(Intent.createChooser(sharingIntent, "Share using"));
+
+                        alertDialog.dismiss();
+                    }
+                });
+
+                // Showing Alert Message
+                alertDialog.show();
+
+            }
+            return true;
+        }
     }
+
 }

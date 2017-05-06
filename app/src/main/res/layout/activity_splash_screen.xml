@@ -4,9 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorBack"
+    android:background="@android:color/white"
     tools:context=".splash.view.SplashScreen">
-
 
     <android.support.v7.widget.AppCompatImageView
         android:id="@+id/imageView_logo"
@@ -14,18 +13,27 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
-
-        app:srcCompat="@drawable/logo" />
+        app:srcCompat="@drawable/todo_icon" />
 
     <android.support.v7.widget.AppCompatTextView
         android:id="@+id/textView_splash"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="57dp"
-        android:text="Welcome Back,BridgeLabz"
-        android:textColor="@android:color/white"
+        android:text="BridgeLabz Sticky Notes"
+        android:textColor="@android:color/black"
         android:textSize="30dp"
         android:layout_below="@+id/imageView_logo"
+        android:layout_centerHorizontal="true" />
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/textView2_splash"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textStyle="italic"
+        android:text="Keep track of the small things"
+        android:textColor="@android:color/black"
+        android:textSize="15dp"
+        android:layout_below="@+id/textView_splash"
         android:layout_centerHorizontal="true" />
 
 </RelativeLayout>

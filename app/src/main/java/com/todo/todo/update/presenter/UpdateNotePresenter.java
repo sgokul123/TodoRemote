@@ -55,4 +55,10 @@ public class UpdateNotePresenter implements  UpdateNotePresenterInterface {
 
         mUpdateNoteInteractor.undoArchivedFirbaseData(uid,date,toDoItemModel);
     }
+
+    /*@Override
+    public void getMoveNotes(String uid, ToDoItemModel fromNote, ToDoItemModel desinationNote) {
+        mUpdateNoteInteractor.getMoveNotes( uid, fromNote, desinationNote);
+    }*/
+
 }

@@ -24,6 +24,7 @@ public class SplashScreen extends Activity {
     AppCompatTextView textView_title;
     SharedPreferences pref;
     SharedPreferences.Editor editor;
+    boolean flag=false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,56 +41,58 @@ public class SplashScreen extends Activity {
         Log.i("", "onCreate: ");
             pref = getSharedPreferences("testapp", MODE_PRIVATE);
             editor = pref.edit();
+            isLogin();
+            if(!isFinishing()&& flag){
+                getToDoCall();
+            }else{
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        if(flag){
+                            getToDoCall();
+
+                        }else {
+
+                            Intent i = new Intent(SplashScreen.this, LoginActivity.class);
+                            startActivity(i);
+                            finish();
+                        }
+
+                    }
+                }, SPLASH_TIME_OUT);
+         }
 
 
-        new Handler().postDelayed(new Runnable() {
-
-            /*
-             * Showing splash screen with a timer. This will be useful when you
-             * want to show case your app logo / company
-             */
-
-            @Override
-            public void run() {
-                // This method will be executed once the timer is over
-                // Start your app main activity
-                Log.i("", "run: ");
-                isLogin();
-
-
-                // close this activity
-               // finish();
-            }
-        }, SPLASH_TIME_OUT);
     }
-    public  void isLogin(){
 
+    private void getToDoCall() {
+
+
+        Log.i("", "isLogin: ");
+        String mStrEmail = pref.getString(Constants.BundleKey.USER_EMAIL, "abcd@gmail.com");
+        //redirect to next activity
+        String mStrName = pref.getString(Constants.BundleKey.USER_NAME, "Gokul Sonawane");
+        Intent intent=new Intent(SplashScreen.this,ToDoActivity.class);
+        intent.putExtra(Constants.BundleKey.USER_EMAIL,mStrEmail);
+        intent.putExtra(Constants.BundleKey.USER_NAME,mStrName);
+        startActivity(intent);
+        finish();
+    }
+
+    public  void isLogin(){
         Log.i("", "isLogin: ");
         if(pref.contains(Constants.BundleKey.USER_REGISTER))
         {
             Log.i("", "isLogin: ");
             String getStatus=pref.getString(Constants.BundleKey.USER_REGISTER, "nil");
             if(getStatus.equals("true")){
-                Log.i("", "isLogin: ");
-                String mStrEmail = pref.getString(Constants.BundleKey.USER_EMAIL, "abcd@gmail.com");
-                //redirect to next activity
-                String mStrName = pref.getString(Constants.BundleKey.USER_NAME, "Gokul Sonawane");
-                Intent intent=new Intent(SplashScreen.this,ToDoActivity.class);
-                intent.putExtra(Constants.BundleKey.USER_EMAIL,mStrEmail);
-                intent.putExtra(Constants.BundleKey.USER_NAME,mStrName);
-                startActivity(intent);
-                finish();
+                flag=true;
             }else {
-                Log.i("hghj", "isLogin: ");
-                Intent i = new Intent(SplashScreen.this, LoginActivity.class);
-                startActivity(i);
-                finish();            }
-
+                flag=false;
+            }
         }else{
-            Log.i("hghj", "isLogin: ");
-            Intent i = new Intent(SplashScreen.this, LoginActivity.class);
-            startActivity(i);
-            finish();
+                flag=false;
         }
     }
 

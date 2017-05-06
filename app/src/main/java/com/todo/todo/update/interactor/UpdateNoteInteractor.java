@@ -25,6 +25,7 @@ public class UpdateNoteInteractor implements  UpdateNoteInteractorInterface{
 
     @Override
     public void updateFirbaseData(String uid, String date, ToDoItemModel toDoItemModel) {
+
         Connection con=new Connection(mContext);
         if(con.isNetworkConnected()){
         mUpdateNotePresenter.showProgress();
@@ -76,7 +77,7 @@ public class UpdateNoteInteractor implements  UpdateNoteInteractorInterface{
             mUpdateNotePresenter.showProgress();
             try {
                 Log.i(TAG, "getArchiveFirebaseData: ");
-                toDoItemModel.setArchive(Constants.Stringkeys.FLAGT_TRUE);
+                 toDoItemModel.setArchive(Constants.Stringkeys.FLAGT_TRUE);
                 mDatabase.child(Constants.Stringkeys.FIREBASE_DATABASE_PARENT_CHILD).child(uid).child(date).child(String.valueOf(toDoItemModel.getId())).setValue(toDoItemModel);
                mUpdateNotePresenter.getResponce(true);
                 mUpdateNotePresenter.closeProgress();
@@ -90,4 +91,15 @@ public class UpdateNoteInteractor implements  UpdateNoteInteractorInterface{
 
         }
     }
+
+   /* @Override
+    public void getMoveNotes(String uid, ToDoItemModel fromNote, ToDoItemModel desinationNote) {
+        ToDoItemModel fromNotes=fromNote;
+        ToDoItemModel destNotes=desinationNote;
+        int start_idm,end_id;
+
+        mDatabase.child(Constants.Stringkeys.FIREBASE_DATABASE_PARENT_CHILD).child(uid).child(fromNote.getStartdate()).child(String.valueOf(fromNote.getId())).setValue(fromNote);
+        mDatabase.child(Constants.Stringkeys.FIREBASE_DATABASE_PARENT_CHILD).child(uid).child(destNotes.getStartdate()).child(String.valueOf(destNotes.getId())).setValue(destNotes);
+
+    }*/
 }

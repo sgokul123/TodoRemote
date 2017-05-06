@@ -57,8 +57,7 @@ import java.util.regex.Pattern;
 public class LoginActivity extends BaseActivity implements View.OnClickListener,LoginInterface{
 
     private static final int RC_SIGN_IN = 9001;
-    private static final String EMAIL_PATTERN = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
-            + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
+    private static  String EMAIL_PATTERN ;
     private static String APP_ID = "308180782571605";           // Replace your App ID here
     AppCompatButton mButtonLogin;                                 //,mButtonfbLogin;
     AppCompatEditText mEditTextEmail,mEditTextPassword;
@@ -72,37 +71,19 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
     private String mStrUserPassword;
     private String mStrUserEmail ="";
     private String mStrUserName ="Sonawane Gokul";
-    private Uri mProfileImageUrl = Uri.parse("");
+
     private Pattern mPattern;
     private LoginLoginPresenter loginLoginPresenter;
     private Matcher mMatcher;
     // Instance of Facebook Class
     private GoogleApiClient mGoogleApiClient;
     private CallbackManager mFBCallbackManager;
-    List<String> listPermission = Arrays.asList("email", "public_profile");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initView();
         facebookLogin();
-/*
-        try {
-            PackageInfo info = getPackageManager().getPackageInfo(
-                    "com.todo.todo",
-                    PackageManager.GET_SIGNATURES);
-            for (Signature signature : info.signatures) {
-                MessageDigest md = MessageDigest.getInstance("SHA");
-                md.update(signature.toByteArray());
-                Log.d("KeyHash:", Base64.encodeToString(md.digest(), Base64.DEFAULT));
-            }
-        } catch (PackageManager.NameNotFoundException e) {
-
-        } catch (NoSuchAlgorithmException e) {
-
-        }*/
-
-
     }
     @Override
     public void initView() {
@@ -115,24 +96,36 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
         progressDialog=new ProgressUtil(this);
         googleSignInButton = (SignInButton) findViewById(R.id.gsign_in_button);
         googleSignInButton.setSize(SignInButton.SIZE_STANDARD);
-
+        EMAIL_PATTERN=getString(R.string.email_pattern);
         mFacebookLoginButton = (LoginButton)findViewById(R.id.facebook_login_button);
-        mFacebookLoginButton.setReadPermissions("public_profile email");
-
+        mFacebookLoginButton.setReadPermissions(getString(R.string.gmail_access));
         mButtonLogin =(AppCompatButton) findViewById(R.id.button_signin);
         mEditTextEmail=(AppCompatEditText) findViewById(R.id.edittext_email);
         mEditTextPassword=(AppCompatEditText) findViewById(R.id.edittext_password);
         textview1=(AppCompatTextView) findViewById(R.id.textview_forgot);
         textViewSignUp=(AppCompatTextView) findViewById(R.id.registation);
-
         Log.i(TAG, "onCreate: ");
 
         //call to data Access before load activity
         loginLoginPresenter = new LoginLoginPresenter(LoginActivity.this ,getApplicationContext());
 
         pref = getSharedPreferences(Constants.ProfileeKey.SHAREDPREFERANCES_KEY, MODE_PRIVATE);
+        if(!pref.getString(Constants.BundleKey.FR_USER_EMAIL,"").equals(""))
+        mEditTextEmail.setText(pref.getString(Constants.BundleKey.FR_USER_EMAIL,"").toString());
+
+        if(!pref.getString(Constants.BundleKey.USER_PASSWORD,"").equals(""))
+        mEditTextPassword.setText(pref.getString(Constants.BundleKey.USER_PASSWORD,"").toString());
+
         mSharedPref_editor = pref.edit();
         setOnClickListener();
+        googleAPICall();
+    }
+
+
+    /*
+    * call tpo the google API
+    * */
+    private void googleAPICall() {
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
@@ -157,7 +150,9 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
 
     }
 
-    //check is User  Login
+    /**
+     *       check is User  Login
+     */
 
     @Override
     public void onClick(View v) {
@@ -193,27 +188,27 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
             String id = object.getString("id");
 
             try {
-                URL profile_pic = new URL("https://graph.facebook.com/" + id + "/picture?width=200&height=150");
-                Log.i("profile_pic", profile_pic + "");
-                bundle.putString("profile_pic", profile_pic.toString());
+                URL profile_pic = new URL(getString(R.string.fb_url_start) + id + getString(R.string.fb_url_last));
+                Log.i(getString(R.string.profile_pic), profile_pic + "");
+                bundle.putString(getString(R.string.profile_pic), profile_pic.toString());
 
             } catch (MalformedURLException e) {
                 e.printStackTrace();
                 return null;
             }
             bundle.putString("idFacebook", id);
-            if (object.has("first_name"))
-                bundle.putString("first_name", object.getString("first_name"));
-            if (object.has("last_name"))
-                bundle.putString("last_name", object.getString("last_name"));
-            if (object.has("email"))
-                bundle.putString("email", object.getString("email"));
-            if (object.has("gender"))
-                bundle.putString("gender", object.getString("gender"));
-            if (object.has("birthday"))
-                bundle.putString("birthday", object.getString("birthday"));
-            if (object.has("location"))
-                bundle.putString("location", object.getJSONObject("location").getString("name"));
+            if (object.has(getString(R.string.first_name)))
+                bundle.putString(getString(R.string.first_name), object.getString(getString(R.string.first_name)));
+            if (object.has(getString(R.string.last_name)))
+                bundle.putString(getString(R.string.last_name), object.getString(getString(R.string.last_name)));
+            if (object.has(getString(R.string.email_id)))
+                bundle.putString(getString(R.string.email_id), object.getString(getString(R.string.email_id)));
+            if (object.has(getString(R.string.gender)))
+                bundle.putString(getString(R.string.gender), object.getString(getString(R.string.gender)));
+            if (object.has(getString(R.string.birthday)))
+                bundle.putString(getString(R.string.birthday), object.getString(getString(R.string.birthday)));
+            if (object.has(getString(R.string.location)))
+                bundle.putString(getString(R.string.location), object.getJSONObject(getString(R.string.location)).getString("name"));
             return bundle;
         }
         catch(JSONException e) {
@@ -223,7 +218,10 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
     }
 
 
-    //Facebook Social Login
+    /*
+    *
+    * Facebook Social Login
+    * */
     public  void facebookLogin(){
 
         mFacebookLoginButton.registerCallback(mFBCallbackManager, new FacebookCallback<LoginResult>() {
@@ -243,20 +241,20 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
                         Log.i("LoginActivity", response.toString());
                         // Get facebook data from login
                         Bundle bFacebookData = getFacebookData(object);
-                        String emailid=bFacebookData.getString("email");
-                        mSharedPref_editor.putString(Constants.BundleKey.USER_REGISTER, "true");
+                        String emailid=bFacebookData.getString(getString(R.string.email_id));
+                        mSharedPref_editor.putString(Constants.BundleKey.USER_REGISTER, getString(R.string.flag_true));
                         mSharedPref_editor.putString(Constants.BundleKey.USER_EMAIL,emailid);
-                        mSharedPref_editor.putString(Constants.BundleKey.PROFILE_PIC, bFacebookData.getString("profile_pic"));
-                        mSharedPref_editor.putString(Constants.ProfileeKey.FIRST_NAME, bFacebookData.getString("first_name"));
-                        mSharedPref_editor.putString(Constants.ProfileeKey.LAST_NAME, bFacebookData.getString("last_name"));
-                        mSharedPref_editor.putString(Constants.BundleKey.FACEBOOK_LOGIN, "true");
+                        mSharedPref_editor.putString(Constants.BundleKey.PROFILE_PIC, bFacebookData.getString(getString(R.string.profile_pic)));
+                        mSharedPref_editor.putString(Constants.ProfileeKey.FIRST_NAME, bFacebookData.getString(getString(R.string.first_name)));
+                        mSharedPref_editor.putString(Constants.ProfileeKey.LAST_NAME, bFacebookData.getString(getString(R.string.last_name)));
+                        mSharedPref_editor.putString(Constants.BundleKey.FACEBOOK_LOGIN, getString(R.string.flag_true));
                         mSharedPref_editor.putString(Constants.ProfileeKey.PROFILE_IMAGE_URL, "");
                         mSharedPref_editor.commit();
                         Log.i(TAG, "onCompleted: "+bFacebookData.getString("id"));
                     }
                 });
                 Bundle parameters = new Bundle();
-                parameters.putString("fields", "id, first_name, last_name, email,gender, birthday, location"); // Parámetros que pedimos a facebook
+                parameters.putString(getString(R.string.fields), getString(R.string.fb_profile_fields));
                 request.setParameters(parameters);
                 request.executeAsync();
 
@@ -264,12 +262,12 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
 
             @Override
             public void onCancel() {
-                Toast.makeText(LoginActivity.this, "Login attempt canceled", Toast.LENGTH_SHORT).show();
+                Toast.makeText(LoginActivity.this, getString(R.string.fb_login_cancel), Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onError(FacebookException e) {
-                Toast.makeText(LoginActivity.this, "Error", Toast.LENGTH_SHORT).show();
+                Toast.makeText(LoginActivity.this, getString(R.string.error), Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -308,26 +306,28 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
             if (mMatcher.matches()) {
                 loginLoginPresenter.getLogin(mStrUserEmail, mStrUserPassword);
             } else {
-                Toast.makeText(getApplicationContext(), "Please Enter Valid Email ...", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), getString(R.string.fb_login_unAthorised), Toast.LENGTH_SHORT).show();
             }
         } else {
-            Toast.makeText(getApplicationContext(), "Please Enter The User Name  And Password ... ", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), getString(R.string.enter_valid), Toast.LENGTH_SHORT).show();
         }
     }
 
     @Override
     public void loginSuccess(RegistrationModel registrationModel, String userUid) {
-        Toast.makeText(this, "Success...."+userUid, Toast.LENGTH_SHORT).show();
+
         Log.i(TAG, "loginSuccess: "+userUid);
 
-        mSharedPref_editor.putString(Constants.BundleKey.USER_REGISTER,"true");
+        mSharedPref_editor.putString(Constants.BundleKey.USER_REGISTER,getString(R.string.flag_true));
         mSharedPref_editor.putString(Constants.BundleKey.USER_EMAIL,registrationModel.getMailid());
+        mSharedPref_editor.putString(Constants.BundleKey.FR_USER_EMAIL,registrationModel.getMailid());
+        mSharedPref_editor.putString(Constants.BundleKey.USER_PASSWORD,registrationModel.getUserPassword());
         mSharedPref_editor.putString(Constants.BundleKey.USER_USER_UID,userUid);
         mSharedPref_editor.putString(Constants.ProfileeKey.FIRST_NAME,registrationModel.getUserFirstName());
         mSharedPref_editor.putString(Constants.ProfileeKey.LAST_NAME,registrationModel.getUserLastName());
         mSharedPref_editor.putString(Constants.ProfileeKey.MOBILE_NO,registrationModel.getMobileNo());
         mSharedPref_editor.putString(Constants.ProfileeKey.PROFILE_IMAGE_URL,registrationModel.getUserProfileImgurl());
-        mSharedPref_editor.putString(Constants.BundleKey.USER_PROFILE_SERVER,"true");
+        mSharedPref_editor.putString(Constants.BundleKey.USER_PROFILE_SERVER,getString(R.string.flag_true));
         mSharedPref_editor.putString(Constants.BundleKey.USER_NAME, mStrUserName);
         mSharedPref_editor.commit();
         ///  show registration page again
@@ -343,13 +343,13 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
 
             //Google Login
             Log.i(TAG, "handleGoogleSignInResult: "+acct.getPhotoUrl());
-            mSharedPref_editor.putString(Constants.BundleKey.USER_REGISTER,"true");
+            mSharedPref_editor.putString(Constants.BundleKey.USER_REGISTER,getString(R.string.flag_true));
             mSharedPref_editor.putString(Constants.BundleKey.USER_EMAIL,acct.getEmail() );
             mSharedPref_editor.putString(Constants.ProfileeKey.FIRST_NAME, acct.getDisplayName());
             mSharedPref_editor.putString(Constants.BundleKey.PROFILE_PIC, String.valueOf(acct.getPhotoUrl()));
             mSharedPref_editor.putString(Constants.ProfileeKey.PROFILE_IMAGE_URL, "");
             mSharedPref_editor.putString(Constants.BundleKey.USER_USER_UID,uid);
-            mSharedPref_editor.putString(Constants.BundleKey.GOOGLE_LOGIN,"true");
+            mSharedPref_editor.putString(Constants.BundleKey.GOOGLE_LOGIN,getString(R.string.flag_true));
             mSharedPref_editor.commit();
 
             Intent intent=new Intent(LoginActivity.this,ToDoActivity.class);
@@ -357,7 +357,6 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
             intent.putExtra(Constants.BundleKey.USER_NAME, mStrUserName);
             startActivity(intent);
             finish();
-            Toast.makeText(this, "Signin", Toast.LENGTH_SHORT).show();
 
     }
 
@@ -369,7 +368,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
 
     @Override
     public void showProgress() {
-        progressDialog.showProgress("Login User...");
+        progressDialog.showProgress(getString(R.string.login_user));
     }
 
     @Override
@@ -385,11 +384,6 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
 
         startActivity(intent);
         finish();
-    }
-
-    private void handleFacebookAccessToken(AccessToken token) {
-        Log.d(TAG, "handleFacebookAccessToken:" + token);
-
     }
 
 

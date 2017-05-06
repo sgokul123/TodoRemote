@@ -14,10 +14,10 @@
 
     <android.support.v7.widget.AppCompatImageView
         android:id="@+id/imageView_nav_profile"
-        android:layout_width="@dimen/diamen_70dp"
-        android:layout_height="@dimen/diamen_70dp"
-        android:layout_marginLeft="@dimen/diamen_20dp"
-        android:layout_marginTop="@dimen/diamen_10dp"
+        android:layout_width="@dimen/dimen_70dp"
+        android:layout_height="@dimen/dimen_70dp"
+        android:layout_marginLeft="@dimen/dimen_20dp"
+        android:layout_marginTop="@dimen/dimen_10dp"
         adjustViewBounds="true"
         android:scaleType="fitCenter"
         android:background="@drawable/circleimage"
@@ -28,25 +28,25 @@
         android:id="@+id/textview_nave_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-       android:layout_marginLeft="@dimen/diamen_20dp"
+       android:layout_marginLeft="@dimen/dimen_20dp"
         android:hint="User Name"
         android:layout_below="@+id/imageView_nav_profile"
-        android:textSize="@dimen/diamen_25sp"
+        android:textSize="@dimen/dimen_25sp"
         android:maxLines="1"
-        android:layout_marginTop="@dimen/diamen_5dp"
+        android:layout_marginTop="@dimen/dimen_5dp"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
     <android.support.v7.widget.AppCompatTextView
     android:id="@+id/textView_nav_email"
-        android:layout_marginTop="@dimen/diamen_5dp"
+        android:layout_marginTop="@dimen/dimen_5dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="@dimen/diamen_20sp"
+        android:textSize="@dimen/dimen_20sp"
         android:layout_below="@+id/textview_nave_name"
-        android:layout_marginLeft="@dimen/diamen_20dp"
+        android:layout_marginLeft="@dimen/dimen_20dp"
         android:hint="User Email"
         android:maxLines="1"
-        android:layout_marginBottom="@dimen/diamen_50dp"
+        android:layout_marginBottom="@dimen/dimen_50dp"
         android:text="android.studio@android.com" />
 </RelativeLayout>
 </LinearLayout>

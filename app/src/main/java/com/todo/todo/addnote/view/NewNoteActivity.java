@@ -1,6 +1,9 @@
 package com.todo.todo.addnote.view;
 
+import android.app.AlarmManager;
 import android.app.DatePickerDialog;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatEditText;
@@ -13,13 +16,16 @@ import android.widget.Toast;
 
 import com.todo.todo.R;
 import com.todo.todo.addnote.presenter.AddNotePresenter;
+import com.todo.todo.alarmmanager.MyBroadcastReceiver;
 import com.todo.todo.base.BaseActivity;
 import com.todo.todo.home.model.ToDoItemModel;
 import com.todo.todo.util.Constants;
 import com.todo.todo.util.ProgressUtil;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
 
 public class NewNoteActivity extends BaseActivity implements View.OnClickListener, NoteInterface {
@@ -32,11 +38,14 @@ public class NewNoteActivity extends BaseActivity implements View.OnClickListene
     ToDoItemModel mToDoItemModel;
     String formattedDate;
 
+    final static int RQS_1 = 1;
+
     private String TAG = "NewNoteActivity";
     private AddNotePresenter mAddNotePresenter;
     private String StrTitle, StrReminder, StrNote;
     private DatePickerDialog.OnDateSetListener date;
     private String mUsre_UID;
+    private int mNote_Order_Id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +73,7 @@ public class NewNoteActivity extends BaseActivity implements View.OnClickListene
         mTextViewEditedAt.setText(formattedDate);
         Log.i(TAG, "initView: " + getCurrentDate());
         mUsre_UID = getIntent().getStringExtra(Constants.BundleKey.USER_USER_UID);
+
         Log.i(TAG, "initView: " + mUsre_UID);
         reminderPicker();
         setOnClickListener();
@@ -124,16 +134,29 @@ public class NewNoteActivity extends BaseActivity implements View.OnClickListene
                 mToDoItemModel.setArchive("false");
                 mAddNotePresenter = new AddNotePresenter(this, this);
 
+              /*  try {
+                    setAlarm(formattedDate);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }*/
+
                 Log.i(TAG, "onClick: " + mUsre_UID + "  date" + getCurrentDate());
                 mAddNotePresenter.loadNotetoFirebase(mUsre_UID, getCurrentDate(), mToDoItemModel);
 
                 break;
-            default:
-
-                break;
-
         }
 
+    }
+
+    private void setAlarm(String targetCal) throws ParseException {
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
+        Date date = dateFormat.parse("12:01:32");
+        System.out.println(date.getTime());
+        Intent intent = new Intent(getBaseContext(), MyBroadcastReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(getBaseContext(), RQS_1, intent, 0);
+        AlarmManager alarmManager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
+        alarmManager.set(AlarmManager.RTC_WAKEUP, date.getTime(), pendingIntent);
     }
 
     private void updateLabel() {
@@ -141,7 +164,6 @@ public class NewNoteActivity extends BaseActivity implements View.OnClickListene
         String myFormat = Constants.NotesType.DATE_FORMAT; //In which you need put here
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
         mTextViewReminder.setText(sdf.format(myCalendar.getTime()));
-
     }
 
     @Override
@@ -152,9 +174,7 @@ public class NewNoteActivity extends BaseActivity implements View.OnClickListene
 
     @Override
     public void showNoteProgressDialog() {
-
         progressDialog.showProgress("Adding new Note...");
-
     }
 
     @Override
@@ -168,10 +188,12 @@ public class NewNoteActivity extends BaseActivity implements View.OnClickListene
             bun.putString(Constants.RequestParam.KEY_TITLE, mToDoItemModel.getTitle());
             bun.putString(Constants.RequestParam.KEY_REMINDER, mToDoItemModel.getReminder());
             bun.putString(Constants.RequestParam.KEY_STARTDATE, mToDoItemModel.getStartdate());
+
             Intent intent = new Intent();
             intent.putExtra(Constants.BundleKey.MEW_NOTE, bun);
             setResult(2, intent);
             finish();
+
         } else {
             Toast.makeText(this, "fail", Toast.LENGTH_SHORT).show();
         }

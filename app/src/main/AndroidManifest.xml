@@ -9,6 +9,11 @@
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
+    <permission
+        android:name="com.github.hathibelagal.pn.permission.C2D_MESSAGE"
+        android:protectionLevel="signature" />
+    <uses-permission
+        android:name="com.github.hathibelagal.pn.permission.C2D_MESSAGE" />
 
     <application
         android:allowBackup="true"
@@ -56,8 +61,12 @@
         <activity android:name=".addnote.view.NewNoteActivity"
             android:theme="@style/AppTheme.NoActionBar"
             />
-        <activity android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
-            android:theme="@style/Base.Theme.AppCompat"/>
+
+
+        <receiver android:name=".alarmmanager.MyBroadcastReceiver"
+            android:process=":remote" >
+
+        </receiver>
     </application>
 
 </manifest>

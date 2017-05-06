@@ -37,7 +37,7 @@ public class UpdateNoteActivity extends BaseActivity implements View.OnClickList
     private DatePickerDialog.OnDateSetListener date;
     private String mUsre_UID, Note_id, mIsArchive;
     private AppCompatTextView mTextViewEditedAt;
-
+    private String mNote_Order_id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,7 +73,6 @@ public class UpdateNoteActivity extends BaseActivity implements View.OnClickList
 
     @Override
     public void setOnClickListener() {
-
         imageViewBack.setOnClickListener(this);
         imageViewPin.setOnClickListener(this);
         imageViewReminder.setOnClickListener(this);
@@ -97,6 +96,7 @@ public class UpdateNoteActivity extends BaseActivity implements View.OnClickList
 
     public void reminderPicker() {
 
+
         remiderPick = Calendar.getInstance();
         date = new DatePickerDialog.OnDateSetListener() {
             @Override
@@ -117,14 +117,11 @@ public class UpdateNoteActivity extends BaseActivity implements View.OnClickList
 
         switch (v.getId()) {
             case R.id.imageView_back_arrow:
-
                 finish();
                 break;
             case R.id.imageView_pin:
-
                 break;
             case R.id.imageView_reminder:
-
                 new DatePickerDialog(this, date, remiderPick
                         .get(Calendar.YEAR), remiderPick.get(Calendar.MONTH),
                         remiderPick.get(Calendar.DAY_OF_MONTH)).show();
@@ -162,7 +159,7 @@ public class UpdateNoteActivity extends BaseActivity implements View.OnClickList
 
     @Override
     public void showProgressDialog() {
-        progressDialog.showProgress(String.valueOf(R.string.loading));
+        progressDialog.showProgress(getString(R.string.loading));
     }
 
     @Override
@@ -173,7 +170,7 @@ public class UpdateNoteActivity extends BaseActivity implements View.OnClickList
     @Override
     public void getResponce(boolean flag) {
         if (flag) {
-            Toast.makeText(this, R.string.updated, Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.updated), Toast.LENGTH_SHORT).show();
             Bundle bun = new Bundle();
             bun.putString(Constants.RequestParam.KEY_ID, String.valueOf(mToDoItemModel.getId()));
             bun.putString(Constants.RequestParam.KEY_NOTE, mToDoItemModel.getNote());
@@ -185,8 +182,13 @@ public class UpdateNoteActivity extends BaseActivity implements View.OnClickList
             setResult(2, intent);
             finish();
         } else {
-            Toast.makeText(this, R.string.fail_update, Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.fail_update), Toast.LENGTH_SHORT).show();
         }
+
+    }
+
+    @Override
+    public void getUndoArchivedNote(int position) {
 
     }
 

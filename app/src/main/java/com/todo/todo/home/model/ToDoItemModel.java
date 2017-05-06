@@ -6,15 +6,16 @@ package com.todo.todo.home.model;
 
 public class ToDoItemModel {
 
-    int id;
-    String title;
-    String reminder;
-    String note;
-    String startdate;
-    String archive;
-    String settime;
+    private int id;
+    private String title;
+    private String reminder;
+    private String note;
+    private String startdate;
+    private String archive;
+    private String settime;
 
     public ToDoItemModel() {
+
     }
 
     public ToDoItemModel(int id, String title, String reminder, String note, String archive, String Settime) {
@@ -24,7 +25,9 @@ public class ToDoItemModel {
         this.note = note;
         this.archive = archive;
         this.settime = Settime;
+
     }
+
     public ToDoItemModel(String title, String note, String reminder, String startdate, String archive, String Settime) {
         this.title = title;
         this.reminder = reminder;
@@ -32,6 +35,7 @@ public class ToDoItemModel {
         this.startdate = startdate;
         this.archive = archive;
         this.settime = Settime;
+
     }
 
     public ToDoItemModel(int id, String title, String note, String reminder, String startdate, String archive, String Settime) {
@@ -42,6 +46,7 @@ public class ToDoItemModel {
         this.startdate = startdate;
         this.archive = archive;
         this.settime = Settime;
+
     }
 
     public String getSettime() {
@@ -99,4 +104,7 @@ public class ToDoItemModel {
     public void setNote(String note) {
         this.note = note;
     }
+
+
+
 }

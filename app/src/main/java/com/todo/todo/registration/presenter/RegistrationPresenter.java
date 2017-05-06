@@ -6,6 +6,7 @@ import android.util.Log;
 import com.todo.todo.registration.interactor.RegistrationInteractor;
 import com.todo.todo.registration.model.RegistrationModel;
 import com.todo.todo.registration.view.RegistrationFragment;
+import com.todo.todo.registration.view.RegistrationInterface;
 
 /**
  * Created by bridgeit on 23/3/17.
@@ -15,8 +16,8 @@ public class RegistrationPresenter  implements  RegistrationPresenterInterface{
     private  String TAG ="RegistrationPresenter";
     private  RegistrationInteractor registrationInteractor;
     private  Context mContext;
-    RegistrationFragment registrationFragmentMain;
-    public RegistrationPresenter(Context context, RegistrationFragment registrationFragment) {
+    RegistrationInterface registrationFragmentMain;
+    public RegistrationPresenter(Context context, RegistrationInterface registrationFragment) {
         Log.i(TAG, "RegistrationPresenter: ");
         this.mContext=context;
         this.registrationFragmentMain = registrationFragment;
@@ -33,9 +34,10 @@ public class RegistrationPresenter  implements  RegistrationPresenterInterface{
     }
 
     @Override
-    public void getResponce(boolean flag) {
-        registrationFragmentMain.getResponce(flag);
+    public void getResponce(String uid, RegistrationModel model) {
+        registrationFragmentMain.getResponce(uid,model);
     }
+
 
     @Override
     public void setNewUser(RegistrationModel registrationModel) {

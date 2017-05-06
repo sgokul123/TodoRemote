@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -12,14 +12,19 @@
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/gridview_notes"
-        android:layout_marginTop="@dimen/diamen_65dp"
-        android:layout_marginLeft="@dimen/diamen_5dp"
-        android:layout_marginRight="@dimen/diamen_5dp"
-        android:layout_marginBottom="@dimen/diamen_5dp"
+        android:layout_marginTop="@dimen/dimen_65dp"
+        android:layout_marginLeft="@dimen/dimen_5dp"
+        android:layout_marginRight="@dimen/dimen_5dp"
+        android:layout_marginBottom="@dimen/dimen_5dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        >
-
-    </android.support.v7.widget.RecyclerView>
-
-</LinearLayout>
+        android:visibility="gone"
+        />
+    <android.support.v7.widget.AppCompatTextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="Notes You Add appear hear"
+        android:textAlignment="center"
+        android:background="@color/back_color_recycler"
+        />
+</RelativeLayout>

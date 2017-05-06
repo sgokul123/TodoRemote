@@ -13,4 +13,5 @@
     <color name="toolbar_back">#FEBA00</color>
     <color name="toolbar_white">#f1ede4</color>
     <color name="light_gray">#dbecaf</color>
+    <color name="back_color_recycler">#00b4a3a3</color>
 </resources>

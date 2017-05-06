@@ -16,6 +16,9 @@ public class Constants {
         public static final String FACEBOOK_LOGIN = "facebook";
         public static final String USER_PROFILE_LOCAL = "localimage";
         public static final String USER_PROFILE_SERVER = "serverimage";
+        String USER_PASSWORD = "password";
+        String FR_USER_EMAIL = "fbemail";
+        String NOTE_ORDER_ID = "noteorderid";
     }
     public interface ProfileeKey {
         public static final String SHAREDPREFERANCES_KEY = "testapp";
@@ -35,6 +38,7 @@ public class Constants {
         public static final String KEY_NOTE ="notes";
         public static final String KEY_REMINDER ="reminder";
         public static final String KEY_STARTDATE ="startdate";
+
             public static final String KEY_ARCHIVE ="archive";
        public static final String KEY_SETTIME = "settime";
         }

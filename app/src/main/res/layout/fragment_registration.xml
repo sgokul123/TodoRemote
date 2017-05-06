@@ -4,7 +4,7 @@
     android:id="@+id/fragment_registration"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/back_front_color"
+    android:background="@android:color/white"
    >
     <ScrollView
         android:layout_width="match_parent"
@@ -24,26 +24,26 @@
             android:id="@+id/layout_registration"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/diamen_20dp"
-            android:layout_marginLeft="118dp"
-            android:layout_marginRight="100dp">
+            android:layout_marginTop="@dimen/dimen_20dp"
+            android:layout_marginLeft="@dimen/dimen_118dp"
+            android:layout_marginRight="@dimen/dimen_100dp">
 
             <android.support.v7.widget.AppCompatImageView
                 android:id="@+id/imageView_register_logo"
-                android:layout_width="43dp"
-                android:layout_height="58dp"
-                android:src="@drawable/pinup"
-                app:srcCompat="@drawable/com_facebook_button_send_icon_blue" />
+                android:layout_width="@dimen/dimen_43dp"
+                android:layout_height="@dimen/dimen_58dp"
+                app:srcCompat="@drawable/todo_icon"
+                />
 
             <android.support.v7.widget.AppCompatTextView
                 android:id="@+id/textView_register_title_main"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/diamen_20dp"
+                android:layout_marginTop="@dimen/dimen_20dp"
                 android:layout_toRightOf="@+id/imageView_main_logo"
-                android:layout_marginLeft="16dp"
+                android:layout_marginLeft="@dimen/dimen_16dp"
                 android:text="ToDo"
-                android:textSize="24dp"
+                android:textSize="@dimen/dimen_24dp"
                 android:textStyle="bold" />
         </LinearLayout>
         <android.support.v7.widget.AppCompatTextView
@@ -52,7 +52,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/layout_registration"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="@dimen/diamen_20dp"
+            android:layout_marginTop="@dimen/dimen_20dp"
             android:text="Welcome to ToDo"
             android:textAlignment="center"
 
@@ -64,9 +64,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/textview_register_admin"
-            android:layout_marginLeft="49dp"
-            android:layout_marginRight="47dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginLeft="@dimen/dimen_20dp"
+            android:layout_marginRight="@dimen/dimen_20dp"
+            android:layout_marginTop="@dimen/dimen_10dp"
             android:orientation="vertical"
             >
             <android.support.design.widget.TextInputLayout
@@ -78,7 +78,7 @@
                     android:id="@+id/edittext_registration_fname"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginTop="@dimen/dimen_8dp"
                     android:maxLines="1"
 
                     android:hint="First Name"
@@ -93,7 +93,7 @@
                     android:id="@+id/edittext_registration_lname"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginTop="@dimen/dimen_8dp"
                     android:maxLines="1"
 
                     android:hint="Last Name"
@@ -108,10 +108,9 @@
                     android:id="@+id/edittext_registration_email"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginTop="@dimen/dimen_8dp"
                     android:inputType="textEmailAddress"
                     android:maxLines="1"
-
                     android:hint="Email"
 
                     />
@@ -130,7 +129,7 @@
                     android:id="@+id/edittext_registration_phone_st"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginTop="@dimen/dimen_8dp"
                     android:inputType="phone"
                     android:text="+91"
                     android:maxLength="4"
@@ -148,9 +147,9 @@
                     android:id="@+id/edittext_registration_phone"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginTop="@dimen/dimen_8dp"
                     android:inputType="phone"
-                    android:layout_marginRight="@dimen/diamen_20dp"
+                    android:layout_marginRight="@dimen/dimen_20dp"
                     android:maxLength="10"
                     android:maxLines="1"
 
@@ -168,7 +167,7 @@
                     android:id="@+id/edittext_registration_password"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginTop="@dimen/dimen_8dp"
                     android:inputType="textPassword"
                     android:maxLines="1"
                     android:hint="Password"
@@ -201,7 +200,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:layout_below="@+id/layout_linear_parent"
-            android:layout_marginTop="@dimen/diamen_20dp"
+            android:layout_marginTop="@dimen/dimen_20dp"
             android:layout_alignParentBottom="true">
             <View
                 android:id="@+id/viewbutton_admin"
@@ -216,8 +215,6 @@
                 android:layout_height="wrap_content"
                 android:textSize="14dp"
                 android:text="Register"
-
-
                 />
 
         </LinearLayout>

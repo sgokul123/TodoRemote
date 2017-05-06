@@ -13,37 +13,37 @@
 
         <android.support.v7.widget.AppCompatImageView
             android:id="@+id/imageView_back_arrow"
-            android:layout_width="@dimen/diamen_30dp"
-            android:layout_height="@dimen/diamen_30dp"
-            android:layout_marginTop="@dimen/diamen_10dp"
-            android:layout_marginLeft="@dimen/diamen_10dp"
+            android:layout_width="@dimen/dimen_30dp"
+            android:layout_height="@dimen/dimen_30dp"
+            android:layout_marginTop="@dimen/dimen_10dp"
+            android:layout_marginLeft="@dimen/dimen_10dp"
             app:srcCompat="?attr/actionModeCloseDrawable" />
 
         <android.support.v7.widget.AppCompatImageView
             android:id="@+id/imageView_pin"
-            android:layout_width="@dimen/diamen_30dp"
-            android:layout_height="@dimen/diamen_20dp"
-            android:layout_marginRight="@dimen/diamen_20dp"
-            android:layout_marginTop="@dimen/diamen_10dp"
+            android:layout_width="@dimen/dimen_30dp"
+            android:layout_height="@dimen/dimen_20dp"
+            android:layout_marginRight="@dimen/dimen_20dp"
+            android:layout_marginTop="@dimen/dimen_10dp"
             android:layout_toLeftOf="@+id/imageView_reminder"
             app:srcCompat="@drawable/pin" />
 
         <android.support.v7.widget.AppCompatImageView
             android:id="@+id/imageView_reminder"
-            android:layout_width="@dimen/diamen_30dp"
-            android:layout_height="@dimen/diamen_20dp"
-            android:layout_marginRight="@dimen/diamen_20dp"
-            android:layout_marginTop="@dimen/diamen_10dp"
+            android:layout_width="@dimen/dimen_30dp"
+            android:layout_height="@dimen/dimen_20dp"
+            android:layout_marginRight="@dimen/dimen_20dp"
+            android:layout_marginTop="@dimen/dimen_10dp"
             android:layout_toLeftOf="@+id/imageView_save"
             app:srcCompat="@drawable/reminder" />
 
         <android.support.v7.widget.AppCompatImageView
             android:id="@+id/imageView_save"
-            android:layout_width="@dimen/diamen_30dp"
-            android:layout_height="@dimen/diamen_20dp"
+            android:layout_width="@dimen/dimen_30dp"
+            android:layout_height="@dimen/dimen_20dp"
             android:layout_alignParentEnd="true"
-            android:layout_marginRight="@dimen/diamen_20dp"
-            android:layout_marginTop="@dimen/diamen_10dp"
+            android:layout_marginRight="@dimen/dimen_20dp"
+            android:layout_marginTop="@dimen/dimen_10dp"
             app:srcCompat="@drawable/save" />
         <View
             android:id="@+id/view_first"
@@ -58,9 +58,9 @@
             android:id="@+id/input_layout_title"
             android:layout_below="@+id/view_first"
             android:layout_width="match_parent"
-            android:layout_marginRight="@dimen/diamen_20dp"
-            android:layout_marginLeft="@dimen/diamen_20dp"
-            android:layout_marginTop="@dimen/diamen_20dp"
+            android:layout_marginRight="@dimen/dimen_20dp"
+            android:layout_marginLeft="@dimen/dimen_20dp"
+            android:layout_marginTop="@dimen/dimen_20dp"
             android:layout_height="wrap_content">
             <android.support.v7.widget.AppCompatEditText
                 android:id="@+id/edittext_title"
@@ -75,9 +75,9 @@
             android:layout_width="match_parent"
             android:layout_below="@+id/input_layout_title"
             android:layout_height="wrap_content"
-            android:layout_marginRight="@dimen/diamen_20dp"
-            android:layout_marginLeft="@dimen/diamen_20dp"
-            android:layout_marginTop="@dimen/diamen_20dp">
+            android:layout_marginRight="@dimen/dimen_20dp"
+            android:layout_marginLeft="@dimen/dimen_20dp"
+            android:layout_marginTop="@dimen/dimen_20dp">
             <android.support.v7.widget.AppCompatEditText
                 android:id="@+id/edittet_note"
                 android:layout_width="match_parent"
@@ -89,10 +89,10 @@
         <android.support.v7.widget.AppCompatTextView
             android:id="@+id/textview_reminder_text"
             android:layout_width="match_parent"
-            android:layout_marginLeft="@dimen/diamen_20dp"
+            android:layout_marginLeft="@dimen/dimen_20dp"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/diamen_10dp"
-            android:layout_marginRight="@dimen/diamen_30dp"
+            android:layout_marginBottom="@dimen/dimen_10dp"
+            android:layout_marginRight="@dimen/dimen_30dp"
             android:layout_above="@+id/view_second"/>
 
         <View
@@ -102,7 +102,7 @@
             android:layout_above="@+id/textview_editedat_at"
             android:background="@color/cardview_dark_background"
 
-            android:layout_marginBottom="@dimen/diamen_10dp"
+            android:layout_marginBottom="@dimen/dimen_10dp"
             />
         <android.support.v7.widget.AppCompatTextView
             android:id="@+id/textview_editedat_at"
@@ -111,7 +111,7 @@
             android:hint="Edited 2:56 PM"
             android:textAlignment="center"
             android:layout_alignParentBottom="true"
-            android:layout_marginBottom="@dimen/diamen_10dp" />
+            android:layout_marginBottom="@dimen/dimen_10dp" />
 
     </RelativeLayout>
 

@@ -31,13 +31,13 @@
                     android:id="@+id/textview_title_toolbar"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="@dimen/diamen_30sp"
-                    android:layout_marginRight="@dimen/diamen_50dp"
+                    android:textSize="@dimen/dimen_30sp"
+                    android:layout_marginRight="@dimen/dimen_50dp"
                     android:text="Notes"
                     android:layout_centerVertical="true"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentStart="true"
-                    android:layout_marginBottom="@dimen/diamen_10dp"
+                    android:layout_marginBottom="@dimen/dimen_10dp"
                     />
 
 
@@ -46,9 +46,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="@dimen/dimen_10dp"
-                    android:layout_marginTop="@dimen/diamen_15dp"
+                    android:layout_marginTop="@dimen/dimen_15dp"
                     android:layout_toLeftOf="@+id/imageView_grid_linear"
                     app:srcCompat="@android:drawable/ic_search_category_default" />
+
                 <android.support.v7.widget.AppCompatImageView
                     android:id="@+id/imageView_grid_linear"
                     android:layout_width="wrap_content"
@@ -56,8 +57,8 @@
                     android:layout_alignParentEnd="true"
                     android:layout_alignParentRight="true"
                     android:layout_marginEnd="@dimen/dimen_10dp"
-                    android:layout_marginLeft="@dimen/diamen_40dp"
-                    android:layout_marginTop="@dimen/diamen_15dp"
+                    android:layout_marginLeft="@dimen/dimen_40dp"
+                    android:layout_marginTop="@dimen/dimen_15dp"
                     app:srcCompat="@drawable/list_view" />
 
             </RelativeLayout>
@@ -77,7 +78,7 @@
             android:id="@+id/toolbarsearch"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="@android:color/white"
+            android:background="@color/toolbar_back"
             app:popupTheme="@style/AppTheme.PopupOverlay"
             android:visibility="gone"
             >
@@ -93,9 +94,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="@dimen/dimen_20dp"
-                    android:layout_marginLeft="@dimen/diamen_40dp"
-                    android:layout_marginRight="@dimen/diamen_20dp"
-                    android:layout_marginTop="@dimen/diamen_10dp"
+                    android:layout_marginLeft="@dimen/dimen_40dp"
+                    android:layout_marginRight="@dimen/dimen_20dp"
+                    android:layout_marginTop="@dimen/dimen_10dp"
                     app:srcCompat="@drawable/ic_previous" />
 
                 <android.support.v7.widget.AppCompatEditText
@@ -105,17 +106,16 @@
                     android:hint="Search here.."
                     android:layout_toRightOf="@+id/imageView_back_search"
                     android:textColorHint="@android:color/black"
-                    android:layout_marginTop="@dimen/diamen_10dp"
-                    android:layout_marginRight="@dimen/diamen_10dp"
-                    android:textColor="@android:color/black"
-                    android:layout_marginLeft="@dimen/diamen_10dp"
+                    android:layout_marginTop="@dimen/dimen_10dp"
+                    android:layout_marginRight="@dimen/dimen_10dp"
+                    android:textColor="@android:color/white"
+                    android:layout_marginLeft="@dimen/dimen_10dp"
                     android:inputType="text"
+                    android:background="@android:color/transparent"
+                    android:drawableLeft="@android:drawable/ic_menu_search"
+                    android:maxLines="1"
                     />
-                <View
-                   android:layout_width="match_parent"
-                    android:background="@android:color/black"
-                    android:layout_alignParentBottom="true"
-                    android:layout_height="1dp"/>
+
             </RelativeLayout>
 
         </android.support.v7.widget.Toolbar>
@@ -133,8 +133,8 @@
         android:layout_alignParentEnd="true"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
-        android:layout_marginBottom="@dimen/diamen_10dp"
-        android:layout_marginRight="@dimen/diamen_10dp"
+        android:layout_marginBottom="@dimen/dimen_10dp"
+        android:layout_marginRight="@dimen/dimen_10dp"
         android:src="@android:drawable/ic_input_add"
         android:tint="@android:color/white"
         />

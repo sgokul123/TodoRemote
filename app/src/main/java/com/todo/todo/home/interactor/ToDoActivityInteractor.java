@@ -16,6 +16,7 @@ import com.todo.todo.util.Connection;
 
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -27,10 +28,9 @@ public class ToDoActivityInteractor implements TodoInteractorInterface {
     DatabaseHandler db;
     DatabaseReference mRef;
     int size = 0;
-
     Context mContext;
-    private String TAG = "ToDoActivityInteractor";
 
+    private String TAG = "ToDoActivityInteractor";
     private DatabaseReference mDatabase;
 
     public ToDoActivityInteractor(ToDoPresenterInteface toDoPresenterInteface, Context context) {
@@ -70,9 +70,7 @@ public class ToDoActivityInteractor implements TodoInteractorInterface {
             localNotes = new ArrayList<ToDoItemModel>();
 
             DatabaseHandler db = new DatabaseHandler(mContext);
-
             localNotes = db.getLocalData();
-
             if (localNotes.size() == 0) {
 
                 Log.i(TAG, "getToDoData: ");
@@ -110,6 +108,7 @@ public class ToDoActivityInteractor implements TodoInteractorInterface {
                             Log.i(TAG, "onDataChange: ");
                             todoItemModel.addAll(child.getValue(t));
                         }
+                        todoItemModel.removeAll(Collections.singleton(null));
                         toDoPresenterInteface.getCallBackNotes(todoItemModel);
                     }
                     toDoPresenterInteface.closeProgressDialog();
@@ -123,6 +122,7 @@ public class ToDoActivityInteractor implements TodoInteractorInterface {
             });
 
         } catch (Exception e) {
+            Log.i(TAG, "getFireBaseDatabase: "+e);
             toDoPresenterInteface.closeNoteProgressDialog();
         }
     }
@@ -132,5 +132,10 @@ public class ToDoActivityInteractor implements TodoInteractorInterface {
         getFireBaseDatabase(uid);
     }
 
+    @Override
+    public void getMoveNotes(String uid, String curDate, ToDoItemModel fromNote, ToDoItemModel desinationNote) {
 
+
+
+    }
 }

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">ToDo</string>
+    <string name="app_name">BridgeLabz Sticky Notes</string>
     <string name="title_activity_to_do">ToDoActivity</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
@@ -22,5 +22,24 @@
     <string name="loading">Loading...</string>
     <string name="updated">succcessfully Updated...</string>
     <string name="fail_update">fail to Update...</string>
+    <string name="gmail_access">public_profile email</string>
+    <string name="fb_profile_fields">id, first_name, last_name, email,gender, birthday, location</string>
+    <string name="fields">fields</string>
+    <string name="fb_login_cancel">Login attempt canceled</string>
+    <string name="error">Error</string>
+    <string name="fb_login_unAthorised">Please Enter Valid Email ...</string>
+    <string name="enter_valid">Please Enter The User Name  And Password ...</string>
+    <string name="login_user">Login User...</string>
+    <string name="profile_pic">profile_pic</string>
+    <string name="first_name">first_name</string>
+    <string name="last_name">last_name</string>
+    <string name="email_id">email</string>
+    <string name="gender">gender</string>
+    <string name="birthday">birthday</string>
+    <string name="location">location</string>
+    <string name="fb_url_start">https://graph.facebook.com/</string>
+    <string name="fb_url_last"><![CDATA[/picture?width=200&height=150]]></string>
+    <string name="email_pattern">^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$</string>
+    <string name="select_card">Select One card To Share ...</string>
 
 </resources>

@@ -60,6 +60,10 @@ public class ToDoActivityPresenter implements  ToDoPresenterInteface {
         mNoteInterface.getResponce(flag);
     }
 
+    @Override
+    public void getUndoArchivedNote(int position) {
+
+    }
 
 
     @Override

@@ -2,6 +2,7 @@ package com.todo.todo.registration.view;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
@@ -14,9 +15,11 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.todo.todo.R;
+import com.todo.todo.home.view.ToDoActivity;
 import com.todo.todo.login.view.LoginActivity;
 import com.todo.todo.registration.model.RegistrationModel;
 import com.todo.todo.registration.presenter.RegistrationPresenter;
+import com.todo.todo.util.Constants;
 import com.todo.todo.util.ProgressUtil;
 
 import java.util.regex.Matcher;
@@ -33,6 +36,9 @@ public class RegistrationFragment extends Fragment implements View.OnClickListen
     RegistrationPresenter registrationPresenter;
     private static final String EMAIL_PATTERN = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
             + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
+    private SharedPreferences.Editor mSharedPref_editor;
+    private SharedPreferences pref;
+
     public static RegistrationFragment newInstance(String param1, String param2) {
         RegistrationFragment fragment = new RegistrationFragment();
         Bundle args = new Bundle();
@@ -61,6 +67,9 @@ public class RegistrationFragment extends Fragment implements View.OnClickListen
         mTextlayoutmobil=(TextInputLayout)view.findViewById(R.id.input_layout_register_phone);
         mTextlayoutpasss2=(TextInputLayout)view.findViewById(R.id.input_layout_password);
 
+
+        pref = getActivity().getSharedPreferences(Constants.ProfileeKey.SHAREDPREFERANCES_KEY, getActivity().MODE_PRIVATE);
+        mSharedPref_editor = pref.edit();
        mButtonRegistration.setOnClickListener(this);
         mProgressUtil=new ProgressUtil(getActivity());
 
@@ -112,24 +121,36 @@ public class RegistrationFragment extends Fragment implements View.OnClickListen
     }
 
     @Override
-    public void getResponce(boolean flag) {
-        if(flag){
-            Intent intent=new Intent(getActivity(), LoginActivity.class);
-            startActivity(intent);
-            getActivity().finish();
-            Toast.makeText(getActivity(), "Successfull", Toast.LENGTH_SHORT).show();
-        }else {
+    public void getResponce(String uid, RegistrationModel model) {
+        mSharedPref_editor.putString(Constants.BundleKey.USER_REGISTER,getString(R.string.flag_true));
+        mSharedPref_editor.putString(Constants.BundleKey.USER_EMAIL,model.getMailid());
+        mSharedPref_editor.putString(Constants.BundleKey.USER_USER_UID,uid);
+        mSharedPref_editor.putString(Constants.ProfileeKey.FIRST_NAME,model.getUserFirstName());
+        mSharedPref_editor.putString(Constants.ProfileeKey.LAST_NAME,model.getUserLastName());
+        mSharedPref_editor.putString(Constants.ProfileeKey.MOBILE_NO,model.getMobileNo());
+        mSharedPref_editor.putString(Constants.ProfileeKey.PROFILE_IMAGE_URL,model.getUserProfileImgurl());
+        mSharedPref_editor.putString(Constants.BundleKey.USER_PROFILE_SERVER,getString(R.string.flag_true));
+        mSharedPref_editor.commit();
+        ///  show registration page again
+        Intent intent=new Intent(getActivity(),ToDoActivity.class);
+        startActivity(intent);
+        getActivity().finish();
 
-            mEditTextEmail.setText("");
-            mEditTextLName.setText("");
-            mEditTextMobile.setText("");
-            mEditTextLName.setText("");
-            mEditTextPassword.setText("");
-            mEditTextPassword2.setText("");
-            Toast.makeText(getActivity(), "Fail", Toast.LENGTH_SHORT).show();
-        }
+      /*  Intent intent=new Intent(getActivity(), LoginActivity.class);
+        startActivity(intent);
+        getActivity().finish();*/
+        // Toast.makeText(getActivity(), "Successfull", Toast.LENGTH_SHORT).show();
 
+
+        mEditTextEmail.setText("");
+        mEditTextLName.setText("");
+        mEditTextMobile.setText("");
+        mEditTextLName.setText("");
+        mEditTextPassword.setText("");
+        mEditTextPassword2.setText("");
     }
+
+
         public boolean validateAll(){
 
         boolean mobil=false,name=false,lname=false,pass=false,email=false;
@@ -199,7 +220,7 @@ public class RegistrationFragment extends Fragment implements View.OnClickListen
         }
         if(hasFocus){
         }else {
-            Toast.makeText(getActivity(), "lost the focus", Toast.LENGTH_LONG).show();
+           // Toast.makeText(getActivity(), "lost the focus", Toast.LENGTH_LONG).show();
             isValid (editText);
         }
     }
@@ -245,7 +266,7 @@ public class RegistrationFragment extends Fragment implements View.OnClickListen
         else if(editText==mEditTextName){
             if(mEditTextName.getText().toString().equals("")){
 
-                mEditTextName.setError("Mobile Number Must be 10 Digit");
+                mEditTextName.setError("Name should not be Blank...");
             }
             else {
             }
@@ -254,7 +275,7 @@ public class RegistrationFragment extends Fragment implements View.OnClickListen
         //Name validation
         else if(editText==mEditTextLName){
             if(mEditTextLName.getText().toString().equals("")){
-                 mEditTextLName.setError("Name should not blank");
+                 mEditTextLName.setError("Last Name should not blank");
             }
             else {
             }

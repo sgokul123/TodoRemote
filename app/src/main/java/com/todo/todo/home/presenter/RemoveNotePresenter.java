@@ -27,8 +27,8 @@ public class RemoveNotePresenter  {
         removeFirebaseDataInteractor =new RemoveFirebaseDataInteractor(mContext);
 
     }
-    public void removeFirebaseData(List<ToDoItemModel> toDoItemModel, String mUserUID, int position){
-        removeFirebaseDataInteractor.getIndexUpdateNotes(toDoItemModel,mUserUID,position);
+    public void removeFirebaseData(ToDoItemModel doItemModel, List<ToDoItemModel> toDoItemModel, String mUserUID, int position){
+        removeFirebaseDataInteractor.getIndexUpdateNotes(doItemModel,toDoItemModel,mUserUID,position);
     }
 
     public void  getArchiveData(ToDoItemModel toDoItemModel, String mUserUID, int position){
