@@ -41,6 +41,7 @@ public class Constants {
 
             public static final String KEY_ARCHIVE ="archive";
        public static final String KEY_SETTIME = "settime";
+            String TRASH_TABLE_NAME = "trashtable";
         }
     public interface NotesType {
         public static final String REMINDER_NOTES = "Reminders";
@@ -49,6 +50,7 @@ public class Constants {
         public static final String DATE_FORMAT = "EEE,MMMd,yy";
 
 
+        String TRASH_NOTES = "Trash Notes";
     }
     public interface Stringkeys {
         public static final String FLAGT_TRUE = "true";

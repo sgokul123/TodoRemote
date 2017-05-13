@@ -11,7 +11,7 @@
     <color name="color_view">#000000</color>
     <color name="gray">#606360</color>
     <color name="toolbar_back">#FEBA00</color>
-    <color name="toolbar_white">#f1ede4</color>
+    <color name="toolbar_white">#a19575</color>
     <color name="light_gray">#dbecaf</color>
-    <color name="back_color_recycler">#00b4a3a3</color>
+    <color name="back_color_recycler">#dbdc95</color>
 </resources>

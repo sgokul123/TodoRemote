@@ -31,7 +31,7 @@
        android:layout_marginLeft="@dimen/dimen_20dp"
         android:hint="User Name"
         android:layout_below="@+id/imageView_nav_profile"
-        android:textSize="@dimen/dimen_25sp"
+        android:textSize="@dimen/dimen_18sp"
         android:maxLines="1"
         android:layout_marginTop="@dimen/dimen_5dp"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
@@ -41,7 +41,7 @@
         android:layout_marginTop="@dimen/dimen_5dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="@dimen/dimen_20sp"
+        android:textSize="@dimen/dimen_18sp"
         android:layout_below="@+id/textview_nave_name"
         android:layout_marginLeft="@dimen/dimen_20dp"
         android:hint="User Email"

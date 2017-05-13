@@ -59,6 +59,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + Constants.RequestParam.KEY_ID + " INTEGER PRIMARY KEY," + Constants.RequestParam.KEY_TITLE + " TEXT," + Constants.RequestParam.KEY_NOTE + " TEXT,"
                 + Constants.RequestParam.KEY_REMINDER + " TEXT," + Constants.RequestParam.KEY_STARTDATE + " TEXT," + Constants.RequestParam.KEY_ARCHIVE + " TEXT," + Constants.RequestParam.KEY_SETTIME + " TEXT" + ")";
         db.execSQL(CREATE_LOCAL_ToDoS_TABLE);
+
+        String CREATE_TRASH_TABLE = "CREATE TABLE IF NOT EXISTS " + Constants.RequestParam.TRASH_TABLE_NAME + "("
+                + Constants.RequestParam.KEY_ID + " INTEGER PRIMARY KEY," + Constants.RequestParam.KEY_TITLE + " TEXT," + Constants.RequestParam.KEY_NOTE + " TEXT,"
+                + Constants.RequestParam.KEY_REMINDER + " TEXT," + Constants.RequestParam.KEY_STARTDATE + " TEXT," + Constants.RequestParam.KEY_ARCHIVE + " TEXT," + Constants.RequestParam.KEY_SETTIME + " TEXT" + ")";
+        db.execSQL(CREATE_TRASH_TABLE);
     }
 
     // Upgrading database  
@@ -68,6 +73,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + Constants.RequestParam.NOTES_TABLE_NAME);
         //drop local database
       db.execSQL("DROP TABLE IF EXISTS " + Constants.RequestParam.LOCAL_NOTES_TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + Constants.RequestParam.TRASH_TABLE_NAME);
         // Create tables again  
         onCreate(db);
     }
@@ -146,11 +152,76 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         }
     }
 
+
+    //save to local database when network is not present
+    public void addNoteToTrash(ToDoItemModel toDoItemModel) {
+        SQLiteDatabase db = null;
+        try {
+
+            db = this.getWritableDatabase();
+            Log.i(TAG, "addToDo: start");
+            ContentValues values = new ContentValues();
+            values.put(Constants.RequestParam.KEY_TITLE, toDoItemModel.getTitle()); // ToDo Name
+            values.put(Constants.RequestParam.KEY_NOTE, toDoItemModel.getNote()); // ToDo Phone
+            values.put(Constants.RequestParam.KEY_REMINDER, toDoItemModel.getReminder()); // ToDo REMINDER
+            values.put(Constants.RequestParam.KEY_STARTDATE, toDoItemModel.getStartdate()); // ToDo REMINDER
+            values.put(Constants.RequestParam.KEY_ARCHIVE, toDoItemModel.getArchive());
+            values.put(Constants.RequestParam.KEY_SETTIME, toDoItemModel.getSettime());
+            // Inserting Row
+            db.insert(Constants.RequestParam.TRASH_TABLE_NAME, null, values);
+            Log.i(TAG, "addToDo:  success");
+        } catch (Exception e) {
+            Log.i(TAG, "addToDo: " + e);
+        } finally {
+            db.close(); // Closing database connection
+        }
+    }
+
+
+    // Deleting single ToDo
+    public void deleteTrashToDos(ToDoItemModel toDoItemModel) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        Log.i(TAG, "deleteToDo: delete");
+        db.delete(Constants.RequestParam.TRASH_TABLE_NAME, Constants.RequestParam.KEY_ID + " = ?",
+                new String[]{String.valueOf(toDoItemModel.getId())});
+        db.close();
+    }
+
+    // code to get all ToDos in a list view
+    public List<ToDoItemModel> getAllTrashToDos() {
+        Log.i(TAG, "getAllToDos: ");
+        List<ToDoItemModel> mToDoList = new ArrayList<ToDoItemModel>();
+        // Select All Query
+        String selectQuery = "SELECT  * FROM " + Constants.RequestParam.TRASH_TABLE_NAME;
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        // looping through all rows and adding to list
+        if (cursor.moveToFirst()) {
+            do {
+                ToDoItemModel ToDo = new ToDoItemModel();
+                ToDo.setId(Integer.parseInt(cursor.getString(0)));
+                ToDo.setTitle(cursor.getString(1));
+                ToDo.setNote(cursor.getString(2));
+                ToDo.setReminder(cursor.getString(3));
+                ToDo.setStartdate(cursor.getString(4));
+                ToDo.setArchive(cursor.getString(5));
+                ToDo.setSettime(cursor.getString(6));
+                // Adding ToDo to list
+                mToDoList.add(ToDo);
+            } while (cursor.moveToNext());
+        }
+        // return ToDo list
+        return mToDoList;
+    }
+
+
+
     //add all models to local database
     public void addAllNotesToLocal(List<ToDoItemModel> toDoItemModels) {
         SQLiteDatabase db = null;
         try {
-
             db = this.getWritableDatabase();
             dropLocaltable(db);
             Log.i(TAG, "addToDo: start");
@@ -318,7 +389,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         }
         db.close();
     }
-
     // Deleting single ToDo  
     public void deleteToDo(ToDoItemModel toDoItemModel) {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -327,7 +397,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 new String[]{String.valueOf(toDoItemModel.getId())});
         db.close();
     }
-
     // Deleting single ToDo
     public void deleteLocaltodoNote(ToDoItemModel toDoItemModel) {
         SQLiteDatabase db = this.getWritableDatabase();

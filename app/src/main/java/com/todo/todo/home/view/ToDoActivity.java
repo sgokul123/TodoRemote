@@ -15,6 +15,7 @@ import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -22,7 +23,6 @@ import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SearchView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
@@ -70,7 +70,7 @@ public class ToDoActivity extends BaseActivity
     private final int SELECT_PHOTO = 3;
     ToDoActivityPresenter mToDoActivityPresenter;
     ProgressUtil mProgressDialog;
-    AppCompatTextView mTextView_Email, mTextView_Name, mTextView_Title;
+    AppCompatTextView mTextView_Email,mTextView_blank_recycler, mTextView_Name, mTextView_Title;
     AppCompatEditText mEditText_Search, mEditTextsearch;
     Toolbar mToolbar, mToolSearch;
     boolean isReminderAdapter = false;
@@ -84,7 +84,7 @@ public class ToDoActivity extends BaseActivity
     Uri mPrfilefilePath;
     ItemAdapter itemAdapter, mReminderAdapter, mArchivedAdapter;
     List<ToDoItemModel> toDoItemModels;
-    List<ToDoItemModel> toDoAllItemModels, mRemindrsToDO, mArchivedNotes;
+    List<ToDoItemModel> toDoAllItemModels, mRemindrsToDO, mArchivedNotes,mTrashNotes;
     Utility util;
     UpdateNotePresenter updateNotePresenter;
     private String isUpdateUI = "";
@@ -92,7 +92,10 @@ public class ToDoActivity extends BaseActivity
     private String mEmail_id, mUserUID;
     private boolean issearch = false;
     private boolean mLinear = false;
-
+    RemoveNotePresenter removeNotePresenter;
+    private boolean isTrashAdapter;
+    private ItemAdapter mTrashAdapter;
+    private TrashFragment trashFragment;
 
 
     @Override
@@ -101,14 +104,19 @@ public class ToDoActivity extends BaseActivity
         toDoAllItemModels = new ArrayList<>();
         initView();
         updateNotePresenter = new UpdateNotePresenter(ToDoActivity.this, this);
+        mRemindrsToDO=new ArrayList<>();
+        mArchivedNotes=new ArrayList<>();
+        toDoItemModels=new ArrayList<>();
+        mTrashNotes=new ArrayList<>();
 
+        removeNotePresenter = new RemoveNotePresenter(getApplicationContext(),ToDoActivity.this);
     }
 
     @Override
     public void initView() {
         setContentView(R.layout.activity_to_do);
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
-
+        mTextView_blank_recycler=(AppCompatTextView)findViewById(R.id.textview_blank_recyclerview);
         mFloatingActionButton = (FloatingActionButton) findViewById(R.id.fab);
         mImageView_Linear_Grid = (AppCompatImageView) findViewById(R.id.imageView_grid_linear);
         mImageViewsearch = (AppCompatImageView) findViewById(R.id.imageView_search_bar);
@@ -132,7 +140,9 @@ public class ToDoActivity extends BaseActivity
             mToDoActivityPresenter = new ToDoActivityPresenter(this, this);
             mToDoActivityPresenter.getPresenterNotes(mUserUID);
         }
-
+        mTextView_blank_recycler.setVisibility(View.VISIBLE);
+        mTextView_blank_recycler.setText(getString(R.string.data_is_null));
+        mToDoRecyclerView.setVisibility(View.INVISIBLE);
         mToDoRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
         // mToDoRecyclerView.setItemAnimator(new DefaultItemAnimator());
 
@@ -148,6 +158,7 @@ public class ToDoActivity extends BaseActivity
         mTextView_Email = (AppCompatTextView) header.findViewById(R.id.textView_nav_email);
         mTextView_Name = (AppCompatTextView) header.findViewById(R.id.textview_nave_name);
         isUpdateUI = mTextView_Title.getText().toString();
+
         setNavigationProfile();
         addTextListener();
         initSwipe();
@@ -155,7 +166,7 @@ public class ToDoActivity extends BaseActivity
         setOnClickListener();
     }
 
-    public List<ToDoItemModel> getUpdateModels() {
+    public List<ToDoItemModel> getUpdateModels(){
         List<ToDoItemModel> dataModels = new ArrayList<>();
         String typeOfNotes = mTextView_Title.getText().toString();
         if (typeOfNotes.equals(Constants.NotesType.ALL_NOTES)) {
@@ -164,6 +175,8 @@ public class ToDoActivity extends BaseActivity
             dataModels = mRemindrsToDO;
         } else if (typeOfNotes.equals(Constants.NotesType.ARCHIVE_NOTES)) {
             dataModels = mArchivedNotes;
+        }else if(typeOfNotes.equals(Constants.NotesType.TRASH_NOTES)) {
+            dataModels = mTrashNotes;
         }
         return dataModels;
     }
@@ -193,19 +206,28 @@ public class ToDoActivity extends BaseActivity
             @Override
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
                 final int position = viewHolder.getAdapterPosition();
-                RemoveNotePresenter removeNotePresenter = new RemoveNotePresenter(getApplicationContext());
+
                 String typeOfNotes = mTextView_Title.getText().toString();
                 Log.i(TAG, "onSwiped: " + typeOfNotes);
                 if (typeOfNotes.equals(Constants.NotesType.ALL_NOTES)) {
                     Log.i(TAG, "onSwiped: ");
                     if (direction == ItemTouchHelper.LEFT) {
-                        removeNotePresenter.removeFirebaseData(toDoItemModels.get(position), toDoAllItemModels, mUserUID, position);
+                       removeNotePresenter.removeFirebaseData(toDoItemModels.get(position), toDoAllItemModels, mUserUID, position);
+                       if(toDoItemModels.size()==1){
+                           toDoItemModels.remove(0);
+                           if(mRemindrsToDO.size()>0) mRemindrsToDO.remove(0);
+                           showDataInActivity(new ArrayList<ToDoItemModel>());
+                       }
                     } else {
                         getArchive(itemAdapter, position, toDoItemModels.get(position));
                     }
                 } else if (typeOfNotes.equals(Constants.NotesType.REMINDER_NOTES)) {
                     if (direction == ItemTouchHelper.LEFT) {
                         removeNotePresenter.removeFirebaseData(mRemindrsToDO.get(position), toDoAllItemModels, mUserUID, position);
+                        if(mRemindrsToDO.size()==1){
+                            mRemindrsToDO.remove(0);
+                            showDataInActivity(new ArrayList<ToDoItemModel>());
+                        }
                     } else {
                         getArchive(mReminderAdapter, position, mRemindrsToDO.get(position));
                     }
@@ -224,7 +246,7 @@ public class ToDoActivity extends BaseActivity
             public void getArchive(final ItemAdapter archiveitemAdapter, final int position, final ToDoItemModel toDoItemModel) {
                 //UpdateNotePresenter updateNotePresenter = new UpdateNotePresenter(ToDoActivity.this, this);
                 final String date = toDoItemModel.getStartdate();
-                archiveitemAdapter.removeItem(position);
+               // archiveitemAdapter.removeItem(position);
                 updateNotePresenter.getAchiveNote(mUserUID, date, toDoItemModel);
                 Snackbar snackbar = Snackbar
                         .make(getCurrentFocus(), Constants.Stringkeys.MASSEGE_IS_ARCHIVED, Snackbar.LENGTH_LONG)
@@ -254,18 +276,17 @@ public class ToDoActivity extends BaseActivity
 
     }
 
-    public void setNavigationProfile() {
+    public void setNavigationProfile(){
         String getemail, getName, image_Url = "";
         if (pref.contains(Constants.BundleKey.USER_EMAIL)) {
             getemail = pref.getString(Constants.BundleKey.USER_EMAIL, Constants.Stringkeys.DEMO_EMAIL);
-            if (!pref.getString(ProfileeKey.LAST_NAME, "null").equals("null")) {
+            if(!pref.getString(ProfileeKey.LAST_NAME, "null").equals("null")) {
                 getName = pref.getString(ProfileeKey.FIRST_NAME, Constants.Stringkeys.NAME) + " " + pref.getString(ProfileeKey.LAST_NAME, " ");
             } else {
                 getName = pref.getString(ProfileeKey.FIRST_NAME, Constants.Stringkeys.NAME);
             }
             mEmail_id = getemail;
             Log.i(TAG, "onCreate:  email" + getemail);
-
             Connection con = new Connection(getApplicationContext());
             if (con.isNetworkConnected()) {
 
@@ -289,7 +310,6 @@ public class ToDoActivity extends BaseActivity
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-
                 }
             } else {
                 mImageView_ProfileImage.setOnClickListener(this);
@@ -303,10 +323,8 @@ public class ToDoActivity extends BaseActivity
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
-
                     }
                 }
-
             }
             mTextView_Email.setText(getemail);
             mTextView_Name.setText(getName);
@@ -321,8 +339,38 @@ public class ToDoActivity extends BaseActivity
         } else {
             super.onBackPressed();
         }
+            getSupportFragmentManager().popBackStackImmediate();
+            getupdatedView(toDoItemModels, 1);
+            isReminderAdapter = false;
+            isArchivedAdapter = false;
+            mTextView_Title.setText(Constants.NotesType.ALL_NOTES);
+
     }
 
+
+    //get crop images circular
+    public static Bitmap getRoundedRectBitmap(Bitmap bitmap, int pixels) {
+        Bitmap result = null;
+        try {
+            result = Bitmap.createBitmap(100, 100, Bitmap.Config.ARGB_8888);
+            Canvas canvas = new Canvas(result);
+
+            int color = 0xff424242;
+            Paint paint = new Paint();
+            Rect rect = new Rect(0, 0, 200, 200);
+
+            paint.setAntiAlias(true);
+            canvas.drawARGB(0, 0, 0, 0);
+            paint.setColor(color);
+            canvas.drawCircle(50, 50, 50, paint);
+            paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
+            canvas.drawBitmap(bitmap, rect, rect, paint);
+
+        } catch (NullPointerException e) {
+        } catch (OutOfMemoryError o) {
+        }
+        return result;
+    }
     /*
     * Logout User From ToDo App
     * */
@@ -351,12 +399,10 @@ public class ToDoActivity extends BaseActivity
         }
     }
 
-
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.imageView_grid_linear:
-                //Convert Grid view to linear
                 getAlterRecyclerLayout();
                 break;
             case R.id.fab:
@@ -383,8 +429,8 @@ public class ToDoActivity extends BaseActivity
             case R.id.imageView_back_search:
                 mToolSearch.setVisibility(View.GONE);
                 mToolbar.setVisibility(View.VISIBLE);
+                mEditText_Search.setText("");
                 break;
-
         }
     }
 
@@ -435,7 +481,6 @@ public class ToDoActivity extends BaseActivity
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        setVisibilityTollBar(false);
 
         // Handle navigation view item clicks here.
         int id = item.getItemId();
@@ -444,6 +489,7 @@ public class ToDoActivity extends BaseActivity
                 getupdatedView(toDoItemModels, 1);
                 isReminderAdapter = false;
                 isArchivedAdapter = false;
+                getSupportFragmentManager().popBackStackImmediate();
                 mTextView_Title.setText(Constants.NotesType.ALL_NOTES);
                 break;
             case R.id.nav_reminders:
@@ -451,21 +497,29 @@ public class ToDoActivity extends BaseActivity
                 getupdatedView(mRemindrsToDO, 2);
                 isReminderAdapter = true;
                 isArchivedAdapter = false;
+                isTrashAdapter=false;
                 mTextView_Title.setText(Constants.NotesType.REMINDER_NOTES);
-
+                getSupportFragmentManager().popBackStackImmediate();
                 break;
             case R.id.nav_archive:
+                getSupportFragmentManager().popBackStackImmediate();
+
                 getupdatedView(mArchivedNotes, 3);
                 isArchivedAdapter = true;
                 isReminderAdapter = false;
+                isTrashAdapter=false;
                 mTextView_Title.setText(Constants.NotesType.ARCHIVE_NOTES);
                 break;
-            case R.id.nav_share:
-              /*  itemAdapter.setListenerNull(true);
-                mToDoRecyclerView.setOnLongClickListener(this);
-                Toast.makeText(this, getString(R.string.select_card), Toast.LENGTH_SHORT).show();
-*/
-                break;
+            case R.id.nav_trash:
+                trashFragment=new TrashFragment(mEditText_Search,mImageView_Linear_Grid);
+                getSupportFragmentManager().beginTransaction().replace(R.id.layout_recycler_home, trashFragment).addToBackStack(null).commit();
+                getupdatedView(mTrashNotes, 4);
+                isTrashAdapter=true;
+                isReminderAdapter = false;
+                isArchivedAdapter = false;
+                mTextView_Title.setText(Constants.NotesType.TRASH_NOTES);
+                  break;
+
             case R.id.nav_logout:
                 logoutUser();           //call to Logout Methode
                 break;
@@ -475,52 +529,59 @@ public class ToDoActivity extends BaseActivity
         return true;
     }
 
-
-   /* @Override
-    public boolean onLongClick(View v) {
-
-        Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
-        sharingIntent.setType("text/plain");
-        String shareBody = "Your body here";
-        String shareSub = "Your subject here";
-        sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, shareSub);
-        sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
-        startActivity(Intent.createChooser(sharingIntent, "Share using"));
-
-        return false;
-    }*/
     private void shareTextUrl() {
         Intent share = new Intent(android.content.Intent.ACTION_SEND);
         share.setType("text/plain");
         share.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
-
-        // Add data to the intent, the receiving app will decide
-        // what to do with it.
-        share.putExtra(Intent.EXTRA_SUBJECT, "Title Of The Post");
+          share.putExtra(Intent.EXTRA_SUBJECT, "Title Of The Post");
         share.putExtra(Intent.EXTRA_TEXT, "http://www.codeofaninja.com");
 
         startActivity(Intent.createChooser(share, "Share link!"));
     }
 
     public void getupdatedView(List<ToDoItemModel> allNotes, int i) {
+            switch (i) {
+                case 1:
+                    if(allNotes.size()==0){
+                        mTextView_blank_recycler.setVisibility(View.VISIBLE);
+                        mTextView_blank_recycler.setText(getString(R.string.data_is_null));
+                        mToDoRecyclerView.setVisibility(View.INVISIBLE);
+                    }else {
+                        mTextView_blank_recycler.setVisibility(View.INVISIBLE);
+                        mToDoRecyclerView.setVisibility(View.VISIBLE);
+                        getRecyclerLayout();
+                        itemAdapter = new ItemAdapter(ToDoActivity.this, allNotes);
+                        mToDoRecyclerView.setAdapter(itemAdapter);
+                    }
+                    break;
+                case 2:
+                    if(allNotes.size()==0){
+                        mTextView_blank_recycler.setVisibility(View.VISIBLE);
+                        mTextView_blank_recycler.setText(getString(R.string.get_reminder_null));
+                        mToDoRecyclerView.setVisibility(View.INVISIBLE);
+                    }else {
+                        mTextView_blank_recycler.setVisibility(View.INVISIBLE);
+                        mToDoRecyclerView.setVisibility(View.VISIBLE);
+                        getRecyclerLayout();
+                        mReminderAdapter = new ItemAdapter(ToDoActivity.this, allNotes);
+                        mToDoRecyclerView.setAdapter(mReminderAdapter);
+                    }
+                    break;
+                case 3:
+                    if(allNotes.size()==0){
+                        mTextView_blank_recycler.setVisibility(View.VISIBLE);
+                        mTextView_blank_recycler.setText(getString(R.string.get_archive_null));
+                        mToDoRecyclerView.setVisibility(View.INVISIBLE);
+                    }else {
+                        mTextView_blank_recycler.setVisibility(View.INVISIBLE);
+                        mToDoRecyclerView.setVisibility(View.VISIBLE);
+                        getRecyclerLayout();
+                        mArchivedAdapter = new ItemAdapter(ToDoActivity.this, allNotes);
+                        mToDoRecyclerView.setAdapter(mArchivedAdapter);
+                    }
+                    break;
 
-        switch (i) {
-            case 1:
-                getRecyclerLayout();
-                itemAdapter = new ItemAdapter(ToDoActivity.this, allNotes);
-                mToDoRecyclerView.setAdapter(itemAdapter);
-                break;
-            case 2:
-                getRecyclerLayout();
-                mReminderAdapter = new ItemAdapter(ToDoActivity.this, allNotes);
-                mToDoRecyclerView.setAdapter(mReminderAdapter);
-                break;
-            case 3:
-                getRecyclerLayout();
-                mArchivedAdapter = new ItemAdapter(ToDoActivity.this, allNotes);
-                mToDoRecyclerView.setAdapter(mArchivedAdapter);
-                break;
-        }
+            }
     }
 
     @Override
@@ -541,8 +602,14 @@ public class ToDoActivity extends BaseActivity
             } else if (mTextView_Title.getText().toString().equals(Constants.NotesType.ALL_NOTES)) {
                 getupdatedView(toDoItemModels, 1);
             }
-
         } else {
+            if (mTextView_Title.getText().toString().equals(Constants.NotesType.ARCHIVE_NOTES)) {
+                getupdatedView(mArchivedNotes, 3);
+            } else if (mTextView_Title.getText().toString().equals(Constants.NotesType.REMINDER_NOTES)) {
+                getupdatedView(mRemindrsToDO, 2);
+            } else if (mTextView_Title.getText().toString().equals(Constants.NotesType.ALL_NOTES)) {
+                getupdatedView(toDoItemModels, 1);
+            }
 
         }
     }
@@ -635,7 +702,11 @@ public class ToDoActivity extends BaseActivity
                 } else if (isArchivedAdapter && mArchivedAdapter != null) {
                     Filter filter = mArchivedAdapter.getFilter();
                     filter.filter(query);
-                } else {
+                }
+                else if (isTrashAdapter && mTrashAdapter != null) {
+                    Filter filter = mTrashAdapter.getFilter();
+                    filter.filter(query);
+                }else {
                     if (itemAdapter != null) {
                         Filter filter = itemAdapter.getFilter();
                         filter.filter(query);
@@ -703,28 +774,7 @@ public class ToDoActivity extends BaseActivity
 
 
     }
-    //get crop images circular
-    public static Bitmap getRoundedRectBitmap(Bitmap bitmap, int pixels) {
-        Bitmap result = null;
-        try {
-            result = Bitmap.createBitmap(100, 100, Bitmap.Config.ARGB_8888);
-            Canvas canvas = new Canvas(result);
 
-            int color = 0xff424242;
-            Paint paint = new Paint();
-            Rect rect = new Rect(0, 0, 200, 200);
 
-            paint.setAntiAlias(true);
-            canvas.drawARGB(0, 0, 0, 0);
-            paint.setColor(color);
-            canvas.drawCircle(50, 50, 50, paint);
-            paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
-            canvas.drawBitmap(bitmap, rect, rect, paint);
-
-        } catch (NullPointerException e) {
-        } catch (OutOfMemoryError o) {
-        }
-        return result;
-    }
 
 }

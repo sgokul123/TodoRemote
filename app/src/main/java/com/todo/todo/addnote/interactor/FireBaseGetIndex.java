@@ -38,17 +38,16 @@ public class FireBaseGetIndex  {
         mRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.child(uid).child(date).exists()) {
-                    if (mAddNoteInteractorInteface != null) {
+                if (mAddNoteInteractorInteface != null) {
 
-                        int size= (int) dataSnapshot.child(uid).child(date).getChildrenCount();
+                    if (dataSnapshot.child(uid).child(date).exists()) {
+                        int size = (int) dataSnapshot.child(uid).child(date).getChildrenCount();
                         mAddNoteInteractorInteface.setData(size);
                         mAddNoteInteractorInteface = null;
+                    } else {
+                        mAddNoteInteractorInteface.setData(0);
+                        mAddNoteInteractorInteface = null;
                     }
-                }
-                else {
-                    mAddNoteInteractorInteface.setData(0);
-                    mAddNoteInteractorInteface = null;
                 }
             }
             @Override

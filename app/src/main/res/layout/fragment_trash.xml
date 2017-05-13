@@ -1,16 +1,13 @@
-<?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/layout_recycler_home"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    android:orientation="vertical"
-    tools:showIn="@layout/app_bar_todo_home"
-  >
+    android:clickable="true"
+    android:background="@android:color/white"
+    tools:context="com.todo.todo.home.view.TrashFragment">
+
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/gridview_notes"
+        android:id="@+id/gridview_fragment_notes"
         android:layout_marginTop="@dimen/dimen_65dp"
         android:layout_marginLeft="@dimen/dimen_5dp"
         android:layout_marginRight="@dimen/dimen_5dp"
@@ -20,7 +17,7 @@
         />
 
     <android.support.v7.widget.AppCompatTextView
-        android:id="@+id/textview_blank_recyclerview"
+        android:id="@+id/textview_blank_fragment_recyclerview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
@@ -32,4 +29,5 @@
 
 
         />
+
 </RelativeLayout>

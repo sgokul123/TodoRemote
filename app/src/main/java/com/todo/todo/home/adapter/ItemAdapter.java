@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -44,18 +45,21 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.MyViewHolder> 
         this.mToDoActivity=toDoActivity;
         this.mdisplayedtoDoItemModels = toDoItemModels;
         this.mOriginaltoDoItemModels = toDoItemModels;
-
     }
+
+    public ItemAdapter(FragmentActivity activity, List<ToDoItemModel> todoItemModel) {
+        this.mContext=activity;
+        this.mdisplayedtoDoItemModels = todoItemModel;
+        this.mOriginaltoDoItemModels = todoItemModel;
+    }
+
     @Override
     public ItemAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_card, parent, false);
         return new MyViewHolder(itemView);
     }
-
-
     public void removeItem(int position) {
         mdisplayedtoDoItemModels.remove(position);
-        notifyItemRemoved(position);
         notifyItemRangeChanged(position, mdisplayedtoDoItemModels.size());
     }
 
@@ -88,51 +92,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.MyViewHolder> 
         notifyDataSetChanged();
     }
 
-    @Override
-    public Filter getFilter() {
-        Filter filter = new Filter() {
 
-            @SuppressWarnings("unchecked")
-            @Override
-            public void publishResults(CharSequence constraint, FilterResults results) {
-
-                mdisplayedtoDoItemModels = (ArrayList<ToDoItemModel>) results.values; // has the filtered values
-                notifyDataSetChanged();  // notifies the data with new filtered values
-            }
-
-            @Override
-            protected FilterResults performFiltering(CharSequence constraint) {
-                FilterResults results = new Filter.FilterResults();        // Holds the results of a filtering operation in values
-                ArrayList<ToDoItemModel> FilteredArrList = new ArrayList<ToDoItemModel>();
-
-                if (mOriginaltoDoItemModels == null) {
-                    mOriginaltoDoItemModels = new ArrayList<ToDoItemModel>(mdisplayedtoDoItemModels); // saves the original data in mOriginalValues
-                }
-
-
-                if (constraint == null || constraint.length() == 0) {
-
-                    // set the Original result to return
-                    results.count = mOriginaltoDoItemModels.size();
-                    results.values = mOriginaltoDoItemModels;
-                } else {
-                    constraint = constraint.toString().toLowerCase();
-                    for (int i = 0; i < mOriginaltoDoItemModels.size(); i++) {
-                        String data = mOriginaltoDoItemModels.get(i).getTitle();
-                        if (data.toLowerCase().startsWith(constraint.toString())) {
-                            FilteredArrList.add(mOriginaltoDoItemModels.get(i));
-                        }
-                    }
-                    // set the Filtered result to return
-                    results.count = FilteredArrList.size();
-                    results.values = FilteredArrList;
-                }
-                return results;
-            }
-
-        };
-        return filter;
-    }
 
     public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
         TextView textViewTitle, textViewnote, textViewReminder;
@@ -144,9 +104,11 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.MyViewHolder> 
             textViewTitle = (TextView) itemView.findViewById(R.id.textview_card_title);
             textViewnote = (TextView) itemView.findViewById(R.id.textview_notes);
             textViewReminder = (TextView) itemView.findViewById(R.id.textView_reminder);
-            mCardView.setOnClickListener(this);
-            mCardView.setOnLongClickListener(this);
-        }
+            if(mToDoActivity!=null){
+                mCardView.setOnClickListener(this);
+                mCardView.setOnLongClickListener(this);
+            }
+           }
 
         @Override
         public void onClick(View v) {
@@ -207,7 +169,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.MyViewHolder> 
 
                         Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
                         sharingIntent.setType("text/plain");
-                        String shareBody = "Title    :\n \n"+toDoItemModel.getTitle().toString()+"\n"+"\nDiscription     :\n\n"+toDoItemModel.getNote().toString();
+                        String shareBody = "Title    :\n \n"+toDoItemModel.getTitle().toString()+"\n"+"Discription     :\n\n"+toDoItemModel.getNote().toString();
                         String shareSub =toDoItemModel.getNote().toString();
                         sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, shareSub);
                         sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
@@ -224,5 +186,52 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.MyViewHolder> 
             return true;
         }
     }
+
+    @Override
+    public Filter getFilter() {
+        Filter filter = new Filter() {
+
+            @SuppressWarnings("unchecked")
+            @Override
+            public void publishResults(CharSequence constraint, FilterResults results) {
+
+                mdisplayedtoDoItemModels = (ArrayList<ToDoItemModel>) results.values; // has the filtered values
+                notifyDataSetChanged();  // notifies the data with new filtered values
+            }
+
+            @Override
+            protected FilterResults performFiltering(CharSequence constraint) {
+                FilterResults results = new Filter.FilterResults();        // Holds the results of a filtering operation in values
+                ArrayList<ToDoItemModel> FilteredArrList = new ArrayList<ToDoItemModel>();
+
+                if (mOriginaltoDoItemModels == null) {
+                    mOriginaltoDoItemModels = new ArrayList<ToDoItemModel>(mdisplayedtoDoItemModels); // saves the original data in mOriginalValues
+                }
+
+
+                if (constraint == null || constraint.length() == 0) {
+
+                    // set the Original result to return
+                    results.count = mOriginaltoDoItemModels.size();
+                    results.values = mOriginaltoDoItemModels;
+                } else {
+                    constraint = constraint.toString().toLowerCase();
+                    for (int i = 0; i < mOriginaltoDoItemModels.size(); i++) {
+                        String data = mOriginaltoDoItemModels.get(i).getTitle();
+                        if (data.toLowerCase().startsWith(constraint.toString())) {
+                            FilteredArrList.add(mOriginaltoDoItemModels.get(i));
+                        }
+                    }
+                    // set the Filtered result to return
+                    results.count = FilteredArrList.size();
+                    results.values = FilteredArrList;
+                }
+                return results;
+            }
+
+        };
+        return filter;
+    }
+
 
 }

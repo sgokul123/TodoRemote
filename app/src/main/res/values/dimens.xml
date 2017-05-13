@@ -33,4 +33,6 @@
     <dimen name="dimen_43dp">43dp</dimen>
     <dimen name="dimen_58dp">58dp</dimen>
     <dimen name="dimen_24dp">24dp</dimen>
+    <dimen name="dimen_15sp">15sp</dimen>
+    <dimen name="dimen_18sp">18sp</dimen>
 </resources>

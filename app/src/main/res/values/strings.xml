@@ -41,5 +41,9 @@
     <string name="fb_url_last"><![CDATA[/picture?width=200&height=150]]></string>
     <string name="email_pattern">^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$</string>
     <string name="select_card">Select One card To Share ...</string>
+    <string name="data_is_null">Notes You Add appear hear</string>
+    <string name="get_reminder_null">There is No Reminder for Today</string>
+    <string name="get_archive_null">Archived List is Empty</string>
+    <string name="get_trash_null">Trash is Empty</string>
 
 </resources>
