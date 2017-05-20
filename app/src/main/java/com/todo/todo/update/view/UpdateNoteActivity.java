@@ -80,6 +80,16 @@ public class UpdateNoteActivity extends BaseActivity implements View.OnClickList
 
     }
 
+    @Override
+    public void enterFromBottomAnimation() {
+
+    }
+
+    @Override
+    public void exitToBottomAnimation() {
+
+    }
+
     private void setData(Bundle ban) {
         textViewReminder.setText(ban.getString(Constants.RequestParam.KEY_REMINDER));
         editTextTitle.setText(ban.getString(Constants.RequestParam.KEY_TITLE));
@@ -189,6 +199,11 @@ public class UpdateNoteActivity extends BaseActivity implements View.OnClickList
 
     @Override
     public void getUndoArchivedNote(int position) {
+
+    }
+
+    @Override
+    public void hideToolBar(boolean flag) {
 
     }
 

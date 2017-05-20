@@ -9,16 +9,6 @@
     android:orientation="vertical"
     tools:showIn="@layout/app_bar_todo_home"
   >
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/gridview_notes"
-        android:layout_marginTop="@dimen/dimen_65dp"
-        android:layout_marginLeft="@dimen/dimen_5dp"
-        android:layout_marginRight="@dimen/dimen_5dp"
-        android:layout_marginBottom="@dimen/dimen_5dp"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        />
-
     <android.support.v7.widget.AppCompatTextView
         android:id="@+id/textview_blank_recyclerview"
         android:layout_width="match_parent"
@@ -30,6 +20,13 @@
         android:textColor="@android:color/black"
         android:textAlignment="center"
 
-
         />
+    <FrameLayout
+        android:id="@+id/flayout"
+        android:layout_marginTop="?attr/actionBarSize"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+    </FrameLayout>
 </RelativeLayout>

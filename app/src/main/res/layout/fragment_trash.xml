@@ -2,16 +2,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:clickable="true"
     android:background="@android:color/white"
     tools:context="com.todo.todo.home.view.TrashFragment">
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/gridview_fragment_notes"
-        android:layout_marginTop="@dimen/dimen_65dp"
-        android:layout_marginLeft="@dimen/dimen_5dp"
-        android:layout_marginRight="@dimen/dimen_5dp"
-        android:layout_marginBottom="@dimen/dimen_5dp"
+        android:background="#d3d3d3"
+        android:padding="@dimen/dimen_5dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         />
@@ -26,7 +23,6 @@
         android:layout_marginTop="@dimen/dimen_65dp"
         android:textColor="@android:color/black"
         android:textAlignment="center"
-
 
         />
 

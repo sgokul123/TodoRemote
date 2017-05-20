@@ -150,6 +150,16 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
 
     }
 
+    @Override
+    public void enterFromBottomAnimation() {
+
+    }
+
+    @Override
+    public void exitToBottomAnimation() {
+
+    }
+
     /**
      *       check is User  Login
      */

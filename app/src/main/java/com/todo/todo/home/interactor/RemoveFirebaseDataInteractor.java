@@ -80,7 +80,7 @@ public class RemoveFirebaseDataInteractor {
         }
     }
 
-    public void getIndexUpdateNotes(ToDoItemModel doItemModel, List<ToDoItemModel> toDoItemModel, String mUserUID, int position) {
+    public void getIndexUpdateNotes(ToDoItemModel doItemModel, List<ToDoItemModel> toDoItemModel, String mUserUID) {
         List<ToDoItemModel> toDoItemModels = new ArrayList<>();
         db.deleteLocaltodoNote(doItemModel);
         startdate = doItemModel.getStartdate();
@@ -137,6 +137,7 @@ public class RemoveFirebaseDataInteractor {
 
     private void getUpdateRestoreNote(ArrayList<ToDoItemModel> todoItemModels, ToDoItemModel mToDoItemModel) {
         List<ToDoItemModel> toDoItemModels=new ArrayList<>();
+
         toDoItemModels.add(mToDoItemModel);
         for(ToDoItemModel toDoItemModel: todoItemModels){
            if(toDoItemModel.getStartdate().equals(startDate)&&toDoItemModel.getId()>=index){
@@ -159,6 +160,23 @@ public class RemoveFirebaseDataInteractor {
 
         } catch (Exception f) {
             Log.i(TAG, "setData: ");
+        }
+
+    }
+
+    public void getUndoDeleteNotes(ToDoItemModel toDoItemModel, List<ToDoItemModel> toDoAllItemModels, String mUserUID) {
+        startDate=toDoItemModel.getStartdate();
+        index=toDoItemModel.getId();
+        userId=mUserUID;
+        pos=toDoItemModel.getId();
+        List<ToDoItemModel> toDoItemModels=toDoAllItemModels;
+        mRef = mDatabase.getReference().child("usersdata");
+        for(ToDoItemModel toDoItem: toDoItemModels) {
+            if (toDoItem.getStartdate().equals(startDate) && toDoItem.getId() >= index){
+                toDoItem.setId(pos);
+                mRef.child(userId).child(toDoItem.getStartdate()).child(String.valueOf(toDoItem.getId())).setValue(toDoItem);
+                pos=pos+1;
+            }
         }
 
     }

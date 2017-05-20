@@ -5,7 +5,7 @@ package com.todo.todo.util;
  */
 public class Constants {
 
-    public interface BundleKey{
+    public interface BundleKey {
         public static final String USER_EMAIL = "email";
         public static final String USER_NAME = "name";
         public static final String USER_USER_UID = "uid";
@@ -20,6 +20,7 @@ public class Constants {
         String FR_USER_EMAIL = "fbemail";
         String NOTE_ORDER_ID = "noteorderid";
     }
+
     public interface ProfileeKey {
         public static final String SHAREDPREFERANCES_KEY = "testapp";
         public static final String MOBILE_NO = "mobileno";
@@ -28,39 +29,43 @@ public class Constants {
         public static final String PROFILE_IMAGE_URL = "profil_url";
 
     }
-        public  interface  RequestParam{
-        public static final String DATABASE_NAME ="mylManagekrs";
-        public static final String USER_TABLE_NAME= "fellowshipPeriodk";
-        public static final String LOCAL_NOTES_TABLE_NAME ="loalpNotkes";
-            public static final String NOTES_TABLE_NAME ="TooDokos";
-        public static final String KEY_ID ="id";
-        public static final String KEY_TITLE ="title";
-        public static final String KEY_NOTE ="notes";
-        public static final String KEY_REMINDER ="reminder";
-        public static final String KEY_STARTDATE ="startdate";
 
-            public static final String KEY_ARCHIVE ="archive";
-       public static final String KEY_SETTIME = "settime";
-            String TRASH_TABLE_NAME = "trashtable";
-        }
+    public interface RequestParam {
+        String DATABASE_NAME = "mylManagekrs";
+        String USER_TABLE_NAME = "fellowshipPeriodk";
+        String LOCAL_NOTES_TABLE_NAME = "loalpNotkes";
+        String NOTES_TABLE_NAME = "TooDokos";
+        String KEY_ID = "id";
+        String KEY_TITLE = "title";
+        String KEY_NOTE = "notes";
+        String KEY_REMINDER = "reminder";
+        String KEY_STARTDATE = "startdate";
+
+        public static final String KEY_ARCHIVE = "archive";
+        public static final String KEY_SETTIME = "settime";
+        String TRASH_TABLE_NAME = "trashtable";
+    }
+
     public interface NotesType {
-        public static final String REMINDER_NOTES = "Reminders";
-        public static final String ARCHIVE_NOTES = "Archived";
-        public static final String  ALL_NOTES= "Notes";
-        public static final String DATE_FORMAT = "EEE,MMMd,yy";
+        String REMINDER_NOTES = "Reminders";
+        String ARCHIVE_NOTES = "Archived";
+        String ALL_NOTES = "Notes";
+        String DATE_FORMAT = "EEE,MMMd,yy";
 
 
         String TRASH_NOTES = "Trash Notes";
     }
+
     public interface Stringkeys {
-        public static final String FLAGT_TRUE = "true";
-        public static final String ARCHIVE_UNDO = "UNDO";
-        public static final String DEMO_EMAIL = "abcd@gmail.com";
-        public static final String FLAG_FALSE = "false";
-        public static final String NAME = "Gokul";
-        public static final String NULL_VALUIE = "null";
-        public static final String MASSEGE_IS_ARCHIVED = " Note is Archived...";
-        public static final String FIREBASE_DATABASE_PARENT_CHILD = "usersdata";
+        String FLAGT_TRUE = "true";
+        String ARCHIVE_UNDO = "UNDO";
+        String DEMO_EMAIL = "abcd@gmail.com";
+        String FLAG_FALSE = "false";
+        String NAME = "Gokul";
+        String NULL_VALUIE = "null";
+        String MASSEGE_IS_ARCHIVED = " Note is Archived...";
+        String FIREBASE_DATABASE_PARENT_CHILD = "usersdata";
+        String STR_LINEAR_GRID = "mlinear";
     }
 
     public interface InternateConnnection {

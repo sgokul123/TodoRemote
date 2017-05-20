@@ -13,12 +13,16 @@
         android:layout_marginLeft="@dimen/dimen_5dp"
         android:layout_marginRight="@dimen/dimen_5dp"
         android:layout_marginTop="@dimen/dimen_5dp"
+        android:layout_marginBottom="@dimen/dimen_5dp"
+        android:padding="@dimen/dimen_5dp"
         android:stateListAnimator="@anim/animation"
-        app:cardCornerRadius="@dimen/dimen_20dp"
+        app:cardCornerRadius="@dimen/dimen_3dp"
+        app:cardElevation="5dp"
         >
 
         <RelativeLayout
-            android:background="@color/light_gray"
+            android:id="@+id/layout_card"
+            android:background="@android:color/white"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
@@ -50,14 +54,20 @@
 
             <android.support.v7.widget.AppCompatTextView
                 android:id="@+id/textView_reminder"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/dimen_10dp"
                 android:layout_marginLeft="@dimen/dimen_20dp"
                 android:layout_marginTop="@dimen/dimen_30dp"
                 android:layout_marginRight="@dimen/dimen_20dp"
                 android:layout_below="@+id/textview_notes"
-                android:text="Reminder" />
+                android:text="Reminder"
+                android:background="#d3d3d3"
+                android:padding="3dp"
+                android:drawableLeft="@drawable/ic_clock"
+                android:drawablePadding="@dimen/dimen_5dp"
+                android:alpha="0.54"
+                />
 
 
         </RelativeLayout>

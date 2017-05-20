@@ -15,4 +15,5 @@ public interface ToDoActivityInteface {
     public  void showDataInActivity(List<ToDoItemModel> toDoItemModels);
     public  void getResponce(boolean flag);
     public  void getUndoArchivedNote(int position);
+    public  void hideToolBar(boolean flag);
 }

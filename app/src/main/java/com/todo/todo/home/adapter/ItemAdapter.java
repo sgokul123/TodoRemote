@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.CardView;
@@ -16,11 +17,15 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Filter;
 import android.widget.Filterable;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.todo.todo.R;
 import com.todo.todo.home.model.ToDoItemModel;
+import com.todo.todo.home.view.ArchiveFragment;
+import com.todo.todo.home.view.ArchiveNoteFragmentInterface;
 import com.todo.todo.home.view.ToDoActivity;
+import com.todo.todo.home.view.ToDoNotesFragment;
 import com.todo.todo.update.view.UpdateNoteActivity;
 import com.todo.todo.util.Constants;
 
@@ -33,25 +38,30 @@ import java.util.List;
 public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.MyViewHolder> implements Filterable {
 
     Animation mAnimation;
-    CardView mCardView;
+
+
+
     private String TAG = "NoteAdapter";
     private Context mContext;
     private List<ToDoItemModel> mdisplayedtoDoItemModels;
     private List<ToDoItemModel> mOriginaltoDoItemModels;
     ToDoActivity mToDoActivity;
+    int count=0;
+    ArchiveNoteFragmentInterface mArchiveFragment;
 
-    public ItemAdapter(ToDoActivity toDoActivity, List<ToDoItemModel> toDoItemModels) {
-        this.mContext = toDoActivity;
-        this.mToDoActivity=toDoActivity;
-        this.mdisplayedtoDoItemModels = toDoItemModels;
-        this.mOriginaltoDoItemModels = toDoItemModels;
-    }
-
-    public ItemAdapter(FragmentActivity activity, List<ToDoItemModel> todoItemModel) {
+    public ItemAdapter(Context activity, List<ToDoItemModel> todoItemModel) {
         this.mContext=activity;
         this.mdisplayedtoDoItemModels = todoItemModel;
         this.mOriginaltoDoItemModels = todoItemModel;
     }
+
+    public ItemAdapter(Context context, List<ToDoItemModel> todoItemModel, ArchiveNoteFragmentInterface archiveFragment) {
+        this.mContext=context;
+        this.mdisplayedtoDoItemModels = todoItemModel;
+        this.mOriginaltoDoItemModels = todoItemModel;
+        this.mArchiveFragment=archiveFragment;
+    }
+
 
     @Override
     public ItemAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -64,19 +74,27 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.MyViewHolder> 
     }
 
     @Override
-    public void onBindViewHolder(ItemAdapter.MyViewHolder holder, int position) {
+    public void onBindViewHolder(final ItemAdapter.MyViewHolder holder, final int position) {
         mAnimation = AnimationUtils.loadAnimation(mContext.getApplicationContext(), R.anim.slide_down);
-        mCardView.setAnimation(mAnimation);
-        mCardView.startAnimation(mAnimation);
+
+        holder.mCardView.setAnimation(mAnimation);
+        holder.mCardView.startAnimation(mAnimation);
         ToDoItemModel toDoItemModel = mdisplayedtoDoItemModels.get(position);
         holder.textViewTitle.setText(toDoItemModel.getTitle());
         holder.textViewnote.setText(toDoItemModel.getNote());
         holder.textViewReminder.setText(toDoItemModel.getReminder());
-
+      if(mArchiveFragment!=null){
+          holder.mCardView.setOnLongClickListener(new View.OnLongClickListener() {
+              @Override
+              public boolean onLongClick(View v) {
+                  holder.layout_card.setBackgroundColor(R.color.back_front_color);
+                  mArchiveFragment.getHideToolBar(true);
+                  mArchiveFragment.getCountIncreament(position);
+                  return false;
+              }
+          });
+      }
     }
-
-
-
     @Override
     public int getItemCount() {
         return mdisplayedtoDoItemModels.size();
@@ -91,23 +109,32 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.MyViewHolder> 
         mdisplayedtoDoItemModels.add(toDoItemModel);
         notifyDataSetChanged();
     }
+/*
+    @Override
+    public boolean onLongClick(View v) {
 
+        v.setBackgroundResource(R.color.colorPrimary );
 
+        return false;
+    }*/
 
-    public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
+    public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener  {
         TextView textViewTitle, textViewnote, textViewReminder;
-
+        CardView mCardView;
+        RelativeLayout layout_card;;
         public MyViewHolder(View itemView) {
             super(itemView);
             mAnimation = AnimationUtils.loadAnimation(mContext.getApplicationContext(), R.anim.slide_down);
             mCardView = (CardView) itemView.findViewById(R.id.cardview_notes);
+            layout_card= (RelativeLayout) itemView.findViewById(R.id.layout_card);
             textViewTitle = (TextView) itemView.findViewById(R.id.textview_card_title);
             textViewnote = (TextView) itemView.findViewById(R.id.textview_notes);
             textViewReminder = (TextView) itemView.findViewById(R.id.textView_reminder);
-            if(mToDoActivity!=null){
+            if(mArchiveFragment==null){
                 mCardView.setOnClickListener(this);
-                mCardView.setOnLongClickListener(this);
+
             }
+
            }
 
         @Override
@@ -118,73 +145,26 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.MyViewHolder> 
                     SharedPreferences pref = mContext.getSharedPreferences(Constants.ProfileeKey.SHAREDPREFERANCES_KEY, mContext.MODE_PRIVATE);
                     SharedPreferences.Editor editor = pref.edit();
                     String mUserUID = pref.getString(Constants.BundleKey.USER_USER_UID, "null");
-                    List<ToDoItemModel> updateModels = ((ToDoActivity) mContext).getUpdateModels();
+                    //List<ToDoItemModel> updateModels =  mContext).getUpdateModels();
                     Intent intent = new Intent(mContext, UpdateNoteActivity.class);
                     Bundle bun = new Bundle();
-                    bun.putString(Constants.RequestParam.KEY_ID, String.valueOf(updateModels.get(position).getId()));
-                    bun.putString(Constants.RequestParam.KEY_NOTE, updateModels.get(position).getNote());
-                    bun.putString(Constants.RequestParam.KEY_TITLE, updateModels.get(position).getTitle());
-                    bun.putString(Constants.RequestParam.KEY_REMINDER, updateModels.get(position).getReminder());
-                    bun.putString(Constants.RequestParam.KEY_STARTDATE, updateModels.get(position).getStartdate());
-                    bun.putString(Constants.RequestParam.KEY_ARCHIVE, updateModels.get(position).getArchive());
-                    bun.putString(Constants.RequestParam.KEY_SETTIME, updateModels.get(position).getSettime());
+                    bun.putString(Constants.RequestParam.KEY_ID, String.valueOf(mdisplayedtoDoItemModels.get(position).getId()));
+                    bun.putString(Constants.RequestParam.KEY_NOTE, mdisplayedtoDoItemModels.get(position).getNote());
+                    bun.putString(Constants.RequestParam.KEY_TITLE, mdisplayedtoDoItemModels.get(position).getTitle());
+                    bun.putString(Constants.RequestParam.KEY_REMINDER, mdisplayedtoDoItemModels.get(position).getReminder());
+                    bun.putString(Constants.RequestParam.KEY_STARTDATE, mdisplayedtoDoItemModels.get(position).getStartdate());
+                    bun.putString(Constants.RequestParam.KEY_ARCHIVE, mdisplayedtoDoItemModels.get(position).getArchive());
+                    bun.putString(Constants.RequestParam.KEY_SETTIME, mdisplayedtoDoItemModels.get(position).getSettime());
                     intent.putExtra(Constants.BundleKey.USER_USER_UID, mUserUID);
                     intent.putExtra(Constants.BundleKey.MEW_NOTE, bun);
-                    ((ToDoActivity) mContext).startActivityForResult(intent, 2);
-                    ((ToDoActivity) mContext).overridePendingTransition(R.anim.fadein, R.anim.fadeout);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    mContext.startActivity(intent);
+                   // mContext.overridePendingTransition(R.anim.fadein, R.anim.fadeout);
                     // TODO Handle item click
                     break;
             }
         }
 
-        @Override
-        public boolean onLongClick(View v) {
-            final ToDoItemModel toDoItemModel=mdisplayedtoDoItemModels.get(getAdapterPosition());
-
-
-            if(toDoItemModel.getArchive().equals("true")){
-                final AlertDialog alertDialog = new AlertDialog.Builder(
-                        mContext).create();
-                alertDialog.setTitle("Alert Dialog");
-                alertDialog.setMessage("You want to Undo this Archived Note...");
-                // Setting OK Button
-                alertDialog.setButton("YES", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        mToDoActivity.getUndoArchivedNote(getAdapterPosition());
-                        alertDialog.dismiss();
-                    }
-                });
-                // Showing Alert Message
-                alertDialog.show();
-            }
-
-            else{
-                final AlertDialog alertDialog = new AlertDialog.Builder(
-                        mContext).create();
-                alertDialog.setTitle("Alert Dialog");
-                alertDialog.setMessage("Share this Card ...");
-                // Setting OK Button
-                alertDialog.setButton("YES", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-
-                        Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
-                        sharingIntent.setType("text/plain");
-                        String shareBody = "Title    :\n \n"+toDoItemModel.getTitle().toString()+"\n"+"Discription     :\n\n"+toDoItemModel.getNote().toString();
-                        String shareSub =toDoItemModel.getNote().toString();
-                        sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, shareSub);
-                        sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
-                        mContext.startActivity(Intent.createChooser(sharingIntent, "Share using"));
-
-                        alertDialog.dismiss();
-                    }
-                });
-
-                // Showing Alert Message
-                alertDialog.show();
-
-            }
-            return true;
-        }
     }
 
     @Override

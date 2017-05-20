@@ -6,7 +6,9 @@ import android.support.v4.app.FragmentActivity;
 import com.todo.todo.database.DatabaseHandler;
 import com.todo.todo.home.interactor.RemoveFirebaseDataInteractor;
 import com.todo.todo.home.model.ToDoItemModel;
+import com.todo.todo.home.view.ReminderFragment;
 import com.todo.todo.home.view.ToDoActivity;
+import com.todo.todo.home.view.ToDoNotesFragment;
 import com.todo.todo.home.view.TrashFragment;
 import com.todo.todo.util.Connection;
 
@@ -25,12 +27,11 @@ public class RemoveNotePresenter  {
     String startdate;
     Context mContext;
     DatabaseHandler databaseHandler;
-    ToDoActivity mToDoActivity;
+    ToDoNotesFragment toDoNotesFragment;
     TrashFragment trashFragment;
     int index;
-    public RemoveNotePresenter(Context applicationContext, ToDoActivity toDoActivity) {
+    public RemoveNotePresenter(Context applicationContext) {
         this.mContext=applicationContext;
-        this.mToDoActivity=toDoActivity;
         removeFirebaseDataInteractor =new RemoveFirebaseDataInteractor(mContext,this);
         this.databaseHandler=new DatabaseHandler(mContext);
     }
@@ -43,9 +44,10 @@ public class RemoveNotePresenter  {
     }
 
 
-    public void removeFirebaseData(ToDoItemModel doItemModel, List<ToDoItemModel> toDoItemModel, String mUserUID, int position){
+
+    public void removeFirebaseData(ToDoItemModel doItemModel, List<ToDoItemModel> toDoItemModel, String mUserUID){
         databaseHandler.addNoteToTrash(doItemModel);
-        removeFirebaseDataInteractor.getIndexUpdateNotes(doItemModel,toDoItemModel,mUserUID,position);
+        removeFirebaseDataInteractor.getIndexUpdateNotes(doItemModel,toDoItemModel,mUserUID);
     }
 
     public void  getArchiveData(ToDoItemModel toDoItemModel, String mUserUID, int position){
@@ -72,5 +74,10 @@ public class RemoveNotePresenter  {
 
         removeFirebaseDataInteractor.getRestore(mUserUID,toDoItemModel);
         databaseHandler.deleteTrashToDos(toDoItemModel);
+    }
+
+    public void undoRemoveFirebaseData(ToDoItemModel toDoItemModel, List<ToDoItemModel> toDoAllItemModels, String mUserUID) {
+        databaseHandler.deleteTrashToDos(toDoItemModel);
+        removeFirebaseDataInteractor.getUndoDeleteNotes(toDoItemModel,toDoAllItemModels,mUserUID);
     }
 }

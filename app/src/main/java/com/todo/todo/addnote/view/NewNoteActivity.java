@@ -50,6 +50,7 @@ public class NewNoteActivity extends BaseActivity implements View.OnClickListene
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        enterFromBottomAnimation();
         initView();
 
     }
@@ -88,6 +89,16 @@ public class NewNoteActivity extends BaseActivity implements View.OnClickListene
         mImageViewSave.setOnClickListener(this);
     }
 
+    @Override
+    public void enterFromBottomAnimation() {
+
+    }
+
+    @Override
+    public void exitToBottomAnimation() {
+        overridePendingTransition(R.anim.activity_open_translate_from_bottom, R.anim.activity_no_animation);
+    }
+
     public void reminderPicker() {
         myCalendar = Calendar.getInstance();
         date = new DatePickerDialog.OnDateSetListener() {
@@ -109,6 +120,7 @@ public class NewNoteActivity extends BaseActivity implements View.OnClickListene
 
         switch (v.getId()) {
             case R.id.imageView_back_arrow:
+                exitToBottomAnimation();
                 finish();
                 break;
             case R.id.imageView_pin:

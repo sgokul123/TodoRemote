@@ -103,7 +103,7 @@ public class ToDoActivityInteractor implements TodoInteractorInterface {
                     if (dataSnapshot.hasChild(uid)) {
                         DataSnapshot dataSnapsho = dataSnapshot.child(uid);
                         Log.i(TAG, "onDataChange: ");
-                        ArrayList<ToDoItemModel> todoItemModel = new ArrayList<ToDoItemModel>();
+                        List<ToDoItemModel> todoItemModel = new ArrayList<ToDoItemModel>();
                         for (DataSnapshot child : dataSnapsho.getChildren()) {
                             Log.i(TAG, "onDataChange: ");
                             todoItemModel.addAll(child.getValue(t));

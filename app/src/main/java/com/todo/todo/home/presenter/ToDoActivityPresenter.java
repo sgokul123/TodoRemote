@@ -65,6 +65,11 @@ public class ToDoActivityPresenter implements  ToDoPresenterInteface {
 
     }
 
+    @Override
+    public void hideToolBar(boolean flag) {
+
+    }
+
 
     @Override
     public void getPresenterNotes(String uid) {

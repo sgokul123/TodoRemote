@@ -29,7 +29,6 @@ import com.todo.todo.util.Constants;
 
 import java.util.ArrayList;
 import java.util.List;
-
 public class TrashFragment extends Fragment implements  TrashFragmentInterface, View.OnClickListener {
 
     private static final String TAG = "TrashFragment";
@@ -44,10 +43,11 @@ public class TrashFragment extends Fragment implements  TrashFragmentInterface, 
     private SharedPreferences pref;
     private SharedPreferences.Editor editor;
     private String mUserUID;
+    private AppCompatTextView titleTextView;
+    private List<ToDoItemModel> updateModel;
 
-    public TrashFragment(AppCompatEditText editText_search, AppCompatImageView mImageView_Linear_Grid) {
-        this.mEditText_Search=editText_search;
-        this.mImageView_Linear_Grid=mImageView_Linear_Grid;
+    public TrashFragment() {
+
     }
 
     @Override
@@ -59,14 +59,17 @@ public class TrashFragment extends Fragment implements  TrashFragmentInterface, 
         mTextView_blank_recycler=(AppCompatTextView)view.findViewById(R.id.textview_blank_fragment_recyclerview);
         removeNotePresenter = new RemoveNotePresenter(getActivity().getBaseContext(),TrashFragment.this);
         mTextView_blank_recycler.setVisibility(View.VISIBLE);
+        mEditText_Search= (AppCompatEditText) getActivity().findViewById(R.id.edittext_search_toolbar);
+        mImageView_Linear_Grid= (AppCompatImageView) getActivity().findViewById(R.id.imageView_grid_linear);
+        titleTextView =(AppCompatTextView) getActivity().findViewById(R.id.textview_title_toolbar);
         mTextView_blank_recycler.setText(getString(R.string.get_trash_null));
-        removeNotePresenter.getTrashNotes();
+        titleTextView.setText(Constants.NotesType.TRASH_NOTES);
         addTextListener();
         initSwipe();
         mImageView_Linear_Grid.setOnClickListener(this);
-
         pref =getActivity(). getSharedPreferences(Constants.ProfileeKey.SHAREDPREFERANCES_KEY, getActivity().MODE_PRIVATE);
-        editor = pref.edit();
+        mLinear=pref.getBoolean("mlinear",false);
+        removeNotePresenter.getTrashNotes();
         mUserUID = pref.getString(Constants.BundleKey.USER_USER_UID, Constants.Stringkeys.NULL_VALUIE);
         return view;
     }
@@ -79,7 +82,7 @@ public class TrashFragment extends Fragment implements  TrashFragmentInterface, 
         }else {
             mTextView_blank_recycler.setVisibility(View.INVISIBLE);
             mTrashAdapter=new ItemAdapter(getActivity(),todoItemModel);
-            mToDoRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
+            getRecyclerLayout();
             mToDoRecyclerView.setAdapter(mTrashAdapter);
         }
 
@@ -96,8 +99,11 @@ public class TrashFragment extends Fragment implements  TrashFragmentInterface, 
             }
 
             public void onTextChanged(CharSequence query, int start, int before, int count) {
+                if (mTrashAdapter != null) {
                     Filter filter = mTrashAdapter.getFilter();
                     filter.filter(query);
+                }
+
             }
         });
     }
@@ -136,15 +142,22 @@ public class TrashFragment extends Fragment implements  TrashFragmentInterface, 
 
     @Override
     public void onClick(View v) {
+        editor = pref.edit();
 
-        getAlterRecyclerLayout();
+        switch (v.getId()){
+            case R.id.imageView_grid_linear:
+                getAlterRecyclerLayout();
+                break;
+        }
     }
 
     private void getRecyclerLayout() {
         if (mLinear) {
             mToDoRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL));
+            mImageView_Linear_Grid.setImageResource(R.drawable.grid_view);
         } else {
             mToDoRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
+            mImageView_Linear_Grid.setImageResource(R.drawable.list_view);
         }
     }
 
@@ -152,10 +165,14 @@ public class TrashFragment extends Fragment implements  TrashFragmentInterface, 
     private void getAlterRecyclerLayout() {
         if (!mLinear) {
             mLinear = true;
+            editor.putBoolean(Constants.Stringkeys.STR_LINEAR_GRID,true);
+            editor.commit();
             mToDoRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL));
             mImageView_Linear_Grid.setImageResource(R.drawable.grid_view);
         } else {
             mLinear = false;
+            editor.putBoolean(Constants.Stringkeys.STR_LINEAR_GRID,false);
+            editor.commit();
             mToDoRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
             mImageView_Linear_Grid.setImageResource(R.drawable.list_view);
         }
