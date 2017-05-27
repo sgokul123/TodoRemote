@@ -5,15 +5,20 @@ import android.app.DatePickerDialog;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.support.annotation.ColorInt;
 import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.AppCompatTextView;
 import android.util.Log;
 import android.view.View;
 import android.widget.DatePicker;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.jrummyapps.android.colorpicker.ColorPickerDialog;
+import com.jrummyapps.android.colorpicker.ColorPickerDialogListener;
 import com.todo.todo.R;
 import com.todo.todo.addnote.presenter.AddNotePresenter;
 import com.todo.todo.alarmmanager.MyBroadcastReceiver;
@@ -28,15 +33,16 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
-public class NewNoteActivity extends BaseActivity implements View.OnClickListener, NoteInterface {
+public class NewNoteActivity extends BaseActivity implements View.OnClickListener, NoteInterface,ColorPickerDialogListener {
 
-    AppCompatImageView mImageViewBack, mImageViewPin, mImageViewReminder, mImageViewSave;
+    AppCompatImageView mImageViewBack, imageView_Color_Picker, mImageViewReminder, mImageViewSave;
     AppCompatTextView mTextViewReminder, mTextViewEditedAt;
     AppCompatEditText mEditTextNote, mEditTextTitle;
     ProgressUtil progressDialog;
     Calendar myCalendar;
     ToDoItemModel mToDoItemModel;
     String formattedDate;
+    RelativeLayout relativeLayout;
 
     final static int RQS_1 = 1;
 
@@ -46,6 +52,8 @@ public class NewNoteActivity extends BaseActivity implements View.OnClickListene
     private DatePickerDialog.OnDateSetListener date;
     private String mUsre_UID;
     private int mNote_Order_Id;
+    private String noteColor;
+    private int DIALOG_ID=9;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,13 +68,15 @@ public class NewNoteActivity extends BaseActivity implements View.OnClickListene
 
         setContentView(R.layout.activity_new_note);
         mImageViewBack = (AppCompatImageView) findViewById(R.id.imageView_back_arrow);
-        mImageViewPin = (AppCompatImageView) findViewById(R.id.imageView_pin);
+        imageView_Color_Picker= (AppCompatImageView) findViewById(R.id.imageView_color_picker);
         mImageViewReminder = (AppCompatImageView) findViewById(R.id.imageView_reminder);
         mImageViewSave = (AppCompatImageView) findViewById(R.id.imageView_save);
         mTextViewReminder = (AppCompatTextView) findViewById(R.id.textview_reminder_text);
         mEditTextTitle = (AppCompatEditText) findViewById(R.id.edittext_title);
         mEditTextNote = (AppCompatEditText) findViewById(R.id.edittet_note);
         mTextViewEditedAt = (AppCompatTextView) findViewById(R.id.textview_editedat_at);
+        relativeLayout= (RelativeLayout) findViewById(R.id.layout_add_new_card);
+
         progressDialog = new ProgressUtil(this);
         Calendar c = Calendar.getInstance();
         SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss");
@@ -84,7 +94,7 @@ public class NewNoteActivity extends BaseActivity implements View.OnClickListene
     public void setOnClickListener() {
 
         mImageViewBack.setOnClickListener(this);
-        mImageViewPin.setOnClickListener(this);
+        imageView_Color_Picker.setOnClickListener(this);
         mImageViewReminder.setOnClickListener(this);
         mImageViewSave.setOnClickListener(this);
     }
@@ -123,8 +133,9 @@ public class NewNoteActivity extends BaseActivity implements View.OnClickListene
                 exitToBottomAnimation();
                 finish();
                 break;
-            case R.id.imageView_pin:
+            case R.id.imageView_color_picker:
 
+                getColorPicker();
                 break;
             case R.id.imageView_reminder:
 
@@ -144,6 +155,7 @@ public class NewNoteActivity extends BaseActivity implements View.OnClickListene
                 mToDoItemModel.setSettime(mTextViewEditedAt.getText().toString());
                 mToDoItemModel.setStartdate(getCurrentDate());
                 mToDoItemModel.setArchive("false");
+                mToDoItemModel.setColor(noteColor);
                 mAddNotePresenter = new AddNotePresenter(this, this);
 
               /*  try {
@@ -160,8 +172,18 @@ public class NewNoteActivity extends BaseActivity implements View.OnClickListene
 
     }
 
-    private void setAlarm(String targetCal) throws ParseException {
+    private void getColorPicker() {
 
+        ColorPickerDialog.newBuilder()
+                .setDialogType(ColorPickerDialog.TYPE_PRESETS)
+                .setAllowPresets(true)
+                .setDialogId(DIALOG_ID)
+                .setColor(Color.BLACK)
+                .setShowAlphaSlider(true)
+                .show(this);
+    }
+
+    private void setAlarm(String targetCal) throws ParseException {
         SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
         Date date = dateFormat.parse("12:01:32");
         System.out.println(date.getTime());
@@ -172,7 +194,6 @@ public class NewNoteActivity extends BaseActivity implements View.OnClickListene
     }
 
     private void updateLabel() {
-
         String myFormat = Constants.NotesType.DATE_FORMAT; //In which you need put here
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
         mTextViewReminder.setText(sdf.format(myCalendar.getTime()));
@@ -180,7 +201,6 @@ public class NewNoteActivity extends BaseActivity implements View.OnClickListene
 
     @Override
     public void closeNoteProgressDialog() {
-
         progressDialog.dismissProgress();
     }
 
@@ -192,7 +212,6 @@ public class NewNoteActivity extends BaseActivity implements View.OnClickListene
     @Override
     public void getResponce(boolean flag) {
         if (flag) {
-
             Toast.makeText(this, "succcess", Toast.LENGTH_SHORT).show();
             Bundle bun = new Bundle();
             bun.putString(Constants.RequestParam.KEY_ID, String.valueOf(mToDoItemModel.getId()));
@@ -200,12 +219,11 @@ public class NewNoteActivity extends BaseActivity implements View.OnClickListene
             bun.putString(Constants.RequestParam.KEY_TITLE, mToDoItemModel.getTitle());
             bun.putString(Constants.RequestParam.KEY_REMINDER, mToDoItemModel.getReminder());
             bun.putString(Constants.RequestParam.KEY_STARTDATE, mToDoItemModel.getStartdate());
-
+            bun.putString(Constants.RequestParam.KEY_COLOR,noteColor);
             Intent intent = new Intent();
             intent.putExtra(Constants.BundleKey.MEW_NOTE, bun);
             setResult(2, intent);
             finish();
-
         } else {
             Toast.makeText(this, "fail", Toast.LENGTH_SHORT).show();
         }
@@ -220,4 +238,14 @@ public class NewNoteActivity extends BaseActivity implements View.OnClickListene
         return date;
     }
 
+    @Override
+    public void onColorSelected(int dialogId, @ColorInt int color) {
+        noteColor= String.valueOf(color);
+        relativeLayout.setBackgroundColor(color);
+    }
+
+    @Override
+    public void onDialogDismissed(int dialogId) {
+
+    }
 }

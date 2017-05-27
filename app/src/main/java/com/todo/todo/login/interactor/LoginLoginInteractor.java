@@ -1,7 +1,6 @@
 package com.todo.todo.login.interactor;
 
 import android.content.Context;
-import android.net.ConnectivityManager;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
@@ -21,12 +20,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.ValueEventListener;
-import com.todo.todo.home.model.ToDoItemModel;
 import com.todo.todo.login.model.LoginModel;
-import com.todo.todo.login.presenter.LoginLoginPresenter;
 import com.todo.todo.login.presenter.LoginPresenterInterface;
 import com.todo.todo.registration.model.RegistrationModel;
-import com.todo.todo.util.Connection;
 
 import java.util.ArrayList;
 
@@ -35,18 +31,20 @@ import java.util.ArrayList;
  */
 
 public class LoginLoginInteractor implements LoginInteractorInterface {
-    private  String TAG ="LoginLoginInteractor";
-    private  Context context;
     FirebaseAuth firebaseAuth;
-    private FirebaseAuth.AuthStateListener mAuthListener;
     DatabaseReference mRef;
-    private LoginPresenterInterface mLoginPresenterInterface; ;
     LoginModel loginModel;
     Context mContext;
+    private String TAG = "LoginLoginInteractor";
+    private Context context;
+    ;
+    private FirebaseAuth.AuthStateListener mAuthListener;
+    private LoginPresenterInterface mLoginPresenterInterface;
+
     public LoginLoginInteractor(LoginPresenterInterface loginPresenterInterface, Context context) {
         Log.i(TAG, "LoginLoginInteractor: ");
-        mLoginPresenterInterface=loginPresenterInterface;
-        this.mContext=context;
+        mLoginPresenterInterface = loginPresenterInterface;
+        this.mContext = context;
         mAuthListeners();
 
     }
@@ -71,35 +69,35 @@ public class LoginLoginInteractor implements LoginInteractorInterface {
 
     @Override
     public void getFirbaseLogin(LoginModel loginModel) {
-        firebaseAuth=FirebaseAuth.getInstance();
+        firebaseAuth = FirebaseAuth.getInstance();
         firebaseAuth.addAuthStateListener(mAuthListener);
         mLoginPresenterInterface.showProgress();
         this.loginModel = loginModel;
-        Log.i(TAG, "getFirbaseLogin: "+loginModel);
+        Log.i(TAG, "getFirbaseLogin: " + loginModel);
 
 
-            firebaseAuth.signInWithEmailAndPassword(loginModel.getmEmail(),loginModel.getmPassword()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                @Override
-                public void onComplete(@NonNull Task<AuthResult> task) {
+        firebaseAuth.signInWithEmailAndPassword(loginModel.getmEmail(), loginModel.getmPassword()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
 
-                    if(task.isSuccessful()){
-                        Log.i(TAG, "getFirbaseLogin: call");
-                            getProfile(task.getResult().getUser().getUid());
+                if (task.isSuccessful()) {
+                    Log.i(TAG, "getFirbaseLogin: call");
+                    getProfile(task.getResult().getUser().getUid());
 
-                    }
-                    else {
-                        Log.i(TAG, "closeDialog:  ");
-                        mLoginPresenterInterface.closeProgress();
-                    }
-
+                } else {
+                    Log.i(TAG, "closeDialog:  ");
+                    mLoginPresenterInterface.loginFailuar();
+                    mLoginPresenterInterface.closeProgress();
                 }
-            });
+
+            }
+        });
 
     }
 
 
     private void getProfile(final String uid) {
-        mRef= FirebaseDatabase.getInstance().getReference().child("userprofile").child(uid);
+        mRef = FirebaseDatabase.getInstance().getReference().child("userprofile").child(uid);
 
         mRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -107,14 +105,15 @@ public class LoginLoginInteractor implements LoginInteractorInterface {
                 GenericTypeIndicator<ArrayList<RegistrationModel>> t = new GenericTypeIndicator<ArrayList<RegistrationModel>>() {
                 };
                 Log.i(TAG, "onDataChange: ");
-               RegistrationModel userPreofile = new RegistrationModel();
-                userPreofile= (RegistrationModel) dataSnapshot.getValue(RegistrationModel.class);
+                RegistrationModel userPreofile = new RegistrationModel();
+                userPreofile = (RegistrationModel) dataSnapshot.getValue(RegistrationModel.class);
 
-                mLoginPresenterInterface.getLoginAuthentication(userPreofile,uid);
+                mLoginPresenterInterface.getLoginAuthentication(userPreofile, uid);
                 mLoginPresenterInterface.closeProgress();
 
 
             }
+
             @Override
             public void onCancelled(DatabaseError error) {
                 Log.i(TAG, "onCancelled: ");
@@ -122,7 +121,7 @@ public class LoginLoginInteractor implements LoginInteractorInterface {
             }
         });
 
-     //   mLoginPresenter.getLoginAuthentication();
+        //   mLoginPresenter.getLoginAuthentication();
         mLoginPresenterInterface.closeProgress();
 
     }
@@ -130,34 +129,35 @@ public class LoginLoginInteractor implements LoginInteractorInterface {
 
     public void handleFacebookAccessAuthToken(AccessToken accessToken) {
 
-        firebaseAuth=FirebaseAuth.getInstance();
+        firebaseAuth = FirebaseAuth.getInstance();
         firebaseAuth.addAuthStateListener(mAuthListener);
         String token = accessToken.getToken();
         AuthCredential credential = FacebookAuthProvider.getCredential(token);
 
         firebaseAuth.signInWithCredential(credential).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
 
-                        if (task.isSuccessful()) {
-                            mLoginPresenterInterface.facebookResponceUID(task.getResult().getUser().getUid());
-                        }
+                if (task.isSuccessful()) {
+                    mLoginPresenterInterface.facebookResponceUID(task.getResult().getUser().getUid());
+                }
 
-                    }
-                });
+            }
+        });
     }
+
     public void authenticationGoogle(final GoogleSignInAccount account) {
 
-        firebaseAuth=FirebaseAuth.getInstance();
+        firebaseAuth = FirebaseAuth.getInstance();
         AuthCredential credential = GoogleAuthProvider.getCredential(account.getIdToken(), null);
-        firebaseAuth.signInWithCredential(credential).addOnCompleteListener( new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        Log.d(TAG, "signInWithCredential:onComplete:" + task.isSuccessful());
-                        if (task.isSuccessful()) {
-                            mLoginPresenterInterface.handleGoogleSignInResult(account,task.getResult().getUser().getUid());
-                        }
-                    }
-                });
+        firebaseAuth.signInWithCredential(credential).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                Log.d(TAG, "signInWithCredential:onComplete:" + task.isSuccessful());
+                if (task.isSuccessful()) {
+                    mLoginPresenterInterface.handleGoogleSignInResult(account, task.getResult().getUser().getUid());
+                }
+            }
+        });
     }
 }

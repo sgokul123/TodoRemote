@@ -14,4 +14,24 @@
     <color name="toolbar_white">#a19575</color>
     <color name="light_gray">#dbecaf</color>
     <color name="back_color_recycler">#dbdc95</color>
+
+    <color name="red">#f27e71</color>
+    <color name="pink">#e15284</color>
+    <color name="purple">#dc7dec</color>
+    <color name="deep_purple">#9a6fdf</color>
+    <color name="indigo">#3D4DB7</color>
+    <color name="blue">#6fadda</color>
+    <color name="light_blue">#69b9df</color>
+    <color name="cyan">#6ed8e7</color>
+    <color name="teal">#86e7dd</color>
+    <color name="green">#99fc9d</color>
+    <color name="light_green">#c4f589</color>
+    <color name="lime">#CCDD1E</color>
+    <color name="yellow">#f7ef95</color>
+    <color name="amber">#e7d28f</color>
+    <color name="orange">#FF9800</color>
+    <color name="deep_orange">#ecaa8b</color>
+    <color name="brown">#ecb19a</color>
+    <color name="grey">#a4a0a0</color>
+    <color name="blue_grey">#a1d1e9</color>
 </resources>

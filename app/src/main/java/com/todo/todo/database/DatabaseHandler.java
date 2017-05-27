@@ -52,17 +52,17 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
         String CREATE_ToDoS_TABLE = "CREATE TABLE IF NOT EXISTS " + Constants.RequestParam.NOTES_TABLE_NAME + "("
                 + Constants.RequestParam.KEY_ID + " INTEGER PRIMARY KEY," + Constants.RequestParam.KEY_TITLE + " TEXT," + Constants.RequestParam.KEY_NOTE + " TEXT,"
-                + Constants.RequestParam.KEY_REMINDER + " TEXT," + Constants.RequestParam.KEY_STARTDATE + " TEXT," + Constants.RequestParam.KEY_ARCHIVE + " TEXT," + Constants.RequestParam.KEY_SETTIME + " TEXT" + ")";
+                + Constants.RequestParam.KEY_REMINDER + " TEXT," + Constants.RequestParam.KEY_STARTDATE + " TEXT," + Constants.RequestParam.KEY_ARCHIVE + " TEXT," + Constants.RequestParam.KEY_SETTIME + " TEXT," + Constants.RequestParam.KEY_COLOR + " TEXT" + ")";
         db.execSQL(CREATE_ToDoS_TABLE);
 
         String CREATE_LOCAL_ToDoS_TABLE = "CREATE TABLE IF NOT EXISTS " + Constants.RequestParam.LOCAL_NOTES_TABLE_NAME + "("
                 + Constants.RequestParam.KEY_ID + " INTEGER PRIMARY KEY," + Constants.RequestParam.KEY_TITLE + " TEXT," + Constants.RequestParam.KEY_NOTE + " TEXT,"
-                + Constants.RequestParam.KEY_REMINDER + " TEXT," + Constants.RequestParam.KEY_STARTDATE + " TEXT," + Constants.RequestParam.KEY_ARCHIVE + " TEXT," + Constants.RequestParam.KEY_SETTIME + " TEXT" + ")";
+                + Constants.RequestParam.KEY_REMINDER + " TEXT," + Constants.RequestParam.KEY_STARTDATE + " TEXT," + Constants.RequestParam.KEY_ARCHIVE + " TEXT," + Constants.RequestParam.KEY_SETTIME + " TEXT," + Constants.RequestParam.KEY_COLOR + " TEXT" + ")";
         db.execSQL(CREATE_LOCAL_ToDoS_TABLE);
 
         String CREATE_TRASH_TABLE = "CREATE TABLE IF NOT EXISTS " + Constants.RequestParam.TRASH_TABLE_NAME + "("
                 + Constants.RequestParam.KEY_ID + " INTEGER PRIMARY KEY," + Constants.RequestParam.KEY_TITLE + " TEXT," + Constants.RequestParam.KEY_NOTE + " TEXT,"
-                + Constants.RequestParam.KEY_REMINDER + " TEXT," + Constants.RequestParam.KEY_STARTDATE + " TEXT," + Constants.RequestParam.KEY_ARCHIVE + " TEXT," + Constants.RequestParam.KEY_SETTIME + " TEXT" + ")";
+                + Constants.RequestParam.KEY_REMINDER + " TEXT," + Constants.RequestParam.KEY_STARTDATE + " TEXT," + Constants.RequestParam.KEY_ARCHIVE + " TEXT," + Constants.RequestParam.KEY_SETTIME + " TEXT," + Constants.RequestParam.KEY_COLOR + " TEXT" + ")";
         db.execSQL(CREATE_TRASH_TABLE);
     }
 
@@ -85,7 +85,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
         String CREATE_ToDoS_TABLE = "CREATE TABLE IF NOT EXISTS " + Constants.RequestParam.NOTES_TABLE_NAME + "("
                 + Constants.RequestParam.KEY_ID + " INTEGER PRIMARY KEY," + Constants.RequestParam.KEY_TITLE + " TEXT," + Constants.RequestParam.KEY_NOTE + " TEXT,"
-                + Constants.RequestParam.KEY_REMINDER + " TEXT," + Constants.RequestParam.KEY_STARTDATE + " TEXT," + Constants.RequestParam.KEY_ARCHIVE + " TEXT," + Constants.RequestParam.KEY_SETTIME + " TEXT" + ")";
+                + Constants.RequestParam.KEY_REMINDER + " TEXT," + Constants.RequestParam.KEY_STARTDATE + " TEXT," + Constants.RequestParam.KEY_ARCHIVE + " TEXT," + Constants.RequestParam.KEY_SETTIME + " TEXT," + Constants.RequestParam.KEY_COLOR + " TEXT" + ")";
         db.execSQL(CREATE_ToDoS_TABLE);
 
     }
@@ -105,6 +105,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             values.put(Constants.RequestParam.KEY_STARTDATE, toDoItemModel.getStartdate()); // ToDo REMINDER
             values.put(Constants.RequestParam.KEY_ARCHIVE, toDoItemModel.getArchive());
             values.put(Constants.RequestParam.KEY_SETTIME, toDoItemModel.getSettime());
+            values.put(Constants.RequestParam.KEY_COLOR,toDoItemModel.getColor());
             // Inserting Row
 
             db.insert(Constants.RequestParam.NOTES_TABLE_NAME, null, values);
@@ -137,6 +138,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             values.put(Constants.RequestParam.KEY_STARTDATE, toDoItemModel.getStartdate()); // ToDo REMINDER
             values.put(Constants.RequestParam.KEY_ARCHIVE, toDoItemModel.getArchive());
             values.put(Constants.RequestParam.KEY_SETTIME, toDoItemModel.getSettime());
+            values.put(Constants.RequestParam.KEY_COLOR,toDoItemModel.getColor());
+
             // Inserting Row
 
             db.insert(Constants.RequestParam.LOCAL_NOTES_TABLE_NAME, null, values);
@@ -167,6 +170,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             values.put(Constants.RequestParam.KEY_STARTDATE, toDoItemModel.getStartdate()); // ToDo REMINDER
             values.put(Constants.RequestParam.KEY_ARCHIVE, toDoItemModel.getArchive());
             values.put(Constants.RequestParam.KEY_SETTIME, toDoItemModel.getSettime());
+            values.put(Constants.RequestParam.KEY_COLOR,toDoItemModel.getColor());
+
             // Inserting Row
             db.insert(Constants.RequestParam.TRASH_TABLE_NAME, null, values);
             Log.i(TAG, "addToDo:  success");
@@ -177,7 +182,15 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         }
     }
 
-
+    // Deleting single ToDo
+    public void deleteMultipleTrash(List<ToDoItemModel> toDoItemModels) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        for (ToDoItemModel todo : toDoItemModels) {
+            db.delete(Constants.RequestParam.TRASH_TABLE_NAME, Constants.RequestParam.KEY_ID + " = ?",
+                    new String[]{String.valueOf(todo.getId())});
+        }
+        db.close();
+    }
     // Deleting single ToDo
     public void deleteTrashToDos(ToDoItemModel toDoItemModel) {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -208,6 +221,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 ToDo.setStartdate(cursor.getString(4));
                 ToDo.setArchive(cursor.getString(5));
                 ToDo.setSettime(cursor.getString(6));
+                ToDo.setColor(cursor.getString(7));
                 // Adding ToDo to list
                 mToDoList.add(ToDo);
             } while (cursor.moveToNext());
@@ -233,6 +247,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 values.put(Constants.RequestParam.KEY_STARTDATE, toDoItemModel.getStartdate()); // ToDo REMINDER
                 values.put(Constants.RequestParam.KEY_ARCHIVE, toDoItemModel.getArchive()); // ToDo REMINDER
                 values.put(Constants.RequestParam.KEY_SETTIME, toDoItemModel.getSettime());
+                values.put(Constants.RequestParam.KEY_COLOR,toDoItemModel.getColor());
+
                 db.insert(Constants.RequestParam.NOTES_TABLE_NAME, null, values);
             }
 
@@ -251,13 +267,13 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
 
         Cursor cursor = db.query(Constants.RequestParam.NOTES_TABLE_NAME, new String[]{Constants.RequestParam.KEY_ID,
-                        Constants.RequestParam.KEY_TITLE, Constants.RequestParam.KEY_NOTE, Constants.RequestParam.KEY_REMINDER, Constants.RequestParam.KEY_STARTDATE, Constants.RequestParam.KEY_ARCHIVE, Constants.RequestParam.KEY_SETTIME}, Constants.RequestParam.KEY_ID + "=?",
+                        Constants.RequestParam.KEY_TITLE, Constants.RequestParam.KEY_NOTE, Constants.RequestParam.KEY_REMINDER, Constants.RequestParam.KEY_STARTDATE, Constants.RequestParam.KEY_ARCHIVE, Constants.RequestParam.KEY_SETTIME,Constants.RequestParam.KEY_COLOR}, Constants.RequestParam.KEY_ID + "=?",
                 new String[]{String.valueOf(id)}, null,null, null, null);
         if (cursor != null)
             cursor.moveToFirst();
 
         ToDoItemModel toDoItemModel = new ToDoItemModel(Integer.parseInt(cursor.getString(0)),
-                cursor.getString(1), cursor.getString(2), cursor.getString(3), cursor.getString(4), cursor.getString(5),cursor.getString(6));
+                cursor.getString(1), cursor.getString(2), cursor.getString(3), cursor.getString(4), cursor.getString(5),cursor.getString(6),cursor.getString(7));
         // return toDoItemModel
         return toDoItemModel;
 
@@ -284,6 +300,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 ToDo.setStartdate(cursor.getString(4));
                 ToDo.setArchive(cursor.getString(5));
                 ToDo.setSettime(cursor.getString(6));
+                ToDo.setColor(cursor.getString(7));
                 // Adding ToDo to list  
                 ToDoList.add(ToDo);
             } while (cursor.moveToNext());
@@ -307,6 +324,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 ToDo.setStartdate(cursor2.getString(4));
                 ToDo.setArchive(cursor2.getString(5));
                 ToDo.setSettime(cursor2.getString(6));
+                ToDo.setColor(cursor2.getString(7));
                 // Adding ToDo to list
                 ToDoList.add(ToDo);
             } while (cursor2.moveToNext());
@@ -338,6 +356,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 localNote.setStartdate(cursor2.getString(4));
                 localNote.setArchive(cursor2.getString(5));
                 localNote.setSettime(cursor2.getString(6));
+                localNote.setColor(cursor2.getString(7));
                 // Adding ToDo to list
                 localNotes.add(localNote);
             } while (cursor2.moveToNext());
@@ -357,6 +376,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         values.put(Constants.RequestParam.KEY_STARTDATE, toDoItemModel.getStartdate());
         values.put(Constants.RequestParam.KEY_ARCHIVE, toDoItemModel.getArchive());
         values.put(Constants.RequestParam.KEY_SETTIME, toDoItemModel.getSettime());
+        values.put(Constants.RequestParam.KEY_COLOR,toDoItemModel.getColor());
+
         // updating row  
         return db.update(Constants.RequestParam.NOTES_TABLE_NAME, values, Constants.RequestParam.KEY_ID + " = ?",
                 new String[]{String.valueOf(toDoItemModel.getId())});
@@ -374,6 +395,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         values.put(Constants.RequestParam.KEY_STARTDATE, toDoItemModel.getStartdate());
         values.put(Constants.RequestParam.KEY_ARCHIVE, toDoItemModel.getArchive());
         values.put(Constants.RequestParam.KEY_SETTIME, toDoItemModel.getSettime());
+        values.put(Constants.RequestParam.KEY_COLOR,toDoItemModel.getColor());
+
         // updating row
         return db.update(Constants.RequestParam.LOCAL_NOTES_TABLE_NAME, values, Constants.RequestParam.KEY_ID + " = ?",
                 new String[]{String.valueOf(toDoItemModel.getId())});

@@ -45,5 +45,14 @@
     <string name="get_reminder_null">There is No Reminder for Today</string>
     <string name="get_archive_null">Archived List is Empty</string>
     <string name="get_trash_null">Trash is Empty</string>
+    <string name="transition_title_image">transition</string>
+    <string name="title">Color Picker</string>
+    <string name="gettitle">Title    :   \\n\\n</string>
+    <string name="getdiscription">\\n   Discription     : \\n\\n</string>
+    <string name="share_item">Share using</string>
+    <string name="yes">YES</string>
+    <string name="data_type">text/plain</string>
+    <string name="login_fail">Login Failuar</string>
+    <string name="registration_fail">Registration Fail</string>
 
 </resources>

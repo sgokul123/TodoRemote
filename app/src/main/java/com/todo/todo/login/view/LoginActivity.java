@@ -2,21 +2,16 @@ package com.todo.todo.login.view;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.content.pm.Signature;
-import android.net.Uri;
-import android.support.annotation.NonNull;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.AppCompatTextView;
-import android.util.Base64;
 import android.util.Log;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.Toast;
 
-import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
@@ -47,31 +42,27 @@ import org.json.JSONObject;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.Arrays;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class LoginActivity extends BaseActivity implements View.OnClickListener,LoginInterface{
+public class LoginActivity extends BaseActivity implements View.OnClickListener, LoginInterface {
 
     private static final int RC_SIGN_IN = 9001;
-    private static  String EMAIL_PATTERN ;
+    private static String EMAIL_PATTERN;
     private static String APP_ID = "308180782571605";           // Replace your App ID here
     AppCompatButton mButtonLogin;                                 //,mButtonfbLogin;
-    AppCompatEditText mEditTextEmail,mEditTextPassword;
-    AppCompatTextView textview1,textViewSignUp;
+    AppCompatEditText mEditTextEmail, mEditTextPassword;
+    AppCompatTextView textview1, textViewSignUp;
     SharedPreferences pref;
     SharedPreferences.Editor mSharedPref_editor;
     ProgressUtil progressDialog;
     LoginButton mFacebookLoginButton;
     SignInButton googleSignInButton;
-    private  String TAG ="LoginActivity";
+    private String TAG = "LoginActivity";
     private String mStrUserPassword;
-    private String mStrUserEmail ="";
-    private String mStrUserName ="Sonawane Gokul";
-
+    private String mStrUserEmail = "";
+    private String mStrUserName = "Sonawane Gokul";
+    FrameLayout frameLayout;
     private Pattern mPattern;
     private LoginLoginPresenter loginLoginPresenter;
     private Matcher mMatcher;
@@ -85,6 +76,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
         initView();
         facebookLogin();
     }
+
     @Override
     public void initView() {
         setContentView(R.layout.activity_login);
@@ -93,28 +85,29 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
         FacebookSdk.sdkInitialize(getApplicationContext());
         AppEventsLogger.activateApp(this);
         mFBCallbackManager = CallbackManager.Factory.create();
-        progressDialog=new ProgressUtil(this);
+        progressDialog = new ProgressUtil(this);
         googleSignInButton = (SignInButton) findViewById(R.id.gsign_in_button);
         googleSignInButton.setSize(SignInButton.SIZE_STANDARD);
-        EMAIL_PATTERN=getString(R.string.email_pattern);
-        mFacebookLoginButton = (LoginButton)findViewById(R.id.facebook_login_button);
+        EMAIL_PATTERN = getString(R.string.email_pattern);
+        mFacebookLoginButton = (LoginButton) findViewById(R.id.facebook_login_button);
         mFacebookLoginButton.setReadPermissions(getString(R.string.gmail_access));
-        mButtonLogin =(AppCompatButton) findViewById(R.id.button_signin);
-        mEditTextEmail=(AppCompatEditText) findViewById(R.id.edittext_email);
-        mEditTextPassword=(AppCompatEditText) findViewById(R.id.edittext_password);
-        textview1=(AppCompatTextView) findViewById(R.id.textview_forgot);
-        textViewSignUp=(AppCompatTextView) findViewById(R.id.registation);
+        mButtonLogin = (AppCompatButton) findViewById(R.id.button_signin);
+        mEditTextEmail = (AppCompatEditText) findViewById(R.id.edittext_email);
+        mEditTextPassword = (AppCompatEditText) findViewById(R.id.edittext_password);
+        textview1 = (AppCompatTextView) findViewById(R.id.textview_forgot);
+        textViewSignUp = (AppCompatTextView) findViewById(R.id.registation);
+        frameLayout= (FrameLayout) findViewById(R.id.framlayout_login);
         Log.i(TAG, "onCreate: ");
 
         //call to data Access before load activity
-        loginLoginPresenter = new LoginLoginPresenter(LoginActivity.this ,getApplicationContext());
+        loginLoginPresenter = new LoginLoginPresenter(LoginActivity.this, getApplicationContext());
 
         pref = getSharedPreferences(Constants.ProfileeKey.SHAREDPREFERANCES_KEY, MODE_PRIVATE);
-        if(!pref.getString(Constants.BundleKey.FR_USER_EMAIL,"").equals(""))
-        mEditTextEmail.setText(pref.getString(Constants.BundleKey.FR_USER_EMAIL,"").toString());
+        if (!pref.getString(Constants.BundleKey.FR_USER_EMAIL, "").equals(""))
+            mEditTextEmail.setText(pref.getString(Constants.BundleKey.FR_USER_EMAIL, "").toString());
 
-        if(!pref.getString(Constants.BundleKey.USER_PASSWORD,"").equals(""))
-        mEditTextPassword.setText(pref.getString(Constants.BundleKey.USER_PASSWORD,"").toString());
+        if (!pref.getString(Constants.BundleKey.USER_PASSWORD, "").equals(""))
+            mEditTextPassword.setText(pref.getString(Constants.BundleKey.USER_PASSWORD, "").toString());
 
         mSharedPref_editor = pref.edit();
         setOnClickListener();
@@ -161,17 +154,16 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
     }
 
     /**
-     *       check is User  Login
+     * check is User  Login
      */
 
     @Override
     public void onClick(View v) {
 
-        switch (v.getId())
-        {
+        switch (v.getId()) {
             case R.id.facebook_login_button:
 
-                  break;
+                break;
             case R.id.button_signin:
 
                 doAuthentication();
@@ -181,7 +173,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
 
                 break;
             case R.id.registation:
-                getSupportFragmentManager().beginTransaction().replace(R.id.login_layout, RegistrationFragment.newInstance("","")).addToBackStack(null).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.login_layout, RegistrationFragment.newInstance("", "")).addToBackStack(null).commit();
                 Log.i(TAG, "onClick: ");
 
                 break;
@@ -220,9 +212,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
             if (object.has(getString(R.string.location)))
                 bundle.putString(getString(R.string.location), object.getJSONObject(getString(R.string.location)).getString("name"));
             return bundle;
-        }
-        catch(JSONException e) {
-            Log.d(TAG,"Error parsing JSON");
+        } catch (JSONException e) {
+            Log.d(TAG, "Error parsing JSON");
             return null;
         }
     }
@@ -232,11 +223,12 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
     *
     * Facebook Social Login
     * */
-    public  void facebookLogin(){
+    public void facebookLogin() {
 
         mFacebookLoginButton.registerCallback(mFBCallbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
+                frameLayout.setVisibility(View.VISIBLE);
                 loginLoginPresenter.handleFacebookAccessToken(loginResult.getAccessToken());
 
                 System.out.println("onSuccess");
@@ -251,16 +243,16 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
                         Log.i("LoginActivity", response.toString());
                         // Get facebook data from login
                         Bundle bFacebookData = getFacebookData(object);
-                        String emailid=bFacebookData.getString(getString(R.string.email_id));
+                        String emailid = bFacebookData.getString(getString(R.string.email_id));
                         mSharedPref_editor.putString(Constants.BundleKey.USER_REGISTER, getString(R.string.flag_true));
-                        mSharedPref_editor.putString(Constants.BundleKey.USER_EMAIL,emailid);
+                        mSharedPref_editor.putString(Constants.BundleKey.USER_EMAIL, emailid);
                         mSharedPref_editor.putString(Constants.BundleKey.PROFILE_PIC, bFacebookData.getString(getString(R.string.profile_pic)));
                         mSharedPref_editor.putString(Constants.ProfileeKey.FIRST_NAME, bFacebookData.getString(getString(R.string.first_name)));
                         mSharedPref_editor.putString(Constants.ProfileeKey.LAST_NAME, bFacebookData.getString(getString(R.string.last_name)));
                         mSharedPref_editor.putString(Constants.BundleKey.FACEBOOK_LOGIN, getString(R.string.flag_true));
                         mSharedPref_editor.putString(Constants.ProfileeKey.PROFILE_IMAGE_URL, "");
                         mSharedPref_editor.commit();
-                        Log.i(TAG, "onCompleted: "+bFacebookData.getString("id"));
+                        Log.i(TAG, "onCompleted: " + bFacebookData.getString("id"));
                     }
                 });
                 Bundle parameters = new Bundle();
@@ -284,7 +276,6 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
     }
 
 
-
     private void signIn() {
         Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
         startActivityForResult(signInIntent, RC_SIGN_IN);
@@ -297,10 +288,10 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
 
         if (requestCode == RC_SIGN_IN) {
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
-                // Google Sign In was successful, authenticate with Firebase
-                GoogleSignInAccount account = result.getSignInAccount();
-                loginLoginPresenter.firebaseAuthWithGoogle(account);
-        }else {
+            // Google Sign In was successful, authenticate with Firebase
+            GoogleSignInAccount account = result.getSignInAccount();
+            loginLoginPresenter.firebaseAuthWithGoogle(account);
+        } else {
             Log.i(TAG, "onActivityResult: ");
         }
     }
@@ -310,7 +301,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
         mStrUserEmail = mEditTextEmail.getText().toString();
         mStrUserPassword = mEditTextPassword.getText().toString();
 
-        Log.i(TAG, "doAuthentication: "+ mStrUserEmail);
+        Log.i(TAG, "doAuthentication: " + mStrUserEmail);
         if (!(mStrUserEmail.equals("") && mStrUserPassword.equals(""))) {
             mMatcher = mPattern.matcher(mStrUserEmail);
             if (mMatcher.matches()) {
@@ -326,22 +317,22 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
     @Override
     public void loginSuccess(RegistrationModel registrationModel, String userUid) {
 
-        Log.i(TAG, "loginSuccess: "+userUid);
+        Log.i(TAG, "loginSuccess: " + userUid);
 
-        mSharedPref_editor.putString(Constants.BundleKey.USER_REGISTER,getString(R.string.flag_true));
-        mSharedPref_editor.putString(Constants.BundleKey.USER_EMAIL,registrationModel.getMailid());
-        mSharedPref_editor.putString(Constants.BundleKey.FR_USER_EMAIL,registrationModel.getMailid());
-        mSharedPref_editor.putString(Constants.BundleKey.USER_PASSWORD,registrationModel.getUserPassword());
-        mSharedPref_editor.putString(Constants.BundleKey.USER_USER_UID,userUid);
-        mSharedPref_editor.putString(Constants.ProfileeKey.FIRST_NAME,registrationModel.getUserFirstName());
-        mSharedPref_editor.putString(Constants.ProfileeKey.LAST_NAME,registrationModel.getUserLastName());
-        mSharedPref_editor.putString(Constants.ProfileeKey.MOBILE_NO,registrationModel.getMobileNo());
-        mSharedPref_editor.putString(Constants.ProfileeKey.PROFILE_IMAGE_URL,registrationModel.getUserProfileImgurl());
-        mSharedPref_editor.putString(Constants.BundleKey.USER_PROFILE_SERVER,getString(R.string.flag_true));
+        mSharedPref_editor.putString(Constants.BundleKey.USER_REGISTER, getString(R.string.flag_true));
+        mSharedPref_editor.putString(Constants.BundleKey.USER_EMAIL, registrationModel.getMailid());
+        mSharedPref_editor.putString(Constants.BundleKey.FR_USER_EMAIL, registrationModel.getMailid());
+        mSharedPref_editor.putString(Constants.BundleKey.USER_PASSWORD, registrationModel.getUserPassword());
+        mSharedPref_editor.putString(Constants.BundleKey.USER_USER_UID, userUid);
+        mSharedPref_editor.putString(Constants.ProfileeKey.FIRST_NAME, registrationModel.getUserFirstName());
+        mSharedPref_editor.putString(Constants.ProfileeKey.LAST_NAME, registrationModel.getUserLastName());
+        mSharedPref_editor.putString(Constants.ProfileeKey.MOBILE_NO, registrationModel.getMobileNo());
+        mSharedPref_editor.putString(Constants.ProfileeKey.PROFILE_IMAGE_URL, registrationModel.getUserProfileImgurl());
+        mSharedPref_editor.putString(Constants.BundleKey.USER_PROFILE_SERVER, getString(R.string.flag_true));
         mSharedPref_editor.putString(Constants.BundleKey.USER_NAME, mStrUserName);
         mSharedPref_editor.commit();
         ///  show registration page again
-        Intent intent=new Intent(LoginActivity.this,ToDoActivity.class);
+        Intent intent = new Intent(LoginActivity.this, ToDoActivity.class);
         startActivity(intent);
         finish();
     }
@@ -349,31 +340,31 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
     @Override
     public void handleGoogleSignInResult(GoogleSignInAccount result, String uid) {
 
-     GoogleSignInAccount acct = result;
+        GoogleSignInAccount acct = result;
 
-            //Google Login
-            Log.i(TAG, "handleGoogleSignInResult: "+acct.getPhotoUrl());
-            mSharedPref_editor.putString(Constants.BundleKey.USER_REGISTER,getString(R.string.flag_true));
-            mSharedPref_editor.putString(Constants.BundleKey.USER_EMAIL,acct.getEmail() );
-            mSharedPref_editor.putString(Constants.ProfileeKey.FIRST_NAME, acct.getDisplayName());
-            mSharedPref_editor.putString(Constants.BundleKey.PROFILE_PIC, String.valueOf(acct.getPhotoUrl()));
-            mSharedPref_editor.putString(Constants.ProfileeKey.PROFILE_IMAGE_URL, "");
-            mSharedPref_editor.putString(Constants.BundleKey.USER_USER_UID,uid);
-            mSharedPref_editor.putString(Constants.BundleKey.GOOGLE_LOGIN,getString(R.string.flag_true));
-            mSharedPref_editor.commit();
+        //Google Login
+        Log.i(TAG, "handleGoogleSignInResult: " + acct.getPhotoUrl());
+        mSharedPref_editor.putString(Constants.BundleKey.USER_REGISTER, getString(R.string.flag_true));
+        mSharedPref_editor.putString(Constants.BundleKey.USER_EMAIL, acct.getEmail());
+        mSharedPref_editor.putString(Constants.ProfileeKey.FIRST_NAME, acct.getDisplayName());
+        mSharedPref_editor.putString(Constants.BundleKey.PROFILE_PIC, String.valueOf(acct.getPhotoUrl()));
+        mSharedPref_editor.putString(Constants.ProfileeKey.PROFILE_IMAGE_URL, "");
+        mSharedPref_editor.putString(Constants.BundleKey.USER_USER_UID, uid);
+        mSharedPref_editor.putString(Constants.BundleKey.GOOGLE_LOGIN, getString(R.string.flag_true));
+        mSharedPref_editor.commit();
 
-            Intent intent=new Intent(LoginActivity.this,ToDoActivity.class);
-            intent.putExtra(Constants.BundleKey.USER_EMAIL, mStrUserEmail);
-            intent.putExtra(Constants.BundleKey.USER_NAME, mStrUserName);
-            startActivity(intent);
-            finish();
+        Intent intent = new Intent(LoginActivity.this, ToDoActivity.class);
+        intent.putExtra(Constants.BundleKey.USER_EMAIL, mStrUserEmail);
+        intent.putExtra(Constants.BundleKey.USER_NAME, mStrUserName);
+        startActivity(intent);
+        finish();
 
     }
 
     @Override
     public void loginFailuar() {
         progressDialog.dismissProgress();
-        Log.i(TAG, "loginFailuar: ");
+        Toast.makeText(this, getString(R.string.login_fail), Toast.LENGTH_SHORT).show();
     }
 
     @Override

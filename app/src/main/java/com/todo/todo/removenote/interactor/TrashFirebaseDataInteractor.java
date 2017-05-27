@@ -1,4 +1,4 @@
-package com.todo.todo.home.interactor;
+package com.todo.todo.removenote.interactor;
 
 import android.content.Context;
 import android.util.Log;
@@ -11,8 +11,9 @@ import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.ValueEventListener;
 import com.todo.todo.database.DatabaseHandler;
 import com.todo.todo.home.model.ToDoItemModel;
-import com.todo.todo.home.presenter.RemoveNotePresenter;
+import com.todo.todo.removenote.presenter.TrashNotePresenter;
 import com.todo.todo.util.Connection;
+import com.todo.todo.util.Constants;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -22,23 +23,23 @@ import java.util.List;
  * Created by bridgeit on 4/4/17.
  */
 
-public class RemoveFirebaseDataInteractor {
-    private static String TAG = "RemoveFirebaseDataInteractor";
+public class TrashFirebaseDataInteractor {
+    private static String TAG = "TrashFirebaseDataInteractor";
     FirebaseDatabase mDatabase;
     DatabaseReference mRef;
     Context mContext;
-    ToDoActivityInteractor mToDoActivityInteractor;
     int pos = 0;
     DatabaseHandler db;
-    String startdate,userId;
-    RemoveNotePresenter mRemoveNotePresenter;
+    String startdate, userId;
+    TrashNotePresenter mTrashNotePresenter;
     int index;
     String startDate;
     List<ToDoItemModel> newtoDoItemModels;
     ToDoItemModel mToDoItemModel;
-    public RemoveFirebaseDataInteractor(Context context, RemoveNotePresenter removeNotePresenter) {
+
+    public TrashFirebaseDataInteractor(Context context, TrashNotePresenter trashNotePresenter) {
         this.mContext = context;
-        this.mRemoveNotePresenter = removeNotePresenter;
+        this.mTrashNotePresenter = trashNotePresenter;
         mDatabase = FirebaseDatabase.getInstance();
         db = new DatabaseHandler(mContext);
         newtoDoItemModels = new ArrayList<ToDoItemModel>();
@@ -85,40 +86,44 @@ public class RemoveFirebaseDataInteractor {
         db.deleteLocaltodoNote(doItemModel);
         startdate = doItemModel.getStartdate();
         index = doItemModel.getId();
+
         for (ToDoItemModel todo : toDoItemModel) {
             if (todo.getStartdate().equals(startdate) && todo.getId() > index) {
                 toDoItemModels.add(todo);
             }
         }
+
         if (toDoItemModels != null) {
             Connection con = new Connection(mContext);
             if (con.isNetworkConnected()) {
                 removeData(toDoItemModels, mUserUID, startdate, index);
             }
-
         }
     }
-    public void getRestore(String mUserUID, ToDoItemModel toDoItemModel) {
-        mToDoItemModel=toDoItemModel;
-        startDate=mToDoItemModel.getStartdate();
-        index=mToDoItemModel.getId();
-        userId=mUserUID;
+
+    public void getRestore(String mUserUID, final ToDoItemModel toDoItemModel) {
+        mToDoItemModel = toDoItemModel;
+        startDate = mToDoItemModel.getStartdate();
+        index = mToDoItemModel.getId();
+        userId = mUserUID;
         try {
 
-            mRef = mDatabase.getReference().child("usersdata");
+            mRef = mDatabase.getReference().child(Constants.Stringkeys.FIREBASE_DATABASE_PARENT_CHILD);
             mRef.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     GenericTypeIndicator<ArrayList<ToDoItemModel>> t = new GenericTypeIndicator<ArrayList<ToDoItemModel>>() {
                     };
-                    if(mToDoItemModel!=null){
+
+                    if (mToDoItemModel != null) {
                         ArrayList<ToDoItemModel> todoItemModel = new ArrayList<ToDoItemModel>();
-                        if (dataSnapshot.hasChild(userId)) {
+                        if (dataSnapshot.child(userId).hasChild(startDate)) {
                             todoItemModel.addAll(dataSnapshot.child(userId).child(startDate).getValue(t));
                         }
+
                         todoItemModel.removeAll(Collections.singleton(null));
-                        getUpdateRestoreNote(todoItemModel,mToDoItemModel);
-                        mToDoItemModel=null;
+                        getupdateRestore(mToDoItemModel, todoItemModel.size());
+                        mToDoItemModel = null;
                     }
 
                 }
@@ -130,34 +135,19 @@ public class RemoveFirebaseDataInteractor {
             });
 
         } catch (Exception e) {
-            Log.i(TAG, "getFireBaseDatabase: "+e);
+            Log.i(TAG, "getFireBaseDatabase: " + e);
         }
 
     }
 
-    private void getUpdateRestoreNote(ArrayList<ToDoItemModel> todoItemModels, ToDoItemModel mToDoItemModel) {
-        List<ToDoItemModel> toDoItemModels=new ArrayList<>();
 
-        toDoItemModels.add(mToDoItemModel);
-        for(ToDoItemModel toDoItemModel: todoItemModels){
-           if(toDoItemModel.getStartdate().equals(startDate)&&toDoItemModel.getId()>=index){
-               toDoItemModels.add(toDoItemModel);
-           }
-        }
-
-        getupdateRestore(toDoItemModels,index);
-    }
-
-    private void getupdateRestore(List<ToDoItemModel> newtoDoItemModels, int index) {
-        mRef = mDatabase.getReference().child("usersdata");
-        int newIndex=index;
+    private void getupdateRestore(ToDoItemModel toDoItemModel, int index) {
+        mRef = mDatabase.getReference().child(Constants.Stringkeys.FIREBASE_DATABASE_PARENT_CHILD);
+        ToDoItemModel todo = toDoItemModel;
+        int newIndex = index;
         try {
-            for(ToDoItemModel todoNote:newtoDoItemModels){
-                todoNote.setId(newIndex);
-                mRef.child(userId).child(todoNote.getStartdate()).child(String.valueOf(newIndex)).setValue(todoNote);
-                newIndex=newIndex+1;
-            }
-
+            todo.setId(newIndex);
+            mRef.child(userId).child(todo.getStartdate()).child(String.valueOf(newIndex)).setValue(todo);
         } catch (Exception f) {
             Log.i(TAG, "setData: ");
         }
@@ -165,17 +155,17 @@ public class RemoveFirebaseDataInteractor {
     }
 
     public void getUndoDeleteNotes(ToDoItemModel toDoItemModel, List<ToDoItemModel> toDoAllItemModels, String mUserUID) {
-        startDate=toDoItemModel.getStartdate();
-        index=toDoItemModel.getId();
-        userId=mUserUID;
-        pos=toDoItemModel.getId();
-        List<ToDoItemModel> toDoItemModels=toDoAllItemModels;
-        mRef = mDatabase.getReference().child("usersdata");
-        for(ToDoItemModel toDoItem: toDoItemModels) {
-            if (toDoItem.getStartdate().equals(startDate) && toDoItem.getId() >= index){
+        startDate = toDoItemModel.getStartdate();
+        index = toDoItemModel.getId();
+        userId = mUserUID;
+        pos = toDoItemModel.getId();
+        List<ToDoItemModel> toDoItemModels = toDoAllItemModels;
+        mRef = mDatabase.getReference().child(Constants.Stringkeys.FIREBASE_DATABASE_PARENT_CHILD);
+        for (ToDoItemModel toDoItem : toDoItemModels) {
+            if (toDoItem.getStartdate().equals(startDate) && toDoItem.getId() >= index) {
                 toDoItem.setId(pos);
                 mRef.child(userId).child(toDoItem.getStartdate()).child(String.valueOf(toDoItem.getId())).setValue(toDoItem);
-                pos=pos+1;
+                pos = pos + 1;
             }
         }
 

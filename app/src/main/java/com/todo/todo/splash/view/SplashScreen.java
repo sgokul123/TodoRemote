@@ -3,8 +3,8 @@ package com.todo.todo.splash.view;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.Handler;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.AppCompatTextView;
 import android.util.Log;
@@ -24,44 +24,45 @@ public class SplashScreen extends Activity {
     AppCompatTextView textView_title;
     SharedPreferences pref;
     SharedPreferences.Editor editor;
-    boolean flag=false;
+    boolean flag = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen);
 
-        textView_title=(AppCompatTextView) findViewById(R.id.textView_splash);
+        textView_title = (AppCompatTextView) findViewById(R.id.textView_splash);
         Animation animationimage = AnimationUtils.loadAnimation(getApplicationContext(),
                 R.anim.fade);
         Animation animationtext = AnimationUtils.loadAnimation(getApplicationContext(),
                 R.anim.translate);
         textView_title.setAnimation(animationtext);
-        image1 = (AppCompatImageView)findViewById(R.id.imageView_logo);
+        image1 = (AppCompatImageView) findViewById(R.id.imageView_logo);
         image1.startAnimation(animationimage);
         Log.i("", "onCreate: ");
-            pref = getSharedPreferences("testapp", MODE_PRIVATE);
-            editor = pref.edit();
-            isLogin();
-            if(!isFinishing()&& flag){
-                getToDoCall();
-            }else{
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
+        pref = getSharedPreferences("testapp", MODE_PRIVATE);
+        editor = pref.edit();
+        isLogin();
+        if (!isFinishing() && flag) {
+            getToDoCall();
+        } else {
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
 
-                        if(flag){
-                            getToDoCall();
+                    if (flag) {
+                        getToDoCall();
 
-                        }else {
+                    } else {
 
-                            Intent i = new Intent(SplashScreen.this, LoginActivity.class);
-                            startActivity(i);
-                            finish();
-                        }
-
+                        Intent i = new Intent(SplashScreen.this, LoginActivity.class);
+                        startActivity(i);
+                        finish();
                     }
-                }, SPLASH_TIME_OUT);
-         }
+
+                }
+            }, SPLASH_TIME_OUT);
+        }
 
 
     }
@@ -73,26 +74,25 @@ public class SplashScreen extends Activity {
         String mStrEmail = pref.getString(Constants.BundleKey.USER_EMAIL, "abcd@gmail.com");
         //redirect to next activity
         String mStrName = pref.getString(Constants.BundleKey.USER_NAME, "Gokul Sonawane");
-        Intent intent=new Intent(SplashScreen.this,ToDoActivity.class);
-        intent.putExtra(Constants.BundleKey.USER_EMAIL,mStrEmail);
-        intent.putExtra(Constants.BundleKey.USER_NAME,mStrName);
+        Intent intent = new Intent(SplashScreen.this, ToDoActivity.class);
+        intent.putExtra(Constants.BundleKey.USER_EMAIL, mStrEmail);
+        intent.putExtra(Constants.BundleKey.USER_NAME, mStrName);
         startActivity(intent);
         finish();
     }
 
-    public  void isLogin(){
+    public void isLogin() {
         Log.i("", "isLogin: ");
-        if(pref.contains(Constants.BundleKey.USER_REGISTER))
-        {
+        if (pref.contains(Constants.BundleKey.USER_REGISTER)) {
             Log.i("", "isLogin: ");
-            String getStatus=pref.getString(Constants.BundleKey.USER_REGISTER, "nil");
-            if(getStatus.equals("true")){
-                flag=true;
-            }else {
-                flag=false;
+            String getStatus = pref.getString(Constants.BundleKey.USER_REGISTER, "nil");
+            if (getStatus.equals("true")) {
+                flag = true;
+            } else {
+                flag = false;
             }
-        }else{
-                flag=false;
+        } else {
+            flag = false;
         }
     }
 

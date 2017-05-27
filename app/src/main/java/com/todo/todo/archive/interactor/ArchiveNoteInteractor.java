@@ -1,14 +1,12 @@
-package com.todo.todo.home.interactor;
+package com.todo.todo.archive.interactor;
 
 import android.content.Context;
-import android.support.v7.widget.AppCompatTextView;
 import android.util.Log;
 
-import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.todo.todo.home.model.ToDoItemModel;
-import com.todo.todo.home.presenter.ArchiveNotePresenter;
+import com.todo.todo.archive.presenter.ArchiveNotePresenter;
 import com.todo.todo.util.Connection;
 import com.todo.todo.util.Constants;
 

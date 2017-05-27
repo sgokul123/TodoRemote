@@ -2,15 +2,24 @@ package com.todo.todo.update.view;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.ColorInt;
 import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.AppCompatTextView;
+import android.transition.Explode;
+import android.transition.Slide;
+import android.transition.Transition;
 import android.util.Log;
 import android.view.View;
 import android.widget.DatePicker;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.jrummyapps.android.colorpicker.ColorPickerDialog;
+import com.jrummyapps.android.colorpicker.ColorPickerDialogListener;
 import com.todo.todo.R;
 import com.todo.todo.base.BaseActivity;
 import com.todo.todo.home.model.ToDoItemModel;
@@ -24,8 +33,8 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
-public class UpdateNoteActivity extends BaseActivity implements View.OnClickListener, ToDoActivityInteface {
-    AppCompatImageView imageViewBack, imageViewPin, imageViewReminder, imageViewSave;
+public class UpdateNoteActivity extends BaseActivity implements View.OnClickListener, ToDoActivityInteface ,ColorPickerDialogListener {
+    AppCompatImageView imageViewBack, imageView_Color_Picker, imageViewReminder, imageViewSave;
     AppCompatTextView textViewReminder;
     AppCompatEditText editTextNote, editTextTitle;
     UpdateNotePresenter updateNotePresenter;
@@ -38,6 +47,9 @@ public class UpdateNoteActivity extends BaseActivity implements View.OnClickList
     private String mUsre_UID, Note_id, mIsArchive;
     private AppCompatTextView mTextViewEditedAt;
     private String mNote_Order_id;
+    private int DIALOG_ID=9;
+    private String noteColor;
+    private RelativeLayout relativeLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,13 +66,15 @@ public class UpdateNoteActivity extends BaseActivity implements View.OnClickList
 
         setContentView(R.layout.activity_new_note);
         imageViewBack = (AppCompatImageView) findViewById(R.id.imageView_back_arrow);
-        imageViewPin = (AppCompatImageView) findViewById(R.id.imageView_pin);
+        imageView_Color_Picker= (AppCompatImageView) findViewById(R.id.imageView_color_picker);
         imageViewReminder = (AppCompatImageView) findViewById(R.id.imageView_reminder);
         imageViewSave = (AppCompatImageView) findViewById(R.id.imageView_save);
         textViewReminder = (AppCompatTextView) findViewById(R.id.textview_reminder_text);
         editTextTitle = (AppCompatEditText) findViewById(R.id.edittext_title);
         editTextNote = (AppCompatEditText) findViewById(R.id.edittet_note);
         mTextViewEditedAt = (AppCompatTextView) findViewById(R.id.textview_editedat_at);
+        relativeLayout= (RelativeLayout) findViewById(R.id.layout_add_new_card);
+
         progressDialog = new ProgressUtil(this);
 
         mUsre_UID = getIntent().getStringExtra(Constants.BundleKey.USER_USER_UID);
@@ -74,7 +88,7 @@ public class UpdateNoteActivity extends BaseActivity implements View.OnClickList
     @Override
     public void setOnClickListener() {
         imageViewBack.setOnClickListener(this);
-        imageViewPin.setOnClickListener(this);
+        imageView_Color_Picker.setOnClickListener(this);
         imageViewReminder.setOnClickListener(this);
         imageViewSave.setOnClickListener(this);
 
@@ -100,6 +114,10 @@ public class UpdateNoteActivity extends BaseActivity implements View.OnClickList
         mIsArchive = ban.getString(Constants.RequestParam.KEY_ARCHIVE);
         StrSetTime = ban.getString(Constants.RequestParam.KEY_SETTIME);
 
+        if(ban.getString(Constants.RequestParam.KEY_COLOR)!=null){
+            noteColor=ban.getString(Constants.RequestParam.KEY_COLOR);
+            relativeLayout.setBackgroundColor(Integer.parseInt(ban.getString(Constants.RequestParam.KEY_COLOR)));
+        }
         if (mIsArchive.equals(R.string.flag_true)) {
         }
     }
@@ -129,7 +147,8 @@ public class UpdateNoteActivity extends BaseActivity implements View.OnClickList
             case R.id.imageView_back_arrow:
                 finish();
                 break;
-            case R.id.imageView_pin:
+            case R.id.imageView_color_picker:
+                getColorPicker();
                 break;
             case R.id.imageView_reminder:
                 new DatePickerDialog(this, date, remiderPick
@@ -148,9 +167,23 @@ public class UpdateNoteActivity extends BaseActivity implements View.OnClickList
                 mToDoItemModel.setId(Integer.parseInt(Note_id));
                 mToDoItemModel.setArchive(mIsArchive);
                 mToDoItemModel.setSettime(StrSetTime);
+                mToDoItemModel.setColor(noteColor);
                 updateNotePresenter.updateNote(mUsre_UID, StrStartDate, mToDoItemModel);
                 break;
         }
+
+    }
+
+
+    private void getColorPicker() {
+
+        ColorPickerDialog.newBuilder()
+                .setDialogType(ColorPickerDialog.TYPE_PRESETS)
+                .setAllowPresets(true)
+                .setDialogId(DIALOG_ID)
+                .setColor(Color.BLACK)
+                .setShowAlphaSlider(true)
+                .show(this);
 
     }
 
@@ -187,6 +220,8 @@ public class UpdateNoteActivity extends BaseActivity implements View.OnClickList
             bun.putString(Constants.RequestParam.KEY_TITLE, mToDoItemModel.getTitle());
             bun.putString(Constants.RequestParam.KEY_REMINDER, mToDoItemModel.getReminder());
             bun.putString(Constants.RequestParam.KEY_SETTIME, mToDoItemModel.getSettime());
+            bun.putString(Constants.RequestParam.KEY_COLOR,noteColor);
+
             Intent intent = new Intent();
             intent.putExtra(Constants.BundleKey.MEW_NOTE, bun);
             setResult(2, intent);
@@ -207,4 +242,15 @@ public class UpdateNoteActivity extends BaseActivity implements View.OnClickList
 
     }
 
+    @Override
+    public void onColorSelected(int dialogId, @ColorInt int color) {
+
+        noteColor= String.valueOf(color);
+        relativeLayout.setBackgroundColor(color);
+    }
+
+    @Override
+    public void onDialogDismissed(int dialogId) {
+
+    }
 }

@@ -5,13 +5,12 @@ package com.todo.todo.login.model;
  */
 
 public class LoginModel {
-    private  int mId;
+    private int mId;
 
-    private  String mEmail;
-    private  String mPassword;
-    private  String mMobile;
-    private  String mName;
-
+    private String mEmail;
+    private String mPassword;
+    private String mMobile;
+    private String mName;
 
 
     public LoginModel(String email, String password) {

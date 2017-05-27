@@ -15,6 +15,7 @@
         android:layout_marginTop="@dimen/dimen_5dp"
         android:layout_marginBottom="@dimen/dimen_5dp"
         android:padding="@dimen/dimen_5dp"
+        android:transitionName="@string/transition_title_image"
         android:stateListAnimator="@anim/animation"
         app:cardCornerRadius="@dimen/dimen_3dp"
         app:cardElevation="5dp"

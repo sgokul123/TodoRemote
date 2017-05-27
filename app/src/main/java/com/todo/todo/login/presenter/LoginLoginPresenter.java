@@ -8,7 +8,6 @@ import com.facebook.AccessToken;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.todo.todo.login.interactor.LoginLoginInteractor;
 import com.todo.todo.login.model.LoginModel;
-import com.todo.todo.login.view.LoginActivity;
 import com.todo.todo.login.view.LoginInterface;
 import com.todo.todo.registration.model.RegistrationModel;
 import com.todo.todo.util.Connection;
@@ -19,28 +18,28 @@ import com.todo.todo.util.Connection;
  */
 
 public class LoginLoginPresenter implements LoginPresenterInterface {
-    private  String TAG ="LoginLoginPresenter";
+    Context mContext;
+    private String TAG = "LoginLoginPresenter";
     private LoginInterface mLoginInterface;
     private LoginLoginInteractor interactor;
-    Context  mContext;
 
     public LoginLoginPresenter(LoginInterface loginInterface, Context context) {
         Log.i(TAG, "LoginLoginPresenter: ");
-               interactor =new LoginLoginInteractor(this,mContext);
-                this.mLoginInterface=loginInterface;
-        this.mContext=context;
+        interactor = new LoginLoginInteractor(this, mContext);
+        this.mLoginInterface = loginInterface;
+        this.mContext = context;
     }
 
     @Override
     public void getLogin(String email, String password) {
 
-        Connection connection=new Connection(mContext);
-        if(connection.isNetworkConnected()){
-            LoginModel model=new LoginModel(email,password);
+        Connection connection = new Connection(mContext);
+        if (connection.isNetworkConnected()) {
+            LoginModel model = new LoginModel(email, password);
             interactor.getFirbaseLogin(model);
             Log.i(TAG, "getLogin:  call");
 
-        }else{
+        } else {
             mLoginInterface.closeProgress();
             Toast.makeText(mContext, "Connection not Present...", Toast.LENGTH_SHORT).show();
         }
@@ -49,16 +48,14 @@ public class LoginLoginPresenter implements LoginPresenterInterface {
 
     @Override
     public void getLoginAuthentication(RegistrationModel registrationModel, String uid) {
-        if(uid!=null){
+        if (uid != null) {
             Log.i(TAG, "getLoginAuthentication: ");
 
-            mLoginInterface.loginSuccess(registrationModel,uid);
-        }
-        else {
+            mLoginInterface.loginSuccess(registrationModel, uid);
+        } else {
             mLoginInterface.loginFailuar();
         }
     }
-
 
 
     @Override
@@ -76,8 +73,13 @@ public class LoginLoginPresenter implements LoginPresenterInterface {
     }
 
     @Override
+    public void loginFailuar() {
+        mLoginInterface.loginFailuar();
+    }
+
+    @Override
     public void handleGoogleSignInResult(GoogleSignInAccount account, String uid) {
-        mLoginInterface.handleGoogleSignInResult(account,uid);
+        mLoginInterface.handleGoogleSignInResult(account, uid);
 
     }
 

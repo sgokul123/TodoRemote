@@ -1,4 +1,4 @@
-package com.todo.todo.home.view;
+package com.todo.todo.archive.view;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -20,12 +20,14 @@ import android.widget.Filter;
 import com.todo.todo.R;
 import com.todo.todo.home.adapter.ItemAdapter;
 import com.todo.todo.home.model.ToDoItemModel;
-import com.todo.todo.home.presenter.ArchiveNotePresenter;
+import com.todo.todo.archive.presenter.ArchiveNotePresenter;
+import com.todo.todo.home.view.ToDoActivityInteface;
+import com.todo.todo.removenote.view.TrashFragmentInterface;
 import com.todo.todo.util.Constants;
 
 import java.util.ArrayList;
 import java.util.List;
-    public class ArchiveFragment extends Fragment implements  View.OnClickListener,ArchiveNoteFragmentInterface {
+    public class ArchiveFragment extends Fragment implements  View.OnClickListener,TrashFragmentInterface {
 
         private static final String TAG = "TrashFragment";
         private ItemAdapter mArchiveAdapter;
@@ -164,7 +166,7 @@ import java.util.List;
                 case R.id.imageView_delete:
 
                     getHideToolBar(false);
-                    mArchiveAdapter =new ItemAdapter(getActivity(),mArchiveNotes,this);
+                    mArchiveAdapter =new ItemAdapter(getActivity(),mArchiveNotes);
                     getRecyclerLayout();
                     mToDoRecyclerView.setAdapter(mArchiveAdapter);
                     count=0;
@@ -235,6 +237,16 @@ import java.util.List;
             count=count+1;
             arrayList.add(position);
             mTextViewCount.setText(count+"  Selected");
+        }
+
+        @Override
+        public void displayTrashNotes(List<ToDoItemModel> todoItemModel) {
+
+        }
+
+        @Override
+        public void getRefreshNotes() {
+
         }
 
     }

@@ -5,22 +5,28 @@ import android.util.Log;
 
 import com.todo.todo.registration.interactor.RegistrationInteractor;
 import com.todo.todo.registration.model.RegistrationModel;
-import com.todo.todo.registration.view.RegistrationFragment;
 import com.todo.todo.registration.view.RegistrationInterface;
 
 /**
  * Created by bridgeit on 23/3/17.
  */
 
-public class RegistrationPresenter  implements  RegistrationPresenterInterface{
-    private  String TAG ="RegistrationPresenter";
-    private  RegistrationInteractor registrationInteractor;
-    private  Context mContext;
+public class RegistrationPresenter implements RegistrationPresenterInterface {
     RegistrationInterface registrationFragmentMain;
+    private String TAG = "RegistrationPresenter";
+    private RegistrationInteractor registrationInteractor;
+    private Context mContext;
+
     public RegistrationPresenter(Context context, RegistrationInterface registrationFragment) {
         Log.i(TAG, "RegistrationPresenter: ");
-        this.mContext=context;
+        this.mContext = context;
         this.registrationFragmentMain = registrationFragment;
+    }
+
+
+    @Override
+    public void getFailuar() {
+
     }
 
     @Override
@@ -35,15 +41,20 @@ public class RegistrationPresenter  implements  RegistrationPresenterInterface{
 
     @Override
     public void getResponce(String uid, RegistrationModel model) {
-        registrationFragmentMain.getResponce(uid,model);
+        registrationFragmentMain.getResponce(uid, model);
     }
 
 
     @Override
     public void setNewUser(RegistrationModel registrationModel) {
         Log.i(TAG, "setNewUser: ");
-        registrationInteractor=new RegistrationInteractor(mContext,RegistrationPresenter.this);
+        registrationInteractor = new RegistrationInteractor(mContext, RegistrationPresenter.this);
 
         registrationInteractor.saveUser(registrationModel);
+    }
+
+    @Override
+    public void registrationFailuar() {
+        registrationFragmentMain.getFailuar();
     }
 }

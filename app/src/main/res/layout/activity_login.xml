@@ -5,13 +5,13 @@
     android:id="@+id/login_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginLeft="20dp"
-    android:layout_marginRight="20dp"
     tools:context=".login.view.LoginActivity">
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -121,4 +121,12 @@
 
         </RelativeLayout>
     </ScrollView>
+    <FrameLayout
+        android:id="@+id/framlayout_login"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:background="@android:color/white"/>
+
+
 </RelativeLayout>

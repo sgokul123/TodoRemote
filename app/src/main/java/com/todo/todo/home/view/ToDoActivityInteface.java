@@ -10,10 +10,15 @@ import java.util.List;
 
 public interface ToDoActivityInteface {
 
-    public  void closeProgressDialog();
-    public void  showProgressDialog();
-    public  void showDataInActivity(List<ToDoItemModel> toDoItemModels);
-    public  void getResponce(boolean flag);
-    public  void getUndoArchivedNote(int position);
-    public  void hideToolBar(boolean flag);
+    public void closeProgressDialog();
+
+    public void showProgressDialog();
+
+    public void showDataInActivity(List<ToDoItemModel> toDoItemModels);
+
+    public void getResponce(boolean flag);
+
+    public void getUndoArchivedNote(int position);
+
+    public void hideToolBar(boolean flag);
 }

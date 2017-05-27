@@ -14,7 +14,6 @@ import com.todo.todo.home.model.ToDoItemModel;
 import com.todo.todo.home.presenter.ToDoPresenterInteface;
 import com.todo.todo.util.Connection;
 
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -122,7 +121,7 @@ public class ToDoActivityInteractor implements TodoInteractorInterface {
             });
 
         } catch (Exception e) {
-            Log.i(TAG, "getFireBaseDatabase: "+e);
+            Log.i(TAG, "getFireBaseDatabase: " + e);
             toDoPresenterInteface.closeNoteProgressDialog();
         }
     }
@@ -134,7 +133,6 @@ public class ToDoActivityInteractor implements TodoInteractorInterface {
 
     @Override
     public void getMoveNotes(String uid, String curDate, ToDoItemModel fromNote, ToDoItemModel desinationNote) {
-
 
 
     }

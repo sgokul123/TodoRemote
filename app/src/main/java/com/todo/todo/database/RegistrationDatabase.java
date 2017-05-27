@@ -134,30 +134,6 @@ public class RegistrationDatabase extends SQLiteOpenHelper {
         return registrationModelList;
     }
 
-   /* // code to update the single ToDo
-    public int updateUser(RegistrationModel registrationModel) {
-        SQLiteDatabase db = this.getWritableDatabase();
-
-        ContentValues values = new ContentValues();
-
-        values.put(KEY_NAME, registrationModel.getUserFirstName());
-        values.put(KEY_LNAME, registrationModel.getUserLastName());
-        values.put(KEY_EMAIL, registrationModel.getMailid());
-        values.put(KEY_PHONE, registrationModel.getMobileNo());
-        values.put(KEY_PASSWORD, registrationModel.getUserPassword());
-        values.put(KEY_URL, registrationModel.getUserProfileImgurl());
-        // updating row  
-        return db.update(TABLE_USERS, values, KEY_ID + " = ?",
-                  new String[] { String.valueOf(registrationModel.getId()) });
-    }
-
-    // Deleting single ToDo  
-    public void deleteUser(RegistrationModel registrationModel) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        db.delete(TABLE_USERS, KEY_ID + " = ?",
-           new String[] { String.valueOf(registrationModel.getId()) });
-        db.close();
-    }*/
 
     // Getting ToDos Count  
     public int getUserCount() {

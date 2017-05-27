@@ -1,13 +1,11 @@
-package com.todo.todo.home.presenter;
+package com.todo.todo.archive.presenter;
 
 import android.content.Context;
 
 import com.todo.todo.database.DatabaseHandler;
-import com.todo.todo.home.interactor.ArchiveNoteInteractor;
-import com.todo.todo.home.interactor.RemoveFirebaseDataInteractor;
+import com.todo.todo.archive.interactor.ArchiveNoteInteractor;
 import com.todo.todo.home.model.ToDoItemModel;
-import com.todo.todo.home.view.ArchiveFragment;
-import com.todo.todo.util.Constants;
+import com.todo.todo.archive.view.ArchiveFragment;
 
 import java.util.List;
 

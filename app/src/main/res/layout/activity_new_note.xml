@@ -4,9 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:transitionName="@string/transition_title_image"
     tools:context=".addnote.view.NewNoteActivity">
 
     <RelativeLayout
+        android:id="@+id/layout_add_new_card"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         >
@@ -20,13 +22,13 @@
             app:srcCompat="?attr/actionModeCloseDrawable" />
 
         <android.support.v7.widget.AppCompatImageView
-            android:id="@+id/imageView_pin"
+            android:id="@+id/imageView_color_picker"
             android:layout_width="@dimen/dimen_30dp"
             android:layout_height="@dimen/dimen_20dp"
             android:layout_marginRight="@dimen/dimen_20dp"
             android:layout_marginTop="@dimen/dimen_10dp"
             android:layout_toLeftOf="@+id/imageView_reminder"
-            app:srcCompat="@drawable/pin" />
+            app:srcCompat="@drawable/ic_color_picker" />
 
         <android.support.v7.widget.AppCompatImageView
             android:id="@+id/imageView_reminder"

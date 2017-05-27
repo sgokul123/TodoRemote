@@ -8,11 +8,16 @@ import com.todo.todo.registration.model.RegistrationModel;
  */
 
 public interface LoginPresenterInterface {
-        public  void getLogin(String email, String password);
-        public  void getLoginAuthentication(RegistrationModel registrationModel,String uid);
+    public void getLogin(String email, String password);
 
-        public  void showProgress();
-        public  void closeProgress();
-        public  void handleGoogleSignInResult(GoogleSignInAccount account, String uid);
-        public void facebookResponceUID(String uid);
+    public void getLoginAuthentication(RegistrationModel registrationModel, String uid);
+
+    public void showProgress();
+
+    public void closeProgress();
+    public  void loginFailuar();
+
+    public void handleGoogleSignInResult(GoogleSignInAccount account, String uid);
+
+    public void facebookResponceUID(String uid);
 }

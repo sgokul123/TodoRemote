@@ -9,7 +9,8 @@ import java.util.List;
  */
 
 public interface UpdateLocalDataOnFirebaseInteractorInterface {
-    public  void updatetoFirebase( String uid, List<ToDoItemModel> localNotes);
-    public  void setData(int size,ToDoItemModel toDoItemModel);
+    public void updatetoFirebase(String uid, List<ToDoItemModel> localNotes);
+
+    public void setData(int size, ToDoItemModel toDoItemModel);
 
 }

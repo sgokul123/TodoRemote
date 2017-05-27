@@ -13,32 +13,35 @@ public class ToDoItemModel {
     private String startdate;
     private String archive;
     private String settime;
+    private  String color;
 
     public ToDoItemModel() {
 
     }
 
-    public ToDoItemModel(int id, String title, String reminder, String note, String archive, String Settime) {
+    public ToDoItemModel(int id, String title, String reminder, String note, String archive, String Settime,String color) {
         this.id = id;
         this.title = title;
         this.reminder = reminder;
         this.note = note;
         this.archive = archive;
         this.settime = Settime;
+        this.color=color;
 
     }
 
-    public ToDoItemModel(String title, String note, String reminder, String startdate, String archive, String Settime) {
+    public ToDoItemModel(String title, String note, String reminder, String startdate, String archive, String Settime,String color) {
         this.title = title;
         this.reminder = reminder;
         this.note = note;
         this.startdate = startdate;
         this.archive = archive;
         this.settime = Settime;
+        this.color=color;
 
     }
 
-    public ToDoItemModel(int id, String title, String note, String reminder, String startdate, String archive, String Settime) {
+    public ToDoItemModel(int id, String title, String note, String reminder, String startdate, String archive, String Settime,String color) {
         this.id = id;
         this.title = title;
         this.reminder = reminder;
@@ -46,6 +49,7 @@ public class ToDoItemModel {
         this.startdate = startdate;
         this.archive = archive;
         this.settime = Settime;
+        this.color=color;
 
     }
 
@@ -106,5 +110,11 @@ public class ToDoItemModel {
     }
 
 
+    public String getColor() {
+        return color;
+    }
 
+    public void setColor(String color) {
+        this.color = color;
+    }
 }

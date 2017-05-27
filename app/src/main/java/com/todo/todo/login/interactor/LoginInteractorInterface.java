@@ -8,5 +8,5 @@ import com.todo.todo.login.model.LoginModel;
  */
 
 public interface LoginInteractorInterface {
-    public  void getFirbaseLogin(LoginModel loginModel);
-  }
+    public void getFirbaseLogin(LoginModel loginModel);
+}

@@ -4,6 +4,7 @@ import com.todo.todo.registration.model.RegistrationModel;
 
 public interface RegistrationInteractorInterface {
 
-    public  void saveUser(RegistrationModel registrationModel);
-    public  void getResponce(boolean flag);
+    public void saveUser(RegistrationModel registrationModel);
+
+    public void getResponce(boolean flag);
 }
