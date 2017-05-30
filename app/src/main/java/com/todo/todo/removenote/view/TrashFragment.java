@@ -56,7 +56,7 @@ public class TrashFragment extends Fragment implements TrashFragmentInterface, V
                              Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.fragment_trash, container, false);
-        mToDoRecyclerView = (RecyclerView) view.findViewById(R.id.gridview_fragment_notes);
+      //  mToDoRecyclerView = (RecyclerView) view.findViewById(R.id.gridview_fragment_notes);
         mTextView_blank_recycler = (AppCompatTextView) view.findViewById(R.id.textview_blank_fragment_recyclerview);
         trashNotePresenter = new TrashNotePresenter(getActivity().getBaseContext(), TrashFragment.this);
         mTextView_blank_recycler.setVisibility(View.VISIBLE);
@@ -95,6 +95,14 @@ public class TrashFragment extends Fragment implements TrashFragmentInterface, V
     }
 
     @Override
+    public void getCountDecreament(Integer position) {
+        count = count - 1;
+        Log.i(TAG, "getCountDecreament: "+arrayList.remove(position));//arrayList.remove(position);
+        mTextViewCount.setText(count + "  Selected");
+
+    }
+
+    @Override
     public void getCountIncreament(int position) {
         count = count + 1;
         arrayList.add(position);
@@ -129,6 +137,7 @@ public class TrashFragment extends Fragment implements TrashFragmentInterface, V
         getRecyclerLayout();
         mToDoRecyclerView.setAdapter(mTrashAdapter);
     }
+
 
     public void addTextListener() {
         mEditText_Search.addTextChangedListener(new TextWatcher() {

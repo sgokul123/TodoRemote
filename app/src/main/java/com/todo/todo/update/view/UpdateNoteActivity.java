@@ -53,17 +53,13 @@ public class UpdateNoteActivity extends BaseActivity implements View.OnClickList
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
-
         updateNotePresenter = new UpdateNotePresenter(UpdateNoteActivity.this, this);
-
         initView();
     }
 
     @Override
     public void initView() {
-
         setContentView(R.layout.activity_new_note);
         imageViewBack = (AppCompatImageView) findViewById(R.id.imageView_back_arrow);
         imageView_Color_Picker= (AppCompatImageView) findViewById(R.id.imageView_color_picker);
@@ -91,17 +87,14 @@ public class UpdateNoteActivity extends BaseActivity implements View.OnClickList
         imageView_Color_Picker.setOnClickListener(this);
         imageViewReminder.setOnClickListener(this);
         imageViewSave.setOnClickListener(this);
-
     }
 
     @Override
     public void enterFromBottomAnimation() {
-
     }
 
     @Override
     public void exitToBottomAnimation() {
-
     }
 
     private void setData(Bundle ban) {
@@ -123,8 +116,6 @@ public class UpdateNoteActivity extends BaseActivity implements View.OnClickList
     }
 
     public void reminderPicker() {
-
-
         remiderPick = Calendar.getInstance();
         date = new DatePickerDialog.OnDateSetListener() {
             @Override
@@ -142,7 +133,6 @@ public class UpdateNoteActivity extends BaseActivity implements View.OnClickList
 
     @Override
     public void onClick(View v) {
-
         switch (v.getId()) {
             case R.id.imageView_back_arrow:
                 finish();
@@ -151,9 +141,11 @@ public class UpdateNoteActivity extends BaseActivity implements View.OnClickList
                 getColorPicker();
                 break;
             case R.id.imageView_reminder:
-                new DatePickerDialog(this, date, remiderPick
+                DatePickerDialog datePickerDialog= new DatePickerDialog(this, date, remiderPick
                         .get(Calendar.YEAR), remiderPick.get(Calendar.MONTH),
-                        remiderPick.get(Calendar.DAY_OF_MONTH)).show();
+                        remiderPick.get(Calendar.DAY_OF_MONTH));
+                datePickerDialog.show();
+                datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis());
                 break;
             case R.id.imageView_save:
                 mToDoItemModel = new ToDoItemModel();
@@ -171,12 +163,9 @@ public class UpdateNoteActivity extends BaseActivity implements View.OnClickList
                 updateNotePresenter.updateNote(mUsre_UID, StrStartDate, mToDoItemModel);
                 break;
         }
-
     }
 
-
     private void getColorPicker() {
-
         ColorPickerDialog.newBuilder()
                 .setDialogType(ColorPickerDialog.TYPE_PRESETS)
                 .setAllowPresets(true)
@@ -188,12 +177,9 @@ public class UpdateNoteActivity extends BaseActivity implements View.OnClickList
     }
 
     private void updateLabel() {
-
         SimpleDateFormat sdf = new SimpleDateFormat(Constants.NotesType.DATE_FORMAT, Locale.US);
         textViewReminder.setText(sdf.format(remiderPick.getTime()));
-
     }
-
 
     @Override
     public void closeProgressDialog() {
@@ -207,7 +193,6 @@ public class UpdateNoteActivity extends BaseActivity implements View.OnClickList
 
     @Override
     public void showDataInActivity(List<ToDoItemModel> toDoItemModels) {
-
     }
 
     @Override
@@ -229,28 +214,23 @@ public class UpdateNoteActivity extends BaseActivity implements View.OnClickList
         } else {
             Toast.makeText(this, getString(R.string.fail_update), Toast.LENGTH_SHORT).show();
         }
-
     }
 
     @Override
     public void getUndoArchivedNote(int position) {
-
     }
 
     @Override
     public void hideToolBar(boolean flag) {
-
     }
 
     @Override
     public void onColorSelected(int dialogId, @ColorInt int color) {
-
         noteColor= String.valueOf(color);
         relativeLayout.setBackgroundColor(color);
     }
 
     @Override
     public void onDialogDismissed(int dialogId) {
-
     }
 }

@@ -249,4 +249,11 @@ import java.util.List;
 
         }
 
+        @Override
+        public void getCountDecreament(Integer position) {
+            count=count-1;
+            arrayList.remove(position);
+            mTextViewCount.setText(count+"  Selected");
+        }
+
     }

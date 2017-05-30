@@ -16,4 +16,6 @@ public interface TrashFragmentInterface {
     public void displayTrashNotes(List<ToDoItemModel> todoItemModel);
 
     void getRefreshNotes();
+
+    void getCountDecreament(Integer position);
 }

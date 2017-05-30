@@ -75,7 +75,6 @@ public class TrashFirebaseDataInteractor {
         mRef = mDatabase.getReference().child("usersdata");
         try {
             mRef.child(mUserUID).child(toDoItemModel.getStartdate()).child(String.valueOf(index)).setValue(toDoItemModel);
-
         } catch (Exception f) {
             Log.i(TAG, "setData: ");
         }
@@ -169,5 +168,30 @@ public class TrashFirebaseDataInteractor {
             }
         }
 
+    }
+
+    public void addToFireBaseTrash(ToDoItemModel doItemModel, final String mUserUID) {
+        final int[] id = {0};
+        mRef = mDatabase.getReference().child(Constants.Stringkeys.FIREBASE_DATABASE_TRASH);
+        try {
+            mRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    GenericTypeIndicator<ArrayList<ToDoItemModel>> t = new GenericTypeIndicator<ArrayList<ToDoItemModel>>() {
+                    };
+                    if (mToDoItemModel != null) {
+                        id[0] = (int) dataSnapshot.child(mUserUID).getChildrenCount();
+                        mToDoItemModel = null;
+                    }
+                }
+                @Override
+                public void onCancelled(DatabaseError error) {
+                    Log.i(TAG, "onCancelled: ");
+                }
+            });
+        }catch(Exception e){
+            Log.i(TAG, "addToFireBaseTrash: "+e);
+        }
+        mRef.child(mUserUID).child(String.valueOf(id[0])).setValue(doItemModel);
     }
 }

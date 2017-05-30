@@ -35,6 +35,7 @@ import java.util.Locale;
 
 public class NewNoteActivity extends BaseActivity implements View.OnClickListener, NoteInterface,ColorPickerDialogListener {
 
+    final static int RQS_1 = 1;
     AppCompatImageView mImageViewBack, imageView_Color_Picker, mImageViewReminder, mImageViewSave;
     AppCompatTextView mTextViewReminder, mTextViewEditedAt;
     AppCompatEditText mEditTextNote, mEditTextTitle;
@@ -43,9 +44,6 @@ public class NewNoteActivity extends BaseActivity implements View.OnClickListene
     ToDoItemModel mToDoItemModel;
     String formattedDate;
     RelativeLayout relativeLayout;
-
-    final static int RQS_1 = 1;
-
     private String TAG = "NewNoteActivity";
     private AddNotePresenter mAddNotePresenter;
     private String StrTitle, StrReminder, StrNote;
@@ -84,7 +82,6 @@ public class NewNoteActivity extends BaseActivity implements View.OnClickListene
         mTextViewEditedAt.setText(formattedDate);
         Log.i(TAG, "initView: " + getCurrentDate());
         mUsre_UID = getIntent().getStringExtra(Constants.BundleKey.USER_USER_UID);
-
         Log.i(TAG, "initView: " + mUsre_UID);
         reminderPicker();
         setOnClickListener();
@@ -123,6 +120,7 @@ public class NewNoteActivity extends BaseActivity implements View.OnClickListene
             }
 
         };
+
     }
 
     @Override
@@ -130,33 +128,46 @@ public class NewNoteActivity extends BaseActivity implements View.OnClickListene
 
         switch (v.getId()) {
             case R.id.imageView_back_arrow:
-                exitToBottomAnimation();
+                if(!mEditTextTitle.getText().toString().isEmpty()){
+                    saveNote();
+                }
                 finish();
                 break;
             case R.id.imageView_color_picker:
-
                 getColorPicker();
                 break;
             case R.id.imageView_reminder:
-
-                new DatePickerDialog(this, date, myCalendar
+                DatePickerDialog datePickerDialog=new DatePickerDialog(this, date, myCalendar
                         .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
-                        myCalendar.get(Calendar.DAY_OF_MONTH)).show();
+                        myCalendar.get(Calendar.DAY_OF_MONTH));
+                datePickerDialog.show();
+                datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis());
+
                 break;
             case R.id.imageView_save:
+                if(!mEditTextTitle.getText().toString().isEmpty()){
+                    saveNote();
+                }else{
+                    finish();
+                }
+                break;
+        }
 
-                mToDoItemModel = new ToDoItemModel();
-                StrNote = mEditTextNote.getText().toString();
-                mToDoItemModel.setNote(StrNote);
-                StrTitle = mEditTextTitle.getText().toString();
-                mToDoItemModel.setTitle(StrTitle);
-                StrReminder = mTextViewReminder.getText().toString();
-                mToDoItemModel.setReminder(StrReminder);
-                mToDoItemModel.setSettime(mTextViewEditedAt.getText().toString());
-                mToDoItemModel.setStartdate(getCurrentDate());
-                mToDoItemModel.setArchive("false");
-                mToDoItemModel.setColor(noteColor);
-                mAddNotePresenter = new AddNotePresenter(this, this);
+    }
+
+    private void saveNote() {
+        mToDoItemModel = new ToDoItemModel();
+        StrNote = mEditTextNote.getText().toString();
+        mToDoItemModel.setNote(StrNote);
+        StrTitle = mEditTextTitle.getText().toString();
+        mToDoItemModel.setTitle(StrTitle);
+        StrReminder = mTextViewReminder.getText().toString();
+        mToDoItemModel.setReminder(StrReminder);
+        mToDoItemModel.setSettime(mTextViewEditedAt.getText().toString());
+        mToDoItemModel.setStartdate(getCurrentDate());
+        mToDoItemModel.setArchive("false");
+        mToDoItemModel.setColor(noteColor);
+        mAddNotePresenter = new AddNotePresenter(this, this);
 
               /*  try {
                     setAlarm(formattedDate);
@@ -164,16 +175,12 @@ public class NewNoteActivity extends BaseActivity implements View.OnClickListene
                     e.printStackTrace();
                 }*/
 
-                Log.i(TAG, "onClick: " + mUsre_UID + "  date" + getCurrentDate());
-                mAddNotePresenter.loadNotetoFirebase(mUsre_UID, getCurrentDate(), mToDoItemModel);
-
-                break;
-        }
+        Log.i(TAG, "onClick: " + mUsre_UID + "  date" + getCurrentDate());
+        mAddNotePresenter.loadNotetoFirebase(mUsre_UID, getCurrentDate(), mToDoItemModel);
 
     }
 
     private void getColorPicker() {
-
         ColorPickerDialog.newBuilder()
                 .setDialogType(ColorPickerDialog.TYPE_PRESETS)
                 .setAllowPresets(true)

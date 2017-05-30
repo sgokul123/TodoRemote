@@ -2,6 +2,7 @@ package com.todo.todo.database;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -19,6 +20,8 @@ import java.util.List;
 
 public class DatabaseHandler extends SQLiteOpenHelper {
 
+    private  SharedPreferences.Editor editor;
+    private  SharedPreferences pref;
     private String TAG = "RegistrationDatabase";
     private static final int DATABASE_VERSION = 1;
     private ToDoActivityInteractor todoActivityInteractor;
@@ -28,6 +31,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         super(context, Constants.RequestParam.DATABASE_NAME, null, DATABASE_VERSION);
         //3rd argument to be passed is CursorFactory instance
         this.todoActivityInteractor = todoActivityInteractor;
+        pref = context.getSharedPreferences(Constants.ProfileeKey.SHAREDPREFERANCES_KEY, context.MODE_PRIVATE);
+
     }
 
     public DatabaseHandler(Context context) {
@@ -99,6 +104,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
             Log.i(TAG, "addToDo: start");
             ContentValues values = new ContentValues();
+
             values.put(Constants.RequestParam.KEY_TITLE, toDoItemModel.getTitle()); // ToDo Name
             values.put(Constants.RequestParam.KEY_NOTE, toDoItemModel.getNote()); // ToDo Phone
             values.put(Constants.RequestParam.KEY_REMINDER, toDoItemModel.getReminder()); // ToDo REMINDER
@@ -132,6 +138,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             db = this.getWritableDatabase();
             Log.i(TAG, "addToDo: start");
             ContentValues values = new ContentValues();
+            int id=pref.getInt(Constants.Stringkeys.LAST_INDEX,0);
+            values.put(Constants.RequestParam.KEY_ID,id);
             values.put(Constants.RequestParam.KEY_TITLE, toDoItemModel.getTitle()); // ToDo Name
             values.put(Constants.RequestParam.KEY_NOTE, toDoItemModel.getNote()); // ToDo Phone
             values.put(Constants.RequestParam.KEY_REMINDER, toDoItemModel.getReminder()); // ToDo REMINDER
@@ -139,9 +147,10 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             values.put(Constants.RequestParam.KEY_ARCHIVE, toDoItemModel.getArchive());
             values.put(Constants.RequestParam.KEY_SETTIME, toDoItemModel.getSettime());
             values.put(Constants.RequestParam.KEY_COLOR,toDoItemModel.getColor());
-
+            editor = pref.edit();
+            editor.putInt(Constants.Stringkeys.LAST_INDEX,id+1);
+            editor.commit();
             // Inserting Row
-
             db.insert(Constants.RequestParam.LOCAL_NOTES_TABLE_NAME, null, values);
             Log.i(TAG, "addToDo: success");
             mAddNoteInteractoreInteface.getResponce(true);
@@ -171,7 +180,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             values.put(Constants.RequestParam.KEY_ARCHIVE, toDoItemModel.getArchive());
             values.put(Constants.RequestParam.KEY_SETTIME, toDoItemModel.getSettime());
             values.put(Constants.RequestParam.KEY_COLOR,toDoItemModel.getColor());
-
             // Inserting Row
             db.insert(Constants.RequestParam.TRASH_TABLE_NAME, null, values);
             Log.i(TAG, "addToDo:  success");
@@ -209,7 +217,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
-
         // looping through all rows and adding to list
         if (cursor.moveToFirst()) {
             do {
@@ -230,8 +237,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return mToDoList;
     }
 
-
-
     //add all models to local database
     public void addAllNotesToLocal(List<ToDoItemModel> toDoItemModels) {
         SQLiteDatabase db = null;
@@ -251,7 +256,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
                 db.insert(Constants.RequestParam.NOTES_TABLE_NAME, null, values);
             }
-
             toDoActivityPresenter.sendCallBackNotes(toDoItemModels);
 
         } catch (Exception e) {

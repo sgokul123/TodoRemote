@@ -62,6 +62,8 @@ public class Constants {
         String FIREBASE_DATABASE_PARENT_CHILD = "usersdata";
         String STR_LINEAR_GRID = "mlinear";
         String LAST_NOTE_COUNT="lastcount";
+        String LAST_INDEX="lastindex";
+        String FIREBASE_DATABASE_TRASH="trashData";
     }
 
     public interface InternateConnnection {

@@ -25,7 +25,10 @@
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />
-
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="fcb78aba9d1e4b69e317e5c5660aedfafcdb61b7"
+            />
         <activity android:name=".login.view.LoginActivity" />
         <activity android:name=".splash.view.SplashScreen">
             <intent-filter>

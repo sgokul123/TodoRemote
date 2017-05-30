@@ -61,6 +61,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import com.crashlytics.android.Crashlytics;
+import io.fabric.sdk.android.Fabric;
 
 public class ToDoActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener, ToDoActivityInteface {
@@ -82,6 +84,7 @@ public class ToDoActivity extends BaseActivity
     List<ToDoItemModel> toDoAllItemModels, mRemindrsToDO, mArchivedNotes, mTrashNotes;
     Utility util;
     UpdateNotePresenter updateNotePresenter;
+
     private String TAG = "ToDoActivity";
     private String mEmail_id, mUserUID;
 
@@ -97,6 +100,7 @@ public class ToDoActivity extends BaseActivity
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
+        Fabric.with(this, new Crashlytics());
         setContentView(R.layout.activity_to_do);
         toDoAllItemModels = new ArrayList<>();
         notesFragment = new ToDoNotesFragment(toDoAllItemModels);
@@ -107,14 +111,10 @@ public class ToDoActivity extends BaseActivity
         mArchivedNotes = new ArrayList<>();
         toDoItemModels = new ArrayList<>();
         mTrashNotes = new ArrayList<>();
-
-
     }
 
     @Override
     public void initView() {
-
-
         mFloatingActionButton = (FloatingActionButton) findViewById(R.id.fab);
         mImageView_Linear_Grid = (AppCompatImageView) findViewById(R.id.imageView_grid_linear);
         mImageViewsearch = (AppCompatImageView) findViewById(R.id.imageView_search_bar);
@@ -137,7 +137,7 @@ public class ToDoActivity extends BaseActivity
             mToDoActivityPresenter = new ToDoActivityPresenter(this, this);
             mToDoActivityPresenter.getPresenterNotes(mUserUID);
         }
-
+        mToolSearch = (Toolbar) findViewById(R.id.toolbarsearch);
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         mToolbardelete = (Toolbar) findViewById(R.id.toolbar_delete);
         setSupportActionBar(mToolbar);
@@ -154,26 +154,10 @@ public class ToDoActivity extends BaseActivity
         mTextView_Name = (AppCompatTextView) header.findViewById(R.id.textview_nave_name);
 
         setNavigationProfile();
-        //  addTextListener();
-        //initSwipe();
         hideKeyboard();
         setOnClickListener();
     }
 
-    public List<ToDoItemModel> getUpdateModels() {
-        List<ToDoItemModel> dataModels = new ArrayList<>();
-        String typeOfNotes = mTextView_Title.getText().toString();
-        if (typeOfNotes.equals(Constants.NotesType.ALL_NOTES)) {
-            dataModels = toDoItemModels;
-        } else if (typeOfNotes.equals(Constants.NotesType.REMINDER_NOTES)) {
-            dataModels = mRemindrsToDO;
-        } /*else if (typeOfNotes.equals(Constants.NotesType.ARCHIVE_NOTES)) {
-            dataModels = mArchivedNotes;
-        }else if(typeOfNotes.equals(Constants.NotesType.TRASH_NOTES)) {
-            dataModels = mTrashNotes;
-        }*/
-        return dataModels;
-    }
 
     @Override
     public void setOnClickListener() {
@@ -289,17 +273,15 @@ public class ToDoActivity extends BaseActivity
 
     @Override
     public void onBackPressed() {
-        FragmentManager fragmentManager = getSupportFragmentManager();
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        }
-        else if (mToolbar.getVisibility()==View.VISIBLE) {
-            if (fragmentManager.getBackStackEntryCount() == 1) {
+        } else if (mToolbar.getVisibility()==View.VISIBLE) {
+            if (getSupportFragmentManager().getBackStackEntryCount() == 1) {
                 super.onBackPressed();
                 finish();
             } else {
-                fragmentManager.popBackStack();
+                getSupportFragmentManager().popBackStack();
             }
         }
         if(mToolbardelete.getVisibility()==View.VISIBLE)
@@ -310,9 +292,10 @@ public class ToDoActivity extends BaseActivity
         }else if(mToolSearch.getVisibility()==View.VISIBLE){
             mToolSearch.setVisibility(View.GONE);
             mToolbar.setVisibility(View.VISIBLE);
+        }else {
+
         }
-         isReminderAdapter = false;
-        isArchivedAdapter = false;
+
     }
 
     /*
@@ -361,7 +344,7 @@ public class ToDoActivity extends BaseActivity
                 startActivityForResult(Intent.createChooser(picker, String.valueOf(R.string.select_pick)), SELECT_PHOTO);
                 break;
             case R.id.imageView_search_bar:
-                mToolSearch = (Toolbar) findViewById(R.id.toolbarsearch);
+
                 mToolbar.setVisibility(View.GONE);
                 mToolSearch.setVisibility(View.VISIBLE);
                 Animation animate = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fadeout);
@@ -432,15 +415,6 @@ public class ToDoActivity extends BaseActivity
         return true;
     }
 
-    private void shareTextUrl() {
-        Intent share = new Intent(android.content.Intent.ACTION_SEND);
-        share.setType("text/plain");
-        share.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
-        share.putExtra(Intent.EXTRA_SUBJECT, "Title Of The Post");
-        share.putExtra(Intent.EXTRA_TEXT, "http://www.codeofaninja.com");
-
-        startActivity(Intent.createChooser(share, "Share link!"));
-    }
     @Override
     public void showDataInActivity(List<ToDoItemModel> toDoItemModelas) {
         this.toDoAllItemModels = toDoItemModelas;
@@ -524,45 +498,6 @@ public class ToDoActivity extends BaseActivity
         cropIntent.putExtra("outputY", 256);
         cropIntent.putExtra("return-data", true);
         startActivityForResult(cropIntent, 3);
-    }
-
-    //get Reminders todo
-    public List<ToDoItemModel> getTodaysReminder(String date) {
-        List<ToDoItemModel> tempToDoModels = new ArrayList<>();
-        if (toDoAllItemModels != null) {
-            for (ToDoItemModel todoItem : toDoAllItemModels) {
-                if (todoItem.getReminder().equals(date) && todoItem.getArchive().equals(getString(R.string.flag_false))) {
-                    tempToDoModels.add(todoItem);
-                }
-            }
-        }
-        return tempToDoModels;
-    }
-
-    //get All notes
-    public List<ToDoItemModel> getAllToDo() {
-        List<ToDoItemModel> tempToDoModels = new ArrayList<>();
-        if (toDoAllItemModels != null) {
-            for (ToDoItemModel todoItem : toDoAllItemModels) {
-                if (todoItem.getArchive().equals(getString(R.string.flag_false))) {
-                    tempToDoModels.add(todoItem);
-                }
-            }
-        }
-        return tempToDoModels;
-    }
-
-    //get Archived todo notes
-    public List<ToDoItemModel> getArchivedToDos() {
-        List<ToDoItemModel> tempToDoModels = new ArrayList<>();
-        if (toDoAllItemModels != null) {
-            for (ToDoItemModel todoItem : toDoAllItemModels) {
-                if (todoItem.getArchive().equals(getString(R.string.flag_true))) {
-                    tempToDoModels.add(todoItem);
-                }
-            }
-        }
-        return tempToDoModels;
     }
 
     //hide keyboard
