@@ -16,6 +16,8 @@ public class Constants {
         String USER_PASSWORD = "password";
         String FR_USER_EMAIL = "fbemail";
         String NOTE_ORDER_ID = "noteorderid";
+        String MEW_NOTE_TITLE="title";
+        String MEW_NOTE_DISK="discription";
     }
 
     public interface ProfileeKey {

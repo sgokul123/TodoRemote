@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
@@ -27,34 +28,42 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private ToDoActivityInteractor todoActivityInteractor;
     private ToDoActivityPresenter toDoActivityPresenter;
     AddNoteInteractorInteface mAddNoteInteractoreInteface;
+    private String uid;
+
     public DatabaseHandler(Context context, ToDoActivityInteractor todoActivityInteractor) {
         super(context, Constants.RequestParam.DATABASE_NAME, null, DATABASE_VERSION);
         //3rd argument to be passed is CursorFactory instance
         this.todoActivityInteractor = todoActivityInteractor;
         pref = context.getSharedPreferences(Constants.ProfileeKey.SHAREDPREFERANCES_KEY, context.MODE_PRIVATE);
+        uid= pref.getString(Constants.BundleKey.USER_USER_UID, Constants.Stringkeys.NULL_VALUIE);
 
     }
 
     public DatabaseHandler(Context context) {
         super(context, Constants.RequestParam.DATABASE_NAME, null, DATABASE_VERSION);
         //3rd argument to be passed is CursorFactory instance
+        pref = context.getSharedPreferences(Constants.ProfileeKey.SHAREDPREFERANCES_KEY, context.MODE_PRIVATE);
+        uid= pref.getString(Constants.BundleKey.USER_USER_UID, Constants.Stringkeys.NULL_VALUIE);
     }
 
     public DatabaseHandler(Context context, ToDoActivityPresenter toDoActivityPresenter) {
         super(context, Constants.RequestParam.DATABASE_NAME, null, DATABASE_VERSION);
         //3rd argument to be passed is CursorFactory instance
+        pref = context.getSharedPreferences(Constants.ProfileeKey.SHAREDPREFERANCES_KEY, context.MODE_PRIVATE);
+        uid= pref.getString(Constants.BundleKey.USER_USER_UID, Constants.Stringkeys.NULL_VALUIE);
         this.toDoActivityPresenter = toDoActivityPresenter;
     }
 
     public DatabaseHandler(Context mContext, AddNoteInteractorInteface addNoteInteractoreInteface) {
         super(mContext, Constants.RequestParam.DATABASE_NAME, null, DATABASE_VERSION);
+        pref = mContext.getSharedPreferences(Constants.ProfileeKey.SHAREDPREFERANCES_KEY, mContext.MODE_PRIVATE);
+        uid= pref.getString(Constants.BundleKey.USER_USER_UID, Constants.Stringkeys.NULL_VALUIE);
         this.mAddNoteInteractoreInteface =addNoteInteractoreInteface;
     }
 
     // Creating Tables  
     @Override
     public void onCreate(SQLiteDatabase db) {
-
         String CREATE_ToDoS_TABLE = "CREATE TABLE IF NOT EXISTS " + Constants.RequestParam.NOTES_TABLE_NAME + "("
                 + Constants.RequestParam.KEY_ID + " INTEGER PRIMARY KEY," + Constants.RequestParam.KEY_TITLE + " TEXT," + Constants.RequestParam.KEY_NOTE + " TEXT,"
                 + Constants.RequestParam.KEY_REMINDER + " TEXT," + Constants.RequestParam.KEY_STARTDATE + " TEXT," + Constants.RequestParam.KEY_ARCHIVE + " TEXT," + Constants.RequestParam.KEY_SETTIME + " TEXT," + Constants.RequestParam.KEY_COLOR + " TEXT" + ")";
@@ -64,9 +73,15 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + Constants.RequestParam.KEY_ID + " INTEGER PRIMARY KEY," + Constants.RequestParam.KEY_TITLE + " TEXT," + Constants.RequestParam.KEY_NOTE + " TEXT,"
                 + Constants.RequestParam.KEY_REMINDER + " TEXT," + Constants.RequestParam.KEY_STARTDATE + " TEXT," + Constants.RequestParam.KEY_ARCHIVE + " TEXT," + Constants.RequestParam.KEY_SETTIME + " TEXT," + Constants.RequestParam.KEY_COLOR + " TEXT" + ")";
         db.execSQL(CREATE_LOCAL_ToDoS_TABLE);
-
-        String CREATE_TRASH_TABLE = "CREATE TABLE IF NOT EXISTS " + Constants.RequestParam.TRASH_TABLE_NAME + "("
+        String CREATE_TRASH_TABLE = "CREATE TABLE IF NOT EXISTS " + Constants.RequestParam.TRASH_TABLE_NAME+uid + "("
                 + Constants.RequestParam.KEY_ID + " INTEGER PRIMARY KEY," + Constants.RequestParam.KEY_TITLE + " TEXT," + Constants.RequestParam.KEY_NOTE + " TEXT,"
+                + Constants.RequestParam.KEY_REMINDER + " TEXT," + Constants.RequestParam.KEY_STARTDATE + " TEXT," + Constants.RequestParam.KEY_ARCHIVE + " TEXT," + Constants.RequestParam.KEY_SETTIME + " TEXT," + Constants.RequestParam.KEY_COLOR + " TEXT" + ")";
+        db.execSQL(CREATE_TRASH_TABLE);
+    }
+
+    public  void createTrashTable(SQLiteDatabase db){
+        String CREATE_TRASH_TABLE = "CREATE TABLE IF NOT EXISTS " + Constants.RequestParam.TRASH_TABLE_NAME+uid + "("
+                + Constants.RequestParam.KEY_ID + " INTEGER PRIMARY KEY," + Constants.RequestParam.KEY_TITLE + " TEXT,"+ Constants.RequestParam.KEY_NOTE + " TEXT,"
                 + Constants.RequestParam.KEY_REMINDER + " TEXT," + Constants.RequestParam.KEY_STARTDATE + " TEXT," + Constants.RequestParam.KEY_ARCHIVE + " TEXT," + Constants.RequestParam.KEY_SETTIME + " TEXT," + Constants.RequestParam.KEY_COLOR + " TEXT" + ")";
         db.execSQL(CREATE_TRASH_TABLE);
     }
@@ -78,7 +93,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + Constants.RequestParam.NOTES_TABLE_NAME);
         //drop local database
       db.execSQL("DROP TABLE IF EXISTS " + Constants.RequestParam.LOCAL_NOTES_TABLE_NAME);
-        db.execSQL("DROP TABLE IF EXISTS " + Constants.RequestParam.TRASH_TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + Constants.RequestParam.TRASH_TABLE_NAME+uid);
         // Create tables again  
         onCreate(db);
     }
@@ -181,7 +196,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             values.put(Constants.RequestParam.KEY_SETTIME, toDoItemModel.getSettime());
             values.put(Constants.RequestParam.KEY_COLOR,toDoItemModel.getColor());
             // Inserting Row
-            db.insert(Constants.RequestParam.TRASH_TABLE_NAME, null, values);
+            db.insert(Constants.RequestParam.TRASH_TABLE_NAME+uid, null, values);
             Log.i(TAG, "addToDo:  success");
         } catch (Exception e) {
             Log.i(TAG, "addToDo: " + e);
@@ -194,7 +209,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public void deleteMultipleTrash(List<ToDoItemModel> toDoItemModels) {
         SQLiteDatabase db = this.getWritableDatabase();
         for (ToDoItemModel todo : toDoItemModels) {
-            db.delete(Constants.RequestParam.TRASH_TABLE_NAME, Constants.RequestParam.KEY_ID + " = ?",
+            db.delete(Constants.RequestParam.TRASH_TABLE_NAME+uid, Constants.RequestParam.KEY_ID + " = ?",
                     new String[]{String.valueOf(todo.getId())});
         }
         db.close();
@@ -203,7 +218,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public void deleteTrashToDos(ToDoItemModel toDoItemModel) {
         SQLiteDatabase db = this.getWritableDatabase();
         Log.i(TAG, "deleteToDo: delete");
-        db.delete(Constants.RequestParam.TRASH_TABLE_NAME, Constants.RequestParam.KEY_ID + " = ?",
+        db.delete(Constants.RequestParam.TRASH_TABLE_NAME+uid, Constants.RequestParam.KEY_ID + " = ?",
                 new String[]{String.valueOf(toDoItemModel.getId())});
         db.close();
     }
@@ -213,12 +228,16 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         Log.i(TAG, "getAllToDos: ");
         List<ToDoItemModel> mToDoList = new ArrayList<ToDoItemModel>();
         // Select All Query
-        String selectQuery = "SELECT  * FROM " + Constants.RequestParam.TRASH_TABLE_NAME;
-
+        String selectQuery = "SELECT  * FROM " + Constants.RequestParam.TRASH_TABLE_NAME+uid;
         SQLiteDatabase db = this.getWritableDatabase();
-        Cursor cursor = db.rawQuery(selectQuery, null);
+        Cursor cursor = null;
+        try{
+            cursor= db.rawQuery(selectQuery, null);
+         }catch (SQLiteException e) {
+             createTrashTable(db);
+         }
         // looping through all rows and adding to list
-        if (cursor.moveToFirst()) {
+        if (cursor!=null && cursor.moveToFirst()) {
             do {
                 ToDoItemModel ToDo = new ToDoItemModel();
                 ToDo.setId(Integer.parseInt(cursor.getString(0)));

@@ -1,6 +1,7 @@
 package com.todo.todo.removenote.presenter;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 
 import com.todo.todo.database.DatabaseHandler;
 import com.todo.todo.home.model.ToDoItemModel;
@@ -8,6 +9,7 @@ import com.todo.todo.home.view.ToDoNotesFragment;
 import com.todo.todo.removenote.interactor.TrashFirebaseDataInteractor;
 import com.todo.todo.removenote.view.TrashFragment;
 import com.todo.todo.util.Connection;
+import com.todo.todo.util.Constants;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +20,7 @@ import java.util.List;
 
 public class TrashNotePresenter {
     private static String TAG = "TrashNotePresenter";
+    private  SharedPreferences pref;
     DatabaseHandler db;
     TrashFirebaseDataInteractor trashFirebaseDataInteractor;
     List<ToDoItemModel> newtoDoItemModels = new ArrayList<ToDoItemModel>();
@@ -32,6 +35,8 @@ public class TrashNotePresenter {
         this.mContext = applicationContext;
         trashFirebaseDataInteractor = new TrashFirebaseDataInteractor(mContext, this);
         this.databaseHandler = new DatabaseHandler(mContext);
+        pref = mContext.getSharedPreferences(Constants.ProfileeKey.SHAREDPREFERANCES_KEY, mContext.MODE_PRIVATE);
+
     }
 
     public TrashNotePresenter(Context baseContext, TrashFragment trashFragment) {

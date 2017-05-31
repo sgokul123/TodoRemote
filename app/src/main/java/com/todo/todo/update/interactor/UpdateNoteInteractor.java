@@ -41,6 +41,7 @@ public class UpdateNoteInteractor implements UpdateNoteInteractorInterface {
                 mUpdateNotePresenter.closeProgress();
             }
         } else {
+
             Toast.makeText(mContext, Constants.InternateConnnection.CHICK_CONNECTION, Toast.LENGTH_SHORT).show();
         }
     }

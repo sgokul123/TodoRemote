@@ -1,6 +1,7 @@
 package com.todo.todo.removenote.interactor;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.google.firebase.database.DataSnapshot;
@@ -15,7 +16,9 @@ import com.todo.todo.removenote.presenter.TrashNotePresenter;
 import com.todo.todo.util.Connection;
 import com.todo.todo.util.Constants;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 
@@ -36,6 +39,9 @@ public class TrashFirebaseDataInteractor {
     String startDate;
     List<ToDoItemModel> newtoDoItemModels;
     ToDoItemModel mToDoItemModel;
+    private ToDoItemModel mTrashItemModel;
+    private SharedPreferences.Editor editor;
+    private SharedPreferences pref;
 
     public TrashFirebaseDataInteractor(Context context, TrashNotePresenter trashNotePresenter) {
         this.mContext = context;
@@ -46,18 +52,21 @@ public class TrashFirebaseDataInteractor {
     }
 
     public void removeData(List<ToDoItemModel> toDoItemModels, String mUserUID, String startdate, int index) {
+        ToDoItemModel lastNote=new ToDoItemModel();
         mRef = mDatabase.getReference().child("usersdata");
         pos = index;
         if (toDoItemModels.size() == 1) {
             toDoItemModels.get(0).setId(pos);
             mRef.child(mUserUID).child(startdate).child(String.valueOf(pos)).setValue(toDoItemModels.get(0));
-            mRef.child(mUserUID).child(startdate).child(String.valueOf(pos + 1)).setValue(null);
+            pos = pos + 1;
+            mRef.child(mUserUID).child(startdate).child(String.valueOf(pos)).setValue(null);
         } else if (toDoItemModels.size() == 0) {
             mRef.child(mUserUID).child(startdate).child(String.valueOf(pos)).setValue(null);
 
         } else {
             for (ToDoItemModel todoNote : toDoItemModels) {
                 try {
+                    lastNote=todoNote;
                     Log.i(TAG, "setSize: " + pos);
                     todoNote.setId(pos);
                     mRef.child(mUserUID).child(todoNote.getStartdate()).child(String.valueOf(pos)).setValue(todoNote);
@@ -69,8 +78,21 @@ public class TrashFirebaseDataInteractor {
             mRef.child(mUserUID).child(startdate).child(String.valueOf(pos)).setValue(null);
         }
 
+        if(startdate.equals(getCurrentDate())){
+            pref = mContext.getSharedPreferences(Constants.ProfileeKey.SHAREDPREFERANCES_KEY,mContext.MODE_PRIVATE);
+            editor=pref.edit();
+            editor.putInt(Constants.Stringkeys.LAST_INDEX,pos);
+            editor.commit();
+        }
     }
-
+    public String getCurrentDate() {
+        String date = "";
+        Calendar c = Calendar.getInstance();
+        SimpleDateFormat df = new SimpleDateFormat(Constants.NotesType.DATE_FORMAT);
+        date = df.format(c.getTime());
+        date = date.trim();
+        return date;
+    }
     public void updateFirebaseData(ToDoItemModel toDoItemModel, String mUserUID, String startdate, int index) {
         mRef = mDatabase.getReference().child("usersdata");
         try {
@@ -172,6 +194,7 @@ public class TrashFirebaseDataInteractor {
 
     public void addToFireBaseTrash(ToDoItemModel doItemModel, final String mUserUID) {
         final int[] id = {0};
+        mTrashItemModel=doItemModel;
         mRef = mDatabase.getReference().child(Constants.Stringkeys.FIREBASE_DATABASE_TRASH);
         try {
             mRef.addValueEventListener(new ValueEventListener() {
@@ -179,8 +202,10 @@ public class TrashFirebaseDataInteractor {
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     GenericTypeIndicator<ArrayList<ToDoItemModel>> t = new GenericTypeIndicator<ArrayList<ToDoItemModel>>() {
                     };
-                    if (mToDoItemModel != null) {
-                        id[0] = (int) dataSnapshot.child(mUserUID).getChildrenCount();
+                    if (mTrashItemModel != null) {
+                        List<ToDoItemModel> toDoList = new ArrayList<>();
+                        toDoList =  dataSnapshot.child(mUserUID).getValue(t);
+                        id[0]=toDoList.size();
                         mToDoItemModel = null;
                     }
                 }

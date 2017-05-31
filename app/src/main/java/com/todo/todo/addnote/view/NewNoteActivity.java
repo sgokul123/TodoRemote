@@ -21,7 +21,6 @@ import com.jrummyapps.android.colorpicker.ColorPickerDialog;
 import com.jrummyapps.android.colorpicker.ColorPickerDialogListener;
 import com.todo.todo.R;
 import com.todo.todo.addnote.presenter.AddNotePresenter;
-import com.todo.todo.alarmmanager.MyBroadcastReceiver;
 import com.todo.todo.base.BaseActivity;
 import com.todo.todo.home.model.ToDoItemModel;
 import com.todo.todo.util.Constants;
@@ -168,18 +167,9 @@ public class NewNoteActivity extends BaseActivity implements View.OnClickListene
         mToDoItemModel.setArchive("false");
         mToDoItemModel.setColor(noteColor);
         mAddNotePresenter = new AddNotePresenter(this, this);
-
-              /*  try {
-                    setAlarm(formattedDate);
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }*/
-
         Log.i(TAG, "onClick: " + mUsre_UID + "  date" + getCurrentDate());
         mAddNotePresenter.loadNotetoFirebase(mUsre_UID, getCurrentDate(), mToDoItemModel);
-
     }
-
     private void getColorPicker() {
         ColorPickerDialog.newBuilder()
                 .setDialogType(ColorPickerDialog.TYPE_PRESETS)
@@ -190,7 +180,7 @@ public class NewNoteActivity extends BaseActivity implements View.OnClickListene
                 .show(this);
     }
 
-    private void setAlarm(String targetCal) throws ParseException {
+ /*   private void setAlarm(String targetCal) throws ParseException {
         SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
         Date date = dateFormat.parse("12:01:32");
         System.out.println(date.getTime());
@@ -198,7 +188,7 @@ public class NewNoteActivity extends BaseActivity implements View.OnClickListene
         PendingIntent pendingIntent = PendingIntent.getBroadcast(getBaseContext(), RQS_1, intent, 0);
         AlarmManager alarmManager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
         alarmManager.set(AlarmManager.RTC_WAKEUP, date.getTime(), pendingIntent);
-    }
+    }*/
 
     private void updateLabel() {
         String myFormat = Constants.NotesType.DATE_FORMAT; //In which you need put here
@@ -219,7 +209,7 @@ public class NewNoteActivity extends BaseActivity implements View.OnClickListene
     @Override
     public void getResponce(boolean flag) {
         if (flag) {
-            Toast.makeText(this, "succcess", Toast.LENGTH_SHORT).show();
+          ///  Toast.makeText(this, "succcess", Toast.LENGTH_SHORT).show();
             Bundle bun = new Bundle();
             bun.putString(Constants.RequestParam.KEY_ID, String.valueOf(mToDoItemModel.getId()));
             bun.putString(Constants.RequestParam.KEY_NOTE, mToDoItemModel.getNote());

@@ -39,7 +39,6 @@ public class FireBaseGetIndex  {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (mAddNoteInteractorInteface != null) {
-
                     if (dataSnapshot.child(uid).child(date).exists()) {
                         int size = (int) dataSnapshot.child(uid).child(date).getChildrenCount();
                         mAddNoteInteractorInteface.setData(size);

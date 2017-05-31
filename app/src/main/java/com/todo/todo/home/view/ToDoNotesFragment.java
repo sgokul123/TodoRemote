@@ -66,7 +66,7 @@ public class ToDoNotesFragment extends Fragment implements ToDoActivityInteface,
         mTextView_blank_recycler = (AppCompatTextView) view.findViewById(R.id.textview_blank_fragment_recyclerview);
         // mArchiveNotePresenter = new ArchiveNotePresenter(getActivity().getBaseContext(), ToDoNotesFragment.this);
         mTextView_blank_recycler.setVisibility(View.VISIBLE);
-        mTextView_blank_recycler.setText(getString(R.string.get_trash_null));
+        mTextView_blank_recycler.setText(getString(R.string.data_is_null));
         titleTextView = (AppCompatTextView) getActivity().findViewById(R.id.textview_title_toolbar);
         mEditText_Search = (AppCompatEditText) getActivity().findViewById(R.id.edittext_search_toolbar);
         mImageView_Linear_Grid = (AppCompatImageView) getActivity().findViewById(R.id.imageView_grid_linear);
@@ -216,7 +216,7 @@ public class ToDoNotesFragment extends Fragment implements ToDoActivityInteface,
         List<ToDoItemModel> tempToDoModels = new ArrayList<>();
         if (mAllToDONotes != null) {
             for (ToDoItemModel todoItem : mAllToDONotes) {
-                if (todoItem.getArchive().equals(getString(R.string.flag_false))) {
+                if (todoItem.getArchive().equals("false")) {
                     tempToDoModels.add(todoItem);
                 }
             }
@@ -260,6 +260,7 @@ public class ToDoNotesFragment extends Fragment implements ToDoActivityInteface,
                     mToDoNotesAdapter = new ItemAdapter(getActivity(), toDoItemModels);
                     mToDoRecyclerView.setAdapter(mToDoNotesAdapter);
                 }
+
                 break;
         }
     }
@@ -281,6 +282,9 @@ public class ToDoNotesFragment extends Fragment implements ToDoActivityInteface,
 
     public void setUpdatedModel(List<ToDoItemModel> toDoAllItemModels) {
 
+        this.mAllToDONotes = toDoAllItemModels;
+        mTodoNotesNotes = getAllToDo();
+        showDataInActivity(mTodoNotesNotes);
 
     }
 }

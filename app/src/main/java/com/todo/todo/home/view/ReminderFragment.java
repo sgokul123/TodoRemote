@@ -1,5 +1,9 @@
 package com.todo.todo.home.view;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
@@ -17,8 +21,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Filter;
+import android.widget.Toast;
 
 import com.todo.todo.R;
+import com.todo.todo.alarmmanager.AlarmReceiver;
 import com.todo.todo.archive.presenter.ArchiveNotePresenter;
 import com.todo.todo.home.adapter.ItemAdapter;
 import com.todo.todo.home.model.ToDoItemModel;
@@ -27,9 +33,11 @@ import com.todo.todo.removenote.presenter.TrashNotePresenter;
 import com.todo.todo.update.presenter.UpdateNotePresenter;
 import com.todo.todo.util.Constants;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 public class ReminderFragment extends Fragment implements ToDoActivityInteface, View.OnClickListener {
@@ -51,6 +59,7 @@ public class ReminderFragment extends Fragment implements ToDoActivityInteface, 
     private TrashNotePresenter trashNotePresenter;
     private UpdateNotePresenter updateNotePresenter;
     private ToDoActivityPresenter mToDoActivityPresenter;
+    private int RQS_1=1;
 
     public ReminderFragment(List<ToDoItemModel> toDoAllItemModels) {
         this.mAllToDONotes = toDoAllItemModels;
@@ -58,7 +67,8 @@ public class ReminderFragment extends Fragment implements ToDoActivityInteface, 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+                             Bundle savedInstanceState)
+    {
         super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.fragment_trash, container, false);
         mToDoRecyclerView = (RecyclerView) view.findViewById(R.id.gridview_fragment_notes);
@@ -85,18 +95,24 @@ public class ReminderFragment extends Fragment implements ToDoActivityInteface, 
         return view;
     }
 
-    public void addTextListener() {
+    public void addTextListener()
+    {
 
-        mEditText_Search.addTextChangedListener(new TextWatcher() {
+        mEditText_Search.addTextChangedListener(new TextWatcher()
+        {
 
-            public void afterTextChanged(Editable s) {
+            public void afterTextChanged(Editable s)
+            {
             }
 
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            public void beforeTextChanged(CharSequence s, int start, int count, int after)
+            {
             }
 
-            public void onTextChanged(CharSequence query, int start, int before, int count) {
-                if (mReminderNotesAdapter != null) {
+            public void onTextChanged(CharSequence query, int start, int before, int count)
+            {
+                if (mReminderNotesAdapter != null)
+                {
                     Filter filter = mReminderNotesAdapter.getFilter();
                     filter.filter(query);
                 }
@@ -106,7 +122,8 @@ public class ReminderFragment extends Fragment implements ToDoActivityInteface, 
     }
 
     //swipe view delete / Archive
-    private void initSwipe() {
+    private void initSwipe()
+    {
         ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP | ItemTouchHelper.DOWN, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
             @Override
             public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
@@ -121,7 +138,8 @@ public class ReminderFragment extends Fragment implements ToDoActivityInteface, 
             }
 
             @Override
-            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction)
+            {
                 final int position = viewHolder.getAdapterPosition();
                 //    String typeOfNotes = mTextView_Title.getText().toString();
                 final List<ToDoItemModel> forArchiveAlldataModels = mAllToDONotes;
@@ -140,10 +158,13 @@ public class ReminderFragment extends Fragment implements ToDoActivityInteface, 
                     snackbar.setDuration(2000);     //5 sec duration if want to Undo else it will Archive note
                     snackbar.show();
 
-                    if (mReminderNotes.size() == 1) {
+                    if (mReminderNotes.size() == 1)
+                    {
                         mReminderNotes.remove(0);
                     }
-                } else {
+                }
+                else
+                    {
                     getArchive(mReminderNotesAdapter, position, mReminderNotes.get(position));
                 }
 
@@ -176,9 +197,11 @@ public class ReminderFragment extends Fragment implements ToDoActivityInteface, 
     }
 
     @Override
-    public void onClick(View v) {
+    public void onClick(View v)
+    {
         editor = pref.edit();
-        switch (v.getId()) {
+        switch (v.getId())
+        {
             case R.id.imageView_grid_linear:
                 getAlterRecyclerLayout();
                 break;
@@ -187,25 +210,33 @@ public class ReminderFragment extends Fragment implements ToDoActivityInteface, 
 
     }
 
-    private void getRecyclerLayout() {
-        if (mLinear) {
+    private void getRecyclerLayout()
+    {
+        if (mLinear)
+        {
             mToDoRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL));
             mImageView_Linear_Grid.setImageResource(R.drawable.grid_view);
-        } else {
+        }
+        else
+            {
             mToDoRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
             mImageView_Linear_Grid.setImageResource(R.drawable.list_view);
         }
     }
 
     //set Linear or grid Layout
-    private void getAlterRecyclerLayout() {
-        if (!mLinear) {
+    private void getAlterRecyclerLayout()
+    {
+        if (!mLinear)
+        {
             mLinear = true;
             editor.putBoolean(Constants.Stringkeys.STR_LINEAR_GRID, true);
             editor.commit();
             mToDoRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL));
             mImageView_Linear_Grid.setImageResource(R.drawable.grid_view);
-        } else {
+        }
+        else
+            {
             mLinear = false;
             editor.putBoolean(Constants.Stringkeys.STR_LINEAR_GRID, false);
             editor.commit();
@@ -215,25 +246,61 @@ public class ReminderFragment extends Fragment implements ToDoActivityInteface, 
     }
 
     @Override
-    public void closeProgressDialog() {
+    public void closeProgressDialog()
+    {
 
     }
 
     @Override
-    public void showProgressDialog() {
+    public void showProgressDialog()
+    {
 
     }
 
 
     //get Reminders todo
-    public List<ToDoItemModel> getTodaysReminder() {
+    public List<ToDoItemModel> getTodaysReminder()
+    {
+        Bundle bundle;
         Calendar c = Calendar.getInstance();
         SimpleDateFormat df = new SimpleDateFormat(Constants.NotesType.DATE_FORMAT);
         String date = df.format(c.getTime());
         List<ToDoItemModel> tempToDoModels = new ArrayList<>();
-        if (mAllToDONotes != null) {
-            for (ToDoItemModel todoItem : mAllToDONotes) {
-                if (todoItem.getReminder().equals(date) && todoItem.getArchive().equals(getString(R.string.flag_false))) {
+        if (mAllToDONotes != null)
+        {
+            for (ToDoItemModel todoItem : mAllToDONotes)
+            {
+                if (todoItem.getReminder().equals(date) && todoItem.getArchive().equals(getString(R.string.flag_false)))
+                {
+                    bundle=new Bundle();
+                    bundle.putString(Constants.BundleKey.MEW_NOTE_TITLE,todoItem.getTitle());
+                    bundle.putString(Constants.BundleKey.MEW_NOTE_DISK,todoItem.getNote());
+                    Calendar cal = Calendar.getInstance();
+                    cal.add(Calendar.SECOND, 10);
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
+                    Date dateN = null;
+                    try {
+                        dateN = dateFormat.parse(todoItem.getSettime());
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                    System.out.println(dateN.getTime());
+                    Log.i(TAG, "getTodaysReminder: "+dateN.getTime());
+                    Intent intent = new Intent(getContext().getApplicationContext(), AlarmReceiver.class);
+                    intent.putExtras(bundle);
+                    PendingIntent pendingIntent =
+                            PendingIntent.getBroadcast(getContext().getApplicationContext(),
+                                    RQS_1, intent, PendingIntent.FLAG_ONE_SHOT);
+                    AlarmManager alarmManager =
+                            (AlarmManager)getContext().getApplicationContext().getSystemService(Context.ALARM_SERVICE);
+
+                    alarmManager.set(AlarmManager.RTC_WAKEUP,
+                            cal.getTimeInMillis(), pendingIntent);
+
+                    Toast.makeText(getActivity().getBaseContext(),
+                            "call alarmManager.set()",
+                            Toast.LENGTH_LONG).show();
+
                     tempToDoModels.add(todoItem);
                 }
             }

@@ -38,7 +38,8 @@ public class AddNoteInteractore  implements AddNoteInteractorInteface{
     @Override
     public void setData(int size) {
         try{
-            Log.i(TAG, "setSize: "+size);
+            size=0;//Log.i(TAG, "setSize: "+size);
+           size=pref.getInt(Constants.Stringkeys.LAST_INDEX,0);
             todoitemModel.setId(size);
             mDatabase.child("usersdata").child(uid).child(date).child(String.valueOf(size)).setValue(todoitemModel);
             editor = pref.edit();

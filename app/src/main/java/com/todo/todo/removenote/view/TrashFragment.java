@@ -56,7 +56,7 @@ public class TrashFragment extends Fragment implements TrashFragmentInterface, V
                              Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.fragment_trash, container, false);
-      //  mToDoRecyclerView = (RecyclerView) view.findViewById(R.id.gridview_fragment_notes);
+        mToDoRecyclerView = (RecyclerView) view.findViewById(R.id.gridview_fragment_notes);
         mTextView_blank_recycler = (AppCompatTextView) view.findViewById(R.id.textview_blank_fragment_recyclerview);
         trashNotePresenter = new TrashNotePresenter(getActivity().getBaseContext(), TrashFragment.this);
         mTextView_blank_recycler.setVisibility(View.VISIBLE);
@@ -75,6 +75,7 @@ public class TrashFragment extends Fragment implements TrashFragmentInterface, V
         mImageView_Linear_Grid.setOnClickListener(this);
         imageView_Delete.setOnClickListener(this);
         pref = getActivity().getSharedPreferences(Constants.ProfileeKey.SHAREDPREFERANCES_KEY, getActivity().MODE_PRIVATE);
+
         mLinear = pref.getBoolean("mlinear", false);
         trashNotePresenter.getTrashNotes();
         mUserUID = pref.getString(Constants.BundleKey.USER_USER_UID, Constants.Stringkeys.NULL_VALUIE);

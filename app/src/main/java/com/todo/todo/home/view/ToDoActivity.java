@@ -422,7 +422,7 @@ public class ToDoActivity extends BaseActivity
             editor.putInt(Constants.Stringkeys.LAST_NOTE_COUNT,toDoAllItemModels.size());
             editor.commit();
             if (mTextView_Title.getText().equals(Constants.NotesType.ALL_NOTES)) {
-                notesFragment.setUpdatedModel(toDoAllItemModels);
+              //  notesFragment.setUpdatedModel(toDoAllItemModels);
             } else if (mTextView_Title.getText().equals(Constants.NotesType.REMINDER_NOTES)) {
                 reminderFragment.setUpdatedModel(toDoAllItemModels);
             } else if (mTextView_Title.getText().equals(Constants.NotesType.ARCHIVE_NOTES)) {

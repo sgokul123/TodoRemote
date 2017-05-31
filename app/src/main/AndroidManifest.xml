@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.todo.todo">
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
-    <uses-permission android:name="android.permission.GET_ACCOUNTS"/>
 
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <permission
         android:name="com.github.hathibelagal.pn.permission.C2D_MESSAGE"
         android:protectionLevel="signature" />
-    <uses-permission
-        android:name="com.github.hathibelagal.pn.permission.C2D_MESSAGE" />
+
+    <uses-permission android:name="com.github.hathibelagal.pn.permission.C2D_MESSAGE" />
 
     <application
         android:allowBackup="true"
@@ -21,14 +21,13 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />
         <meta-data
             android:name="io.fabric.ApiKey"
-            android:value="fcb78aba9d1e4b69e317e5c5660aedfafcdb61b7"
-            />
+            android:value="fcb78aba9d1e4b69e317e5c5660aedfafcdb61b7" />
+
         <activity android:name=".login.view.LoginActivity" />
         <activity android:name=".splash.view.SplashScreen">
             <intent-filter>
@@ -61,15 +60,13 @@
             android:name=".update.view.UpdateNoteActivity"
             android:label="@string/title_activity_to_do"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".addnote.view.NewNoteActivity"
-            android:theme="@style/AppTheme.NoActionBar"
-            />
+        <activity
+            android:name=".addnote.view.NewNoteActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
 
+        <receiver android:name=".alarmmanager.AlarmReceiver" android:process=":remote" />
 
-        <receiver android:name=".alarmmanager.MyBroadcastReceiver"
-            android:process=":remote" >
-
-        </receiver>
+        <activity android:name=".alarmmanager.NotificationNote"></activity>
     </application>
 
 </manifest>

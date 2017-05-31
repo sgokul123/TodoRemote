@@ -135,8 +135,11 @@ public class UpdateNoteActivity extends BaseActivity implements View.OnClickList
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.imageView_back_arrow:
-                finish();
-                break;
+
+                if(!editTextTitle.getText().toString().isEmpty()){
+                    saveNote();
+                }
+                finish();                break;
             case R.id.imageView_color_picker:
                 getColorPicker();
                 break;
@@ -148,21 +151,30 @@ public class UpdateNoteActivity extends BaseActivity implements View.OnClickList
                 datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis());
                 break;
             case R.id.imageView_save:
-                mToDoItemModel = new ToDoItemModel();
-                StrNote = editTextNote.getText().toString();
-                mToDoItemModel.setNote(StrNote);
-                StrTitle = editTextTitle.getText().toString();
-                mToDoItemModel.setTitle(StrTitle);
-                StrReminder = textViewReminder.getText().toString();
-                mToDoItemModel.setReminder(StrReminder);
-                mToDoItemModel.setStartdate(StrStartDate);
-                mToDoItemModel.setId(Integer.parseInt(Note_id));
-                mToDoItemModel.setArchive(mIsArchive);
-                mToDoItemModel.setSettime(StrSetTime);
-                mToDoItemModel.setColor(noteColor);
-                updateNotePresenter.updateNote(mUsre_UID, StrStartDate, mToDoItemModel);
+                if(!editTextTitle.getText().toString().isEmpty()){
+                    saveNote();
+                }else{
+                    finish();
+                }
                 break;
         }
+    }
+
+    private void saveNote() {
+
+        mToDoItemModel = new ToDoItemModel();
+        StrNote = editTextNote.getText().toString();
+        mToDoItemModel.setNote(StrNote);
+        StrTitle = editTextTitle.getText().toString();
+        mToDoItemModel.setTitle(StrTitle);
+        StrReminder = textViewReminder.getText().toString();
+        mToDoItemModel.setReminder(StrReminder);
+        mToDoItemModel.setStartdate(StrStartDate);
+        mToDoItemModel.setId(Integer.parseInt(Note_id));
+        mToDoItemModel.setArchive(mIsArchive);
+        mToDoItemModel.setSettime(StrSetTime);
+        mToDoItemModel.setColor(noteColor);
+        updateNotePresenter.updateNote(mUsre_UID, StrStartDate, mToDoItemModel);
     }
 
     private void getColorPicker() {
@@ -198,7 +210,7 @@ public class UpdateNoteActivity extends BaseActivity implements View.OnClickList
     @Override
     public void getResponce(boolean flag) {
         if (flag) {
-            Toast.makeText(this, getString(R.string.updated), Toast.LENGTH_SHORT).show();
+           // Toast.makeText(this, getString(R.string.updated), Toast.LENGTH_SHORT).show();
             Bundle bun = new Bundle();
             bun.putString(Constants.RequestParam.KEY_ID, String.valueOf(mToDoItemModel.getId()));
             bun.putString(Constants.RequestParam.KEY_NOTE, mToDoItemModel.getNote());
