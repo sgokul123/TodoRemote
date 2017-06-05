@@ -1,6 +1,7 @@
 package com.todo.todo.archive.interactor;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.google.firebase.database.DatabaseReference;
@@ -10,7 +11,9 @@ import com.todo.todo.archive.presenter.ArchiveNotePresenter;
 import com.todo.todo.util.Connection;
 import com.todo.todo.util.Constants;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 /**
@@ -27,6 +30,8 @@ public class ArchiveNoteInteractor {
     private int index;
     private DatabaseReference mRef;
     private int pos;
+    private SharedPreferences pref;
+    private SharedPreferences.Editor editor;
 
     public ArchiveNoteInteractor(Context mContext, ArchiveNotePresenter archiveNotePresenter) {
         this.mContext=mContext;
@@ -65,7 +70,6 @@ public class ArchiveNoteInteractor {
             if (con.isNetworkConnected()) {
                 removeData(toDoItems, mUserUID, startdate, index);
             }
-
         }
     }
 
@@ -75,10 +79,10 @@ public class ArchiveNoteInteractor {
         if (toDoItemModels.size() == 1) {
             toDoItemModels.get(0).setId(pos);
             mRef.child(mUserUID).child(startdate).child(String.valueOf(pos)).setValue(toDoItemModels.get(0));
-            mRef.child(mUserUID).child(startdate).child(String.valueOf(pos + 1)).setValue(null);
+            pos = pos + 1;
+            mRef.child(mUserUID).child(startdate).child(String.valueOf(pos)).setValue(null);
         } else if (toDoItemModels.size() == 0) {
             mRef.child(mUserUID).child(startdate).child(String.valueOf(pos)).setValue(null);
-
         } else {
             for (ToDoItemModel todoNote : toDoItemModels) {
                 try {
@@ -92,5 +96,20 @@ public class ArchiveNoteInteractor {
             }
             mRef.child(mUserUID).child(startdate).child(String.valueOf(pos)).setValue(null);
         }
+
+        if(startdate.equals(getCurrentDate())){
+            pref = mContext.getSharedPreferences(Constants.ProfileeKey.SHAREDPREFERANCES_KEY,mContext.MODE_PRIVATE);
+            editor=pref.edit();
+            editor.putInt(Constants.Stringkeys.LAST_INDEX,pos);
+            editor.commit();
+        }
+    }
+    public String getCurrentDate() {
+        String date = "";
+        Calendar c = Calendar.getInstance();
+        SimpleDateFormat df = new SimpleDateFormat(Constants.NotesType.DATE_FORMAT);
+        date = df.format(c.getTime());
+        date = date.trim();
+        return date;
     }
 }

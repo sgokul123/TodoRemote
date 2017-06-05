@@ -1,9 +1,5 @@
 package com.todo.todo.home.view;
 
-import android.app.AlarmManager;
-import android.app.PendingIntent;
-import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
@@ -21,10 +17,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Filter;
-import android.widget.Toast;
 
 import com.todo.todo.R;
-import com.todo.todo.alarmmanager.AlarmReceiver;
 import com.todo.todo.archive.presenter.ArchiveNotePresenter;
 import com.todo.todo.home.adapter.ItemAdapter;
 import com.todo.todo.home.model.ToDoItemModel;
@@ -33,11 +27,9 @@ import com.todo.todo.removenote.presenter.TrashNotePresenter;
 import com.todo.todo.update.presenter.UpdateNotePresenter;
 import com.todo.todo.util.Constants;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 public class ReminderFragment extends Fragment implements ToDoActivityInteface, View.OnClickListener {
@@ -60,9 +52,10 @@ public class ReminderFragment extends Fragment implements ToDoActivityInteface, 
     private UpdateNotePresenter updateNotePresenter;
     private ToDoActivityPresenter mToDoActivityPresenter;
     private int RQS_1=1;
-
-    public ReminderFragment(List<ToDoItemModel> toDoAllItemModels) {
+    ToDoActivity toDoActivity;
+    public ReminderFragment(List<ToDoItemModel> toDoAllItemModels, ToDoActivity toDoActivity) {
         this.mAllToDONotes = toDoAllItemModels;
+        this.toDoActivity=toDoActivity;
     }
 
     @Override
@@ -261,7 +254,7 @@ public class ReminderFragment extends Fragment implements ToDoActivityInteface, 
     //get Reminders todo
     public List<ToDoItemModel> getTodaysReminder()
     {
-        Bundle bundle;
+
         Calendar c = Calendar.getInstance();
         SimpleDateFormat df = new SimpleDateFormat(Constants.NotesType.DATE_FORMAT);
         String date = df.format(c.getTime());
@@ -272,35 +265,7 @@ public class ReminderFragment extends Fragment implements ToDoActivityInteface, 
             {
                 if (todoItem.getReminder().equals(date) && todoItem.getArchive().equals(getString(R.string.flag_false)))
                 {
-                    bundle=new Bundle();
-                    bundle.putString(Constants.BundleKey.MEW_NOTE_TITLE,todoItem.getTitle());
-                    bundle.putString(Constants.BundleKey.MEW_NOTE_DISK,todoItem.getNote());
-                    Calendar cal = Calendar.getInstance();
-                    cal.add(Calendar.SECOND, 10);
-                    SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
-                    Date dateN = null;
-                    try {
-                        dateN = dateFormat.parse(todoItem.getSettime());
-                    } catch (ParseException e) {
-                        e.printStackTrace();
-                    }
-                    System.out.println(dateN.getTime());
-                    Log.i(TAG, "getTodaysReminder: "+dateN.getTime());
-                    Intent intent = new Intent(getContext().getApplicationContext(), AlarmReceiver.class);
-                    intent.putExtras(bundle);
-                    PendingIntent pendingIntent =
-                            PendingIntent.getBroadcast(getContext().getApplicationContext(),
-                                    RQS_1, intent, PendingIntent.FLAG_ONE_SHOT);
-                    AlarmManager alarmManager =
-                            (AlarmManager)getContext().getApplicationContext().getSystemService(Context.ALARM_SERVICE);
-
-                    alarmManager.set(AlarmManager.RTC_WAKEUP,
-                            cal.getTimeInMillis(), pendingIntent);
-
-                    Toast.makeText(getActivity().getBaseContext(),
-                            "call alarmManager.set()",
-                            Toast.LENGTH_LONG).show();
-
+                    toDoActivity.getReminderSet(todoItem);
                     tempToDoModels.add(todoItem);
                 }
             }

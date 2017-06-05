@@ -17,6 +17,7 @@ public class UpdateNoteInteractor implements UpdateNoteInteractorInterface {
     Context mContext;
     DatabaseReference mDatabase;
     private String TAG = "UpdateNoteInteractor";
+    private DatabaseHandler db;
 
     public UpdateNoteInteractor(Context context, UpdateNotePresenterInterface updateNotePresenter) {
         this.mUpdateNotePresenter = updateNotePresenter;
@@ -41,7 +42,7 @@ public class UpdateNoteInteractor implements UpdateNoteInteractorInterface {
                 mUpdateNotePresenter.closeProgress();
             }
         } else {
-
+            
             Toast.makeText(mContext, Constants.InternateConnnection.CHICK_CONNECTION, Toast.LENGTH_SHORT).show();
         }
     }

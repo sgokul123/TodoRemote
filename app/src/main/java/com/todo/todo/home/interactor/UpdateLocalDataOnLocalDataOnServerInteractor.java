@@ -34,7 +34,7 @@ public class UpdateLocalDataOnLocalDataOnServerInteractor implements UpdateLocal
     }
 
     @Override
-    public void updatetoFirebase(final String uid, final List<ToDoItemModel> localNotes) {
+    public void  updatetoFirebase(final String uid, final List<ToDoItemModel> localNotes) {
         final DatabaseHandler db = new DatabaseHandler(mContext);
         mUid = uid;
         allLocalNotes = localNotes;
@@ -62,7 +62,6 @@ public class UpdateLocalDataOnLocalDataOnServerInteractor implements UpdateLocal
                             //if child is not present in firebase then create it
                             setData(0, todoModel);
                         }
-
                     } else {
                         toDoActivityInteractor.callPresenterNotesAfterUpdateServer(mUid);
                     }
@@ -78,16 +77,14 @@ public class UpdateLocalDataOnLocalDataOnServerInteractor implements UpdateLocal
 
     }
 
-
     @Override
     public void setData(int size, ToDoItemModel toDoItemModel) {
         mDatabase = FirebaseDatabase.getInstance();
         mRef = mDatabase.getReference().child("usersdata");
         try {
             Log.i(TAG, "setSize: " + size);
-            toDoItemModel.setId(size);
-            mRef.child(mUid).child(toDoItemModel.getStartdate()).child(String.valueOf(size)).setValue(toDoItemModel);
-
+            //toDoItemModel.setId(size);
+            mRef.child(mUid).child(toDoItemModel.getStartdate()).child(String.valueOf(toDoItemModel.getId())).setValue(toDoItemModel);
         } catch (Exception f) {
 
             Log.i(TAG, "setData: ");

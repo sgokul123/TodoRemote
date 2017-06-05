@@ -21,6 +21,7 @@ import com.jrummyapps.android.colorpicker.ColorPickerDialog;
 import com.jrummyapps.android.colorpicker.ColorPickerDialogListener;
 import com.todo.todo.R;
 import com.todo.todo.addnote.presenter.AddNotePresenter;
+import com.todo.todo.alarmmanager.ScheduleClient;
 import com.todo.todo.base.BaseActivity;
 import com.todo.todo.home.model.ToDoItemModel;
 import com.todo.todo.util.Constants;
@@ -51,12 +52,15 @@ public class NewNoteActivity extends BaseActivity implements View.OnClickListene
     private int mNote_Order_Id;
     private String noteColor;
     private int DIALOG_ID=9;
-
+    private  int day,month,years,hour,mint,sec;
+    private ScheduleClient scheduleClient;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         enterFromBottomAnimation();
         initView();
+        scheduleClient = new ScheduleClient(this);
+        scheduleClient.doBindService();
 
     }
 
@@ -77,7 +81,11 @@ public class NewNoteActivity extends BaseActivity implements View.OnClickListene
         progressDialog = new ProgressUtil(this);
         Calendar c = Calendar.getInstance();
         SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss");
+
         formattedDate = df.format(c.getTime());
+        hour=c.getTime().getHours();
+        mint=c.getTime().getMinutes();
+        sec=c.getTime().getSeconds();
         mTextViewEditedAt.setText(formattedDate);
         Log.i(TAG, "initView: " + getCurrentDate());
         mUsre_UID = getIntent().getStringExtra(Constants.BundleKey.USER_USER_UID);
@@ -112,6 +120,9 @@ public class NewNoteActivity extends BaseActivity implements View.OnClickListene
             public void onDateSet(DatePicker view, int year, int monthOfYear,
                                   int dayOfMonth) {
                 // TODO Auto-generated method stub
+                years=year;
+                month=monthOfYear;
+                day=dayOfMonth;
                 myCalendar.set(Calendar.YEAR, year);
                 myCalendar.set(Calendar.MONTH, monthOfYear);
                 myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
@@ -194,6 +205,7 @@ public class NewNoteActivity extends BaseActivity implements View.OnClickListene
         String myFormat = Constants.NotesType.DATE_FORMAT; //In which you need put here
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
         mTextViewReminder.setText(sdf.format(myCalendar.getTime()));
+
     }
 
     @Override
@@ -217,6 +229,16 @@ public class NewNoteActivity extends BaseActivity implements View.OnClickListene
             bun.putString(Constants.RequestParam.KEY_REMINDER, mToDoItemModel.getReminder());
             bun.putString(Constants.RequestParam.KEY_STARTDATE, mToDoItemModel.getStartdate());
             bun.putString(Constants.RequestParam.KEY_COLOR,noteColor);
+
+            //
+            Calendar cals = Calendar.getInstance();
+            cals.set(years, month, day);
+            cals.set(Calendar.HOUR_OF_DAY, hour);
+            cals.set(Calendar.MINUTE, mint+1);
+            cals.set(Calendar.SECOND, sec);
+            scheduleClient.setAlarmForNotification(bun,cals);
+            Toast.makeText(this, "Notification set for: "+ day +"/"+ (month+1) +"/"+ years, Toast.LENGTH_SHORT).show();
+
             Intent intent = new Intent();
             intent.putExtra(Constants.BundleKey.MEW_NOTE, bun);
             setResult(2, intent);
@@ -233,6 +255,15 @@ public class NewNoteActivity extends BaseActivity implements View.OnClickListene
         date = df.format(c.getTime());
         date = date.trim();
         return date;
+    }
+
+    @Override
+    protected void onStop() {
+        // When our activity is stopped ensure we also stop the connection to the service
+        // this stops us leaking our activity into the system *bad*
+        if(scheduleClient != null)
+            scheduleClient.doUnbindService();
+        super.onStop();
     }
 
     @Override

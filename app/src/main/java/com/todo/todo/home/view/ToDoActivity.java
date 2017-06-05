@@ -1,5 +1,7 @@
 package com.todo.todo.home.view;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -15,7 +17,6 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -23,9 +24,6 @@ import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.Toolbar;
-import android.transition.Explode;
-import android.transition.Slide;
-import android.transition.Transition;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -40,11 +38,9 @@ import com.todo.todo.R;
 import com.todo.todo.addnote.view.NewNoteActivity;
 import com.todo.todo.archive.view.ArchiveFragment;
 import com.todo.todo.base.BaseActivity;
-import com.todo.todo.home.adapter.ItemAdapter;
 import com.todo.todo.home.model.ToDoItemModel;
 import com.todo.todo.home.presenter.ToDoActivityPresenter;
 import com.todo.todo.login.view.LoginActivity;
-import com.todo.todo.removenote.presenter.TrashNotePresenter;
 import com.todo.todo.removenote.view.TrashFragment;
 import com.todo.todo.update.presenter.UpdateNotePresenter;
 import com.todo.todo.util.AsyncTaskLoadImage;
@@ -59,7 +55,11 @@ import com.todo.todo.util.Utility;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import com.crashlytics.android.Crashlytics;
 import io.fabric.sdk.android.Fabric;
@@ -87,14 +87,12 @@ public class ToDoActivity extends BaseActivity
 
     private String TAG = "ToDoActivity";
     private String mEmail_id, mUserUID;
-
-
-
-
     private TrashFragment trashFragment;
     private ArchiveFragment archiveFragment;
     private ToDoNotesFragment notesFragment;
     private ReminderFragment reminderFragment;
+    private boolean offAdd=false;
+    private int RQS_1=1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -394,7 +392,7 @@ public class ToDoActivity extends BaseActivity
                 getSupportFragmentManager().beginTransaction().replace(R.id.flayout, notesFragment).addToBackStack(null).commit();
                 break;
             case R.id.nav_reminders:
-                  reminderFragment = new ReminderFragment(toDoAllItemModels);
+                  reminderFragment = new ReminderFragment(toDoAllItemModels,this);
                 getSupportFragmentManager().beginTransaction().replace(R.id.flayout, reminderFragment).addToBackStack(null).commit();
                 break;
             case R.id.nav_archive:
@@ -422,7 +420,9 @@ public class ToDoActivity extends BaseActivity
             editor.putInt(Constants.Stringkeys.LAST_NOTE_COUNT,toDoAllItemModels.size());
             editor.commit();
             if (mTextView_Title.getText().equals(Constants.NotesType.ALL_NOTES)) {
-              //  notesFragment.setUpdatedModel(toDoAllItemModels);
+              if(offAdd){
+                  notesFragment.setUpdatedModel(toDoAllItemModels);
+              }
             } else if (mTextView_Title.getText().equals(Constants.NotesType.REMINDER_NOTES)) {
                 reminderFragment.setUpdatedModel(toDoAllItemModels);
             } else if (mTextView_Title.getText().equals(Constants.NotesType.ARCHIVE_NOTES)) {
@@ -446,6 +446,7 @@ public class ToDoActivity extends BaseActivity
         if (!con.isNetworkConnected()) {
             if (requestCode == 2) {
                 if (data != null) {
+                    offAdd=true;
                     Bundle ban = data.getBundleExtra(Constants.BundleKey.MEW_NOTE);
                     ToDoItemModel toDoItemModel = new ToDoItemModel();
                     toDoItemModel.setId(Integer.parseInt(ban.getString(Constants.RequestParam.KEY_ID)));
@@ -515,4 +516,50 @@ public class ToDoActivity extends BaseActivity
     }
 
 
+    public void getReminderSet(ToDoItemModel todoItem) {
+        Bundle bundle;
+        bundle=new Bundle();
+        bundle.putString(Constants.BundleKey.MEW_NOTE_TITLE,todoItem.getTitle());
+        bundle.putString(Constants.BundleKey.MEW_NOTE_DISK,todoItem.getNote());
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.SECOND, 10);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
+        Date dateN = null;
+        try {
+            dateN = dateFormat.parse(todoItem.getSettime());
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        System.out.println(dateN.getTime());
+        Log.i(TAG, "getTodaysReminder: "+dateN.getTime());
+                   /* Intent intent = new Intent(getActivity(), AlarmReceiver.class);
+                    PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity(), RQS_1, intent, 0);
+                    AlarmManager alarmManager = (AlarmManager)getActivity().getSystemService(Context.ALARM_SERVICE);
+                    alarmManager.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pendingIntent);
+                  */
+        Intent intent = new Intent(getBaseContext(), AlarmReceiver.class);
+        PendingIntent pendingIntent =
+                PendingIntent.getBroadcast(getBaseContext(),
+                        RQS_1, intent, PendingIntent.FLAG_ONE_SHOT);
+        AlarmManager alarmManager =
+                (AlarmManager)getSystemService(Context.ALARM_SERVICE);
+        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT)
+        {
+            alarmManager.set(AlarmManager.RTC_WAKEUP,
+                    cal.getTimeInMillis(), pendingIntent);
+            Toast.makeText(getBaseContext(),
+                    "call alarmManager.set()",
+                    Toast.LENGTH_LONG).show();
+        }else{
+            alarmManager.setExact(AlarmManager.RTC_WAKEUP,
+                    cal.getTimeInMillis(), pendingIntent);
+            Log.i(TAG, "onClick: "+cal.getTimeInMillis());
+            Toast.makeText(getBaseContext(),
+                    "call alarmManager.setExact()",
+                    Toast.LENGTH_LONG).show();
+        }
+                   /* Toast.makeText(getActivity().getBaseContext(),
+                            "call alarmManager.set()",
+                            Toast.LENGTH_LONG).show();*/
+    }
 }

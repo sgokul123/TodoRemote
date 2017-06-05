@@ -64,8 +64,8 @@
             android:name=".addnote.view.NewNoteActivity"
             android:theme="@style/AppTheme.NoActionBar" />
 
-        <receiver android:name=".alarmmanager.AlarmReceiver" android:process=":remote" />
-
+        <service android:name=".alarmmanager.NotifyService"/>
+        <service android:name=".alarmmanager.ScheduleService"/>
         <activity android:name=".alarmmanager.NotificationNote"></activity>
     </application>
 

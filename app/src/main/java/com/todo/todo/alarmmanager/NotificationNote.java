@@ -6,7 +6,6 @@ import android.os.Bundle;
 import com.todo.todo.R;
 
 public class NotificationNote extends AppCompatActivity {
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

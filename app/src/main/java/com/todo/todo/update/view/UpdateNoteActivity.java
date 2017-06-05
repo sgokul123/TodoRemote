@@ -132,14 +132,23 @@ public class UpdateNoteActivity extends BaseActivity implements View.OnClickList
     }
 
     @Override
+    public void onBackPressed() {
+
+        super.onBackPressed();
+supportFinishAfterTransition();
+    }
+
+    @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.imageView_back_arrow:
 
                 if(!editTextTitle.getText().toString().isEmpty()){
                     saveNote();
+                }else {
+                    onBackPressed();
                 }
-                finish();                break;
+              break;
             case R.id.imageView_color_picker:
                 getColorPicker();
                 break;
@@ -154,7 +163,7 @@ public class UpdateNoteActivity extends BaseActivity implements View.OnClickList
                 if(!editTextTitle.getText().toString().isEmpty()){
                     saveNote();
                 }else{
-                    finish();
+                    onBackPressed();
                 }
                 break;
         }
@@ -222,7 +231,8 @@ public class UpdateNoteActivity extends BaseActivity implements View.OnClickList
             Intent intent = new Intent();
             intent.putExtra(Constants.BundleKey.MEW_NOTE, bun);
             setResult(2, intent);
-            finish();
+            onBackPressed();
+//            supportFinishAfterTransition();
         } else {
             Toast.makeText(this, getString(R.string.fail_update), Toast.LENGTH_SHORT).show();
         }

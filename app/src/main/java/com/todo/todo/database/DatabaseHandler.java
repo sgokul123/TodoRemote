@@ -13,6 +13,7 @@ import com.todo.todo.addnote.interactor.AddNoteInteractorInteface;
 import com.todo.todo.home.interactor.ToDoActivityInteractor;
 import com.todo.todo.home.model.ToDoItemModel;
 import com.todo.todo.home.presenter.ToDoActivityPresenter;
+import com.todo.todo.update.interactor.UpdateNoteInteractor;
 import com.todo.todo.util.Constants;
 
 import java.util.ArrayList;
@@ -59,6 +60,13 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         pref = mContext.getSharedPreferences(Constants.ProfileeKey.SHAREDPREFERANCES_KEY, mContext.MODE_PRIVATE);
         uid= pref.getString(Constants.BundleKey.USER_USER_UID, Constants.Stringkeys.NULL_VALUIE);
         this.mAddNoteInteractoreInteface =addNoteInteractoreInteface;
+    }
+
+    public DatabaseHandler(Context mContext, UpdateNoteInteractor updateNoteInteractor) {
+        super(mContext, Constants.RequestParam.DATABASE_NAME, null, DATABASE_VERSION);
+        pref = mContext.getSharedPreferences(Constants.ProfileeKey.SHAREDPREFERANCES_KEY, mContext.MODE_PRIVATE);
+        uid= pref.getString(Constants.BundleKey.USER_USER_UID, Constants.Stringkeys.NULL_VALUIE);
+        this.toDoActivityPresenter = toDoActivityPresenter;
     }
 
     // Creating Tables  
@@ -155,6 +163,41 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             ContentValues values = new ContentValues();
             int id=pref.getInt(Constants.Stringkeys.LAST_INDEX,0);
             values.put(Constants.RequestParam.KEY_ID,id);
+            values.put(Constants.RequestParam.KEY_TITLE, toDoItemModel.getTitle()); // ToDo Name
+            values.put(Constants.RequestParam.KEY_NOTE, toDoItemModel.getNote()); // ToDo Phone
+            values.put(Constants.RequestParam.KEY_REMINDER, toDoItemModel.getReminder()); // ToDo REMINDER
+            values.put(Constants.RequestParam.KEY_STARTDATE, toDoItemModel.getStartdate()); // ToDo REMINDER
+            values.put(Constants.RequestParam.KEY_ARCHIVE, toDoItemModel.getArchive());
+            values.put(Constants.RequestParam.KEY_SETTIME, toDoItemModel.getSettime());
+            values.put(Constants.RequestParam.KEY_COLOR,toDoItemModel.getColor());
+            editor = pref.edit();
+            editor.putInt(Constants.Stringkeys.LAST_INDEX,id+1);
+            editor.commit();
+            // Inserting Row
+            db.insert(Constants.RequestParam.LOCAL_NOTES_TABLE_NAME, null, values);
+            Log.i(TAG, "addToDo: success");
+            mAddNoteInteractoreInteface.getResponce(true);
+            //2nd argument is String containing nullColumnHack
+
+        } catch (Exception e) {
+            mAddNoteInteractoreInteface.getResponce(false);
+            Log.i(TAG, "addToDo: " + e);
+        } finally {
+            db.close(); // Closing database connection
+        }
+    }
+
+
+    //save to local database when network is not present
+    public void updateNoteToLocal(ToDoItemModel toDoItemModel) {
+        SQLiteDatabase db = null;
+        try {
+
+            db = this.getWritableDatabase();
+            Log.i(TAG, "addToDo: start");
+            ContentValues values = new ContentValues();
+            int id=pref.getInt(Constants.Stringkeys.LAST_INDEX,0);
+            values.put(Constants.RequestParam.KEY_ID,toDoItemModel.getId());
             values.put(Constants.RequestParam.KEY_TITLE, toDoItemModel.getTitle()); // ToDo Name
             values.put(Constants.RequestParam.KEY_NOTE, toDoItemModel.getNote()); // ToDo Phone
             values.put(Constants.RequestParam.KEY_REMINDER, toDoItemModel.getReminder()); // ToDo REMINDER

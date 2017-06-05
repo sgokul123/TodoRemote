@@ -52,7 +52,6 @@ public class TrashFirebaseDataInteractor {
     }
 
     public void removeData(List<ToDoItemModel> toDoItemModels, String mUserUID, String startdate, int index) {
-        ToDoItemModel lastNote=new ToDoItemModel();
         mRef = mDatabase.getReference().child("usersdata");
         pos = index;
         if (toDoItemModels.size() == 1) {
@@ -66,7 +65,7 @@ public class TrashFirebaseDataInteractor {
         } else {
             for (ToDoItemModel todoNote : toDoItemModels) {
                 try {
-                    lastNote=todoNote;
+
                     Log.i(TAG, "setSize: " + pos);
                     todoNote.setId(pos);
                     mRef.child(mUserUID).child(todoNote.getStartdate()).child(String.valueOf(pos)).setValue(todoNote);
