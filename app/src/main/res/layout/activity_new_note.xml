@@ -6,13 +6,11 @@
     android:layout_height="match_parent"
     android:transitionName="@string/transition_title_image"
     tools:context=".addnote.view.NewNoteActivity">
-
     <RelativeLayout
         android:id="@+id/layout_add_new_card"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         >
-
         <android.support.v7.widget.AppCompatImageView
             android:id="@+id/imageView_back_arrow"
             android:layout_width="@dimen/dimen_30dp"
@@ -20,6 +18,14 @@
             android:layout_marginTop="@dimen/dimen_10dp"
             android:layout_marginLeft="@dimen/dimen_10dp"
             app:srcCompat="?attr/actionModeCloseDrawable" />
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/imageView_pin"
+            android:layout_width="@dimen/dimen_30dp"
+            android:layout_height="@dimen/dimen_20dp"
+            android:layout_marginRight="@dimen/dimen_20dp"
+            android:layout_marginTop="@dimen/dimen_10dp"
+            android:layout_toLeftOf="@+id/imageView_color_picker"
+            app:srcCompat="@drawable/pin" />
 
         <android.support.v7.widget.AppCompatImageView
             android:id="@+id/imageView_color_picker"
@@ -38,7 +44,6 @@
             android:layout_marginTop="@dimen/dimen_10dp"
             android:layout_toLeftOf="@+id/imageView_save"
             app:srcCompat="@drawable/reminder" />
-
         <android.support.v7.widget.AppCompatImageView
             android:id="@+id/imageView_save"
             android:layout_width="@dimen/dimen_30dp"
@@ -46,14 +51,13 @@
             android:layout_alignParentEnd="true"
             android:layout_marginRight="@dimen/dimen_20dp"
             android:layout_marginTop="@dimen/dimen_10dp"
-            app:srcCompat="@drawable/save" />
+            app:srcCompat="@drawable/ic_save" />
         <View
             android:id="@+id/view_first"
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="@color/cardview_dark_background"
-           android:layout_marginTop="5dp"
-
+            android:layout_marginTop="5dp"
             android:layout_below="@+id/imageView_back_arrow"/>
 
         <android.support.design.widget.TextInputLayout
@@ -96,14 +100,12 @@
             android:layout_marginBottom="@dimen/dimen_10dp"
             android:layout_marginRight="@dimen/dimen_30dp"
             android:layout_above="@+id/view_second"/>
-
         <View
             android:id="@+id/view_second"
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_above="@+id/textview_editedat_at"
             android:background="@color/cardview_dark_background"
-
             android:layout_marginBottom="@dimen/dimen_10dp"
             />
         <android.support.v7.widget.AppCompatTextView

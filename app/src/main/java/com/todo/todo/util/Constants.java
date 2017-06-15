@@ -43,6 +43,8 @@ public class Constants {
         String KEY_SETTIME = "settime";
         String TRASH_TABLE_NAME = "trashtable";
         String KEY_COLOR = "color";
+        String LOCAL_UPDATE_TABLE_NAME="localupdate";
+        String KEY_PIN="keypin";
     }
 
     public interface NotesType {
@@ -51,6 +53,7 @@ public class Constants {
         String ALL_NOTES = "Notes";
         String DATE_FORMAT = "EEE,MMMd,yy";
         String TRASH_NOTES = "Trash Notes";
+        String SHARE_NOTE="Share Note";
     }
 
     public interface Stringkeys {
@@ -66,6 +69,8 @@ public class Constants {
         String LAST_NOTE_COUNT="lastcount";
         String LAST_INDEX="lastindex";
         String FIREBASE_DATABASE_TRASH="trashData";
+        String MASSEGE_GET_RESTORE="Note Get Restored";
+        String LOCAL_REGISTER="localregister";
     }
 
     public interface InternateConnnection {

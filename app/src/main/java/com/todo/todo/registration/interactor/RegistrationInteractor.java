@@ -10,6 +10,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.todo.todo.database.RegistrationDatabase;
 import com.todo.todo.registration.model.RegistrationModel;
 import com.todo.todo.registration.presenter.RegistrationPresenterInterface;
 import com.todo.todo.util.Connection;
@@ -50,7 +51,9 @@ public class RegistrationInteractor implements RegistrationInteractorInterface {
                             }
                         });
             }else {
-                registrationPresenter.registrationFailuar();
+                RegistrationDatabase registrationDatabase=new RegistrationDatabase(mContext,this);
+                registrationDatabase.addUser(registrationModel);
+                //registrationPresenter.registrationFailuar();
             }
 
         } catch (Exception e) {
@@ -62,10 +65,13 @@ public class RegistrationInteractor implements RegistrationInteractorInterface {
     }
 
     @Override
-    public void getResponce(boolean flag) {
+    public void getResponce(RegistrationModel registrationModel) {
+        registrationPresenter.getLocalResponce(registrationModel);
 
-
+        registrationPresenter.closeProgressDialog();
     }
+
+
 
     public void registerData(String uid, RegistrationModel registrationModel) {
 

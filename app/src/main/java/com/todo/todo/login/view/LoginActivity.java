@@ -300,7 +300,6 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
         mPattern = Pattern.compile(EMAIL_PATTERN);
         mStrUserEmail = mEditTextEmail.getText().toString();
         mStrUserPassword = mEditTextPassword.getText().toString();
-
         Log.i(TAG, "doAuthentication: " + mStrUserEmail);
         if (!(mStrUserEmail.equals("") && mStrUserPassword.equals(""))) {
             mMatcher = mPattern.matcher(mStrUserEmail);
@@ -316,9 +315,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
 
     @Override
     public void loginSuccess(RegistrationModel registrationModel, String userUid) {
-
         Log.i(TAG, "loginSuccess: " + userUid);
-
         mSharedPref_editor.putString(Constants.BundleKey.USER_REGISTER, getString(R.string.flag_true));
         mSharedPref_editor.putString(Constants.BundleKey.USER_EMAIL, registrationModel.getMailid());
         mSharedPref_editor.putString(Constants.BundleKey.FR_USER_EMAIL, registrationModel.getMailid());
@@ -352,7 +349,6 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
         mSharedPref_editor.putString(Constants.BundleKey.USER_USER_UID, uid);
         mSharedPref_editor.putString(Constants.BundleKey.GOOGLE_LOGIN, getString(R.string.flag_true));
         mSharedPref_editor.commit();
-
         Intent intent = new Intent(LoginActivity.this, ToDoActivity.class);
         intent.putExtra(Constants.BundleKey.USER_EMAIL, mStrUserEmail);
         intent.putExtra(Constants.BundleKey.USER_NAME, mStrUserName);
@@ -382,7 +378,6 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
         mSharedPref_editor.putString(Constants.BundleKey.USER_USER_UID, uid);
         mSharedPref_editor.commit();
         Intent intent = new Intent(LoginActivity.this, ToDoActivity.class);
-
         startActivity(intent);
         finish();
     }

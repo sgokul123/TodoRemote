@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/linear_lay_border"
     android:orientation="vertical"
     android:layout_width="wrap_content"
-
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+   >
 
     <android.support.v7.widget.CardView
         android:id="@+id/cardview_notes"
@@ -27,6 +28,15 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
+            <android.support.v7.widget.AppCompatImageView
+                android:id="@+id/imageView_pin"
+                android:layout_width="@dimen/dimen_30dp"
+                android:layout_height="@dimen/dimen_20dp"
+                android:layout_marginRight="@dimen/dimen_20dp"
+                android:layout_marginTop="@dimen/dimen_10dp"
+                android:layout_alignParentRight="true"
+                app:srcCompat="@drawable/pin" />
+
             <android.support.v7.widget.AppCompatTextView
                 android:id="@+id/textview_card_title"
                 android:layout_width="match_parent"
@@ -36,7 +46,7 @@
                 android:layout_marginTop="@dimen/dimen_10dp"
                 android:maxLines="1"
                 android:text="Title"
-
+                android:layout_below="@+id/imageView_pin"
                 android:textSize="@dimen/dimen_20sp"
                 android:textStyle="bold" />
 
@@ -44,13 +54,13 @@
                 android:id="@+id/textview_notes"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-
                 android:layout_below="@+id/textview_card_title"
                 android:layout_marginLeft="@dimen/dimen_20dp"
                 android:layout_marginRight="@dimen/dimen_20dp"
                 android:layout_marginTop="@dimen/dimen_10dp"
                 android:ellipsize="end"
                 android:text="Note"
+                android:maxLines="7"
                 android:textSize="@dimen/dimen_20sp" />
 
             <android.support.v7.widget.AppCompatTextView
@@ -60,19 +70,30 @@
                 android:layout_marginBottom="@dimen/dimen_10dp"
                 android:layout_marginLeft="@dimen/dimen_20dp"
                 android:layout_marginTop="@dimen/dimen_30dp"
-                android:layout_marginRight="@dimen/dimen_20dp"
+                android:layout_marginRight="@dimen/dimen_10dp"
                 android:layout_below="@+id/textview_notes"
                 android:text="Reminder"
                 android:background="#d3d3d3"
-                android:padding="3dp"
+                android:textSize="@dimen/dimen_10dp"
                 android:drawableLeft="@drawable/ic_clock"
                 android:drawablePadding="@dimen/dimen_5dp"
                 android:alpha="0.54"
                 />
-
-
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/textView_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/dimen_10dp"
+                android:layout_marginTop="@dimen/dimen_30dp"
+                android:layout_below="@+id/textview_notes"
+                android:layout_toRightOf="@+id/textView_reminder"
+                android:text="Reminder"
+                android:textSize="@dimen/dimen_10dp"
+                android:background="#d3d3d3"
+                android:padding="3dp"
+                android:alpha="0.54"
+                />
         </RelativeLayout>
-
 
     </android.support.v7.widget.CardView>
 </LinearLayout>

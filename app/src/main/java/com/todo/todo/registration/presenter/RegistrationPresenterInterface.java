@@ -12,4 +12,5 @@ public interface RegistrationPresenterInterface extends RegistrationInterface {
     public void setNewUser(RegistrationModel registrationModel);
     public  void registrationFailuar();
 
+    void getLocalResponce(RegistrationModel registrationModel);
 }

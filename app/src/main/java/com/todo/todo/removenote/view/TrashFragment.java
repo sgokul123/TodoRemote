@@ -48,7 +48,6 @@ public class TrashFragment extends Fragment implements TrashFragmentInterface, V
     private ArrayList<Integer> arrayList;
 
     public TrashFragment() {
-
     }
 
     @Override
@@ -100,7 +99,6 @@ public class TrashFragment extends Fragment implements TrashFragmentInterface, V
         count = count - 1;
         Log.i(TAG, "getCountDecreament: "+arrayList.remove(position));//arrayList.remove(position);
         mTextViewCount.setText(count + "  Selected");
-
     }
 
     @Override
@@ -120,14 +118,12 @@ public class TrashFragment extends Fragment implements TrashFragmentInterface, V
             mTrashAdapter = new ItemAdapter(getActivity(), trashNotes, this);
             getRecyclerLayout();
             mToDoRecyclerView.setAdapter(mTrashAdapter);
-
         } else {
             mTextView_blank_recycler.setVisibility(View.INVISIBLE);
             mTrashAdapter = new ItemAdapter(getActivity(), todoItemModel, this);
             getRecyclerLayout();
             mToDoRecyclerView.setAdapter(mTrashAdapter);
         }
-
     }
 
     @Override
@@ -142,19 +138,15 @@ public class TrashFragment extends Fragment implements TrashFragmentInterface, V
 
     public void addTextListener() {
         mEditText_Search.addTextChangedListener(new TextWatcher() {
-
             public void afterTextChanged(Editable s) {
             }
-
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
-
             public void onTextChanged(CharSequence query, int start, int before, int count) {
                 if (mTrashAdapter != null) {
                     Filter filter = mTrashAdapter.getFilter();
                     filter.filter(query);
                 }
-
             }
         });
     }
@@ -171,7 +163,6 @@ public class TrashFragment extends Fragment implements TrashFragmentInterface, V
             @Override
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
                 final int position = viewHolder.getAdapterPosition();
-
                 Log.i(TAG, "onSwiped: ");
                 if (direction == ItemTouchHelper.LEFT) {
                     trashNotePresenter.getDeleteTrashNote(mTrashNotes.get(position));
@@ -183,6 +174,8 @@ public class TrashFragment extends Fragment implements TrashFragmentInterface, V
                     }
                 } else {
                     trashNotePresenter.getRestoreNote(mUserUID, mTrashNotes.get(position));
+                    mTrashAdapter.removeItem(position);
+                    mTrashAdapter.notifyDataSetChanged();
                 }
             }
         };
@@ -202,7 +195,6 @@ public class TrashFragment extends Fragment implements TrashFragmentInterface, V
                 getDeleteNotes();
                 count = 0;
                 arrayList.clear();
-
                 break;
         }
     }

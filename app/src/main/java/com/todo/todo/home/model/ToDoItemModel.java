@@ -14,12 +14,12 @@ public class ToDoItemModel {
     private String archive;
     private String settime;
     private  String color;
-
+    private  boolean isPin;
     public ToDoItemModel() {
 
     }
 
-    public ToDoItemModel(int id, String title, String reminder, String note, String archive, String Settime,String color) {
+    public ToDoItemModel(int id, String title, String reminder, String note, String archive, String Settime,String color,boolean isPin) {
         this.id = id;
         this.title = title;
         this.reminder = reminder;
@@ -27,10 +27,10 @@ public class ToDoItemModel {
         this.archive = archive;
         this.settime = Settime;
         this.color=color;
-
+        this.isPin=isPin;
     }
 
-    public ToDoItemModel(String title, String note, String reminder, String startdate, String archive, String Settime,String color) {
+    public ToDoItemModel(String title, String note, String reminder, String startdate, String archive, String Settime,String color,boolean isPin) {
         this.title = title;
         this.reminder = reminder;
         this.note = note;
@@ -38,10 +38,11 @@ public class ToDoItemModel {
         this.archive = archive;
         this.settime = Settime;
         this.color=color;
+        this.isPin=isPin;
 
     }
 
-    public ToDoItemModel(int id, String title, String note, String reminder, String startdate, String archive, String Settime,String color) {
+    public ToDoItemModel(int id, String title, String note, String reminder, String startdate, String archive, String Settime,String color,boolean isPin) {
         this.id = id;
         this.title = title;
         this.reminder = reminder;
@@ -50,6 +51,7 @@ public class ToDoItemModel {
         this.archive = archive;
         this.settime = Settime;
         this.color=color;
+        this.isPin=isPin;
 
     }
 
@@ -116,5 +118,13 @@ public class ToDoItemModel {
 
     public void setColor(String color) {
         this.color = color;
+    }
+
+    public boolean isPin() {
+        return isPin;
+    }
+
+    public void setPin(boolean pin) {
+        isPin = pin;
     }
 }

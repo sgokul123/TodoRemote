@@ -149,6 +149,23 @@ public class RegistrationFragment extends Fragment implements View.OnClickListen
         mEditTextPassword2.setText("");
     }
 
+    @Override
+    public void getLocalResponce(RegistrationModel model) {
+        mSharedPref_editor.putString(Constants.BundleKey.USER_REGISTER, getString(R.string.flag_true));
+        mSharedPref_editor.putString(Constants.BundleKey.USER_EMAIL, model.getMailid());
+        mSharedPref_editor.putString(Constants.BundleKey.USER_USER_UID, Constants.Stringkeys.LOCAL_REGISTER);
+        mSharedPref_editor.putString(Constants.ProfileeKey.FIRST_NAME, model.getUserFirstName());
+        mSharedPref_editor.putString(Constants.ProfileeKey.LAST_NAME, model.getUserLastName());
+        mSharedPref_editor.putString(Constants.ProfileeKey.MOBILE_NO, model.getMobileNo());
+        mSharedPref_editor.putString(Constants.ProfileeKey.PROFILE_IMAGE_URL, model.getUserProfileImgurl());
+        mSharedPref_editor.putString(Constants.BundleKey.USER_PROFILE_SERVER, getString(R.string.flag_true));
+        mSharedPref_editor.commit();
+        ///  show registration page again
+        Intent intent = new Intent(getActivity(), ToDoActivity.class);
+        startActivity(intent);
+        getActivity().finish();
+    }
+
 
     public boolean validateAll() {
 

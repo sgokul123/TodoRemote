@@ -9,4 +9,6 @@ public interface RegistrationInterface {
     public void closeProgressDialog();
 
     public void getResponce(String uid, RegistrationModel model);
+
+    void getLocalResponce(RegistrationModel registrationModel);
 }

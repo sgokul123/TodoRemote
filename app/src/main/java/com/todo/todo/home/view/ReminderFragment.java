@@ -82,7 +82,7 @@ public class ReminderFragment extends Fragment implements ToDoActivityInteface, 
 
         trashNotePresenter = new TrashNotePresenter(getActivity().getBaseContext());
         updateNotePresenter = new UpdateNotePresenter(getActivity().getBaseContext(), this);
-        initSwipe();
+       // initSwipe();
         mReminderNotes = getTodaysReminder();
         showDataInActivity(mReminderNotes);
         return view;
@@ -150,7 +150,6 @@ public class ReminderFragment extends Fragment implements ToDoActivityInteface, 
                             });
                     snackbar.setDuration(2000);     //5 sec duration if want to Undo else it will Archive note
                     snackbar.show();
-
                     if (mReminderNotes.size() == 1)
                     {
                         mReminderNotes.remove(0);
@@ -160,7 +159,6 @@ public class ReminderFragment extends Fragment implements ToDoActivityInteface, 
                     {
                     getArchive(mReminderNotesAdapter, position, mReminderNotes.get(position));
                 }
-
             }
 
             //Archive Note Methode  And do Undo if required
@@ -183,10 +181,8 @@ public class ReminderFragment extends Fragment implements ToDoActivityInteface, 
 
             }
         };
-
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
         itemTouchHelper.attachToRecyclerView(mToDoRecyclerView);
-
     }
 
     @Override
@@ -199,8 +195,6 @@ public class ReminderFragment extends Fragment implements ToDoActivityInteface, 
                 getAlterRecyclerLayout();
                 break;
         }
-
-
     }
 
     private void getRecyclerLayout()
@@ -211,7 +205,7 @@ public class ReminderFragment extends Fragment implements ToDoActivityInteface, 
             mImageView_Linear_Grid.setImageResource(R.drawable.grid_view);
         }
         else
-            {
+        {
             mToDoRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
             mImageView_Linear_Grid.setImageResource(R.drawable.list_view);
         }
@@ -241,7 +235,6 @@ public class ReminderFragment extends Fragment implements ToDoActivityInteface, 
     @Override
     public void closeProgressDialog()
     {
-
     }
 
     @Override
@@ -265,7 +258,7 @@ public class ReminderFragment extends Fragment implements ToDoActivityInteface, 
             {
                 if (todoItem.getReminder().equals(date) && todoItem.getArchive().equals(getString(R.string.flag_false)))
                 {
-                    toDoActivity.getReminderSet(todoItem);
+                  //  toDoActivity.getReminderSet(todoItem);
                     tempToDoModels.add(todoItem);
                 }
             }

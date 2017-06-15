@@ -57,4 +57,10 @@ public class RegistrationPresenter implements RegistrationPresenterInterface {
     public void registrationFailuar() {
         registrationFragmentMain.getFailuar();
     }
+
+    @Override
+    public void getLocalResponce(RegistrationModel registrationModel) {
+        registrationFragmentMain.getLocalResponce(registrationModel);
+
+    }
 }

@@ -49,7 +49,7 @@ public class TrashNotePresenter {
     public void removeFirebaseData(ToDoItemModel doItemModel, List<ToDoItemModel> toDoItemModel, String mUserUID) {
         databaseHandler.addNoteToTrash(doItemModel);
         trashFirebaseDataInteractor.getIndexUpdateNotes(doItemModel, toDoItemModel, mUserUID);
-        trashFirebaseDataInteractor.addToFireBaseTrash(doItemModel,mUserUID);
+       // trashFirebaseDataInteractor.addToFireBaseTrash(doItemModel,mUserUID);
     }
 
     public void getArchiveData(ToDoItemModel toDoItemModel, String mUserUID, int position) {

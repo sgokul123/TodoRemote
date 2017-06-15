@@ -40,6 +40,7 @@ public class LoginLoginPresenter implements LoginPresenterInterface {
             Log.i(TAG, "getLogin:  call");
 
         } else {
+
             mLoginInterface.closeProgress();
             Toast.makeText(mContext, "Connection not Present...", Toast.LENGTH_SHORT).show();
         }

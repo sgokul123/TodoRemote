@@ -3,6 +3,7 @@ package com.todo.todo.addnote.view;
 import android.app.AlarmManager;
 import android.app.DatePickerDialog;
 import android.app.PendingIntent;
+import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -15,6 +16,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.RelativeLayout;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.jrummyapps.android.colorpicker.ColorPickerDialog;
@@ -36,7 +38,7 @@ import java.util.Locale;
 public class NewNoteActivity extends BaseActivity implements View.OnClickListener, NoteInterface,ColorPickerDialogListener {
 
     final static int RQS_1 = 1;
-    AppCompatImageView mImageViewBack, imageView_Color_Picker, mImageViewReminder, mImageViewSave;
+    AppCompatImageView mImageViewBack, imageView_Color_Picker, mImageViewReminder, mImageViewSave,imageViewPin;
     AppCompatTextView mTextViewReminder, mTextViewEditedAt;
     AppCompatEditText mEditTextNote, mEditTextTitle;
     ProgressUtil progressDialog;
@@ -54,6 +56,7 @@ public class NewNoteActivity extends BaseActivity implements View.OnClickListene
     private int DIALOG_ID=9;
     private  int day,month,years,hour,mint,sec;
     private ScheduleClient scheduleClient;
+    private  boolean setPin=false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,12 +64,10 @@ public class NewNoteActivity extends BaseActivity implements View.OnClickListene
         initView();
         scheduleClient = new ScheduleClient(this);
         scheduleClient.doBindService();
-
     }
 
     @Override
     public void initView() {
-
         setContentView(R.layout.activity_new_note);
         mImageViewBack = (AppCompatImageView) findViewById(R.id.imageView_back_arrow);
         imageView_Color_Picker= (AppCompatImageView) findViewById(R.id.imageView_color_picker);
@@ -78,10 +79,11 @@ public class NewNoteActivity extends BaseActivity implements View.OnClickListene
         mTextViewEditedAt = (AppCompatTextView) findViewById(R.id.textview_editedat_at);
         relativeLayout= (RelativeLayout) findViewById(R.id.layout_add_new_card);
 
+        imageViewPin=(AppCompatImageView) findViewById(R.id.imageView_pin);
+
         progressDialog = new ProgressUtil(this);
         Calendar c = Calendar.getInstance();
         SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss");
-
         formattedDate = df.format(c.getTime());
         hour=c.getTime().getHours();
         mint=c.getTime().getMinutes();
@@ -96,7 +98,7 @@ public class NewNoteActivity extends BaseActivity implements View.OnClickListene
 
     @Override
     public void setOnClickListener() {
-
+      //  mTextViewEditedAt.setOnClickListener(this);
         mImageViewBack.setOnClickListener(this);
         imageView_Color_Picker.setOnClickListener(this);
         mImageViewReminder.setOnClickListener(this);
@@ -105,7 +107,6 @@ public class NewNoteActivity extends BaseActivity implements View.OnClickListene
 
     @Override
     public void enterFromBottomAnimation() {
-
     }
 
     @Override
@@ -126,16 +127,14 @@ public class NewNoteActivity extends BaseActivity implements View.OnClickListene
                 myCalendar.set(Calendar.YEAR, year);
                 myCalendar.set(Calendar.MONTH, monthOfYear);
                 myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                callTimePickerDialog();
                 updateLabel();
             }
-
         };
-
     }
 
     @Override
     public void onClick(View v) {
-
         switch (v.getId()) {
             case R.id.imageView_back_arrow:
                 if(!mEditTextTitle.getText().toString().isEmpty()){
@@ -152,7 +151,6 @@ public class NewNoteActivity extends BaseActivity implements View.OnClickListene
                         myCalendar.get(Calendar.DAY_OF_MONTH));
                 datePickerDialog.show();
                 datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis());
-
                 break;
             case R.id.imageView_save:
                 if(!mEditTextTitle.getText().toString().isEmpty()){
@@ -161,8 +159,29 @@ public class NewNoteActivity extends BaseActivity implements View.OnClickListene
                     finish();
                 }
                 break;
+          /*  case R.id.imageView_color_timepicker:
+                callTimePickerDialog();
+                break;*/
+            case R.id.imageView_pin:
+                setPin=true;
+                break;
         }
 
+    }
+
+    private void callTimePickerDialog() {
+        // Launch Time Picker Dialog
+        TimePickerDialog timePickerDialog = new TimePickerDialog(this,
+                new TimePickerDialog.OnTimeSetListener() {
+                    @Override
+                    public void onTimeSet(TimePicker view, int hourOfDay,
+                                          int minute) {
+                        hour=hourOfDay;
+                        mint=minute;
+                        mTextViewEditedAt.setText(hourOfDay + ":" + minute+":"+sec);
+                    }
+                }, hour, mint, false);
+        timePickerDialog.show();
     }
 
     private void saveNote() {
@@ -177,11 +196,14 @@ public class NewNoteActivity extends BaseActivity implements View.OnClickListene
         mToDoItemModel.setStartdate(getCurrentDate());
         mToDoItemModel.setArchive("false");
         mToDoItemModel.setColor(noteColor);
+        mToDoItemModel.setPin(setPin);
         mAddNotePresenter = new AddNotePresenter(this, this);
         Log.i(TAG, "onClick: " + mUsre_UID + "  date" + getCurrentDate());
         mAddNotePresenter.loadNotetoFirebase(mUsre_UID, getCurrentDate(), mToDoItemModel);
     }
-    private void getColorPicker() {
+
+    private void getColorPicker()
+    {
         ColorPickerDialog.newBuilder()
                 .setDialogType(ColorPickerDialog.TYPE_PRESETS)
                 .setAllowPresets(true)
@@ -191,21 +213,10 @@ public class NewNoteActivity extends BaseActivity implements View.OnClickListene
                 .show(this);
     }
 
- /*   private void setAlarm(String targetCal) throws ParseException {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
-        Date date = dateFormat.parse("12:01:32");
-        System.out.println(date.getTime());
-        Intent intent = new Intent(getBaseContext(), MyBroadcastReceiver.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(getBaseContext(), RQS_1, intent, 0);
-        AlarmManager alarmManager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
-        alarmManager.set(AlarmManager.RTC_WAKEUP, date.getTime(), pendingIntent);
-    }*/
-
     private void updateLabel() {
         String myFormat = Constants.NotesType.DATE_FORMAT; //In which you need put here
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
         mTextViewReminder.setText(sdf.format(myCalendar.getTime()));
-
     }
 
     @Override
@@ -229,14 +240,17 @@ public class NewNoteActivity extends BaseActivity implements View.OnClickListene
             bun.putString(Constants.RequestParam.KEY_REMINDER, mToDoItemModel.getReminder());
             bun.putString(Constants.RequestParam.KEY_STARTDATE, mToDoItemModel.getStartdate());
             bun.putString(Constants.RequestParam.KEY_COLOR,noteColor);
-
+            bun.putString(Constants.RequestParam.KEY_SETTIME,mToDoItemModel.getSettime());
             //
             Calendar cals = Calendar.getInstance();
             cals.set(years, month, day);
             cals.set(Calendar.HOUR_OF_DAY, hour);
-            cals.set(Calendar.MINUTE, mint+1);
+            cals.set(Calendar.MINUTE, mint);
             cals.set(Calendar.SECOND, sec);
-            scheduleClient.setAlarmForNotification(bun,cals);
+            if( mToDoItemModel.getReminder()!=null){
+                scheduleClient.setAlarmForNotification(bun,cals);
+            }
+
             Toast.makeText(this, "Notification set for: "+ day +"/"+ (month+1) +"/"+ years, Toast.LENGTH_SHORT).show();
 
             Intent intent = new Intent();

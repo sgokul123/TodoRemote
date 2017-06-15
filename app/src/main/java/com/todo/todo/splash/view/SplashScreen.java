@@ -11,10 +11,12 @@ import android.util.Log;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 
+import com.crashlytics.android.Crashlytics;
 import com.todo.todo.R;
 import com.todo.todo.home.view.ToDoActivity;
 import com.todo.todo.login.view.LoginActivity;
 import com.todo.todo.util.Constants;
+import io.fabric.sdk.android.Fabric;
 
 public class SplashScreen extends Activity {
 
@@ -29,6 +31,7 @@ public class SplashScreen extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Fabric.with(this, new Crashlytics());
         setContentView(R.layout.activity_splash_screen);
 
         textView_title = (AppCompatTextView) findViewById(R.id.textView_splash);

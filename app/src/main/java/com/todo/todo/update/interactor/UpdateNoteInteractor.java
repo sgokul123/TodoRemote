@@ -88,6 +88,8 @@ public class UpdateNoteInteractor implements UpdateNoteInteractorInterface {
                 mUpdateNotePresenter.closeProgress();
             }
         } else {
+            toDoItemModel.setArchive(Constants.Stringkeys.FLAGT_TRUE);
+            updateLocal(toDoItemModel);
 
         }
     }

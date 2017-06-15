@@ -9,10 +9,6 @@ import com.todo.todo.archive.view.ArchiveFragment;
 
 import java.util.List;
 
-/**
- * Created by bridgeit on 15/5/17.
- */
-
 public class ArchiveNotePresenter  {
     ArchiveFragment archiveFragment;
     Context mContext;
@@ -28,10 +24,20 @@ public class ArchiveNotePresenter  {
     public void getRestoreArchiveNote(String mUserUID, ToDoItemModel toDoItemModel) {
         archiveNoteInteractor.undoArchivedFirbaseData(mUserUID,toDoItemModel.getStartdate(),toDoItemModel);
     }
+
     public void removeFirebaseData(ToDoItemModel doItemModel, List<ToDoItemModel> toDoItemModels, String mUserUID){
         databaseHandler.addNoteToTrash(doItemModel);
         archiveNoteInteractor.getIndexUpdateNotes(doItemModel,toDoItemModels,mUserUID);
     }
 
 
+    public void getUndoRestoreArchiveNote(String mUserUID, ToDoItemModel toDoItemModel) {
+        archiveNoteInteractor.undoREstoredFirbaseData(mUserUID,toDoItemModel.getStartdate(),toDoItemModel);
+    }
+
+    public void restoreFirebaseData(ToDoItemModel toDoItemModel, List<ToDoItemModel> mAllToDONotes, String mUserUID) {
+        databaseHandler.deleteTrashToDos(toDoItemModel);
+        archiveNoteInteractor.getRestoreIndexUpdateNotes(toDoItemModel,mAllToDONotes,mUserUID);
+
+    }
 }

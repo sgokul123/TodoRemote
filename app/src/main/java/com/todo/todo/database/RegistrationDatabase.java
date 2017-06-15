@@ -18,17 +18,15 @@ public class RegistrationDatabase extends SQLiteOpenHelper {
     private static final int DATABASE_VERSION = 1;
     private static final String DATABASE_NAME = "ToDoManager";
     private static final String TABLE_USERS = "UserNData";
-    private static final String KEY_ID = "id";
     private static final String KEY_NAME = "name";
     private static final String KEY_LNAME = "lname";
     private static final String KEY_PHONE = "phone";
     private static final String KEY_URL = "imageurl";
     private static final String KEY_PASSWORD = "password";
     private static final String KEY_EMAIL = "email";
-    private  String TAG ="RegistrationDatabase";
-
     SQLiteDatabase db;
     RegistrationInteractor registrationInteractor;
+    private  String TAG ="RegistrationDatabase";
 
     public RegistrationDatabase(Context context, RegistrationInteractor registrationInteractor) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -42,7 +40,7 @@ public class RegistrationDatabase extends SQLiteOpenHelper {
         Log.i(TAG, "onCreate: db");
 
         String CREATE_ToDoS_TABLE = "CREATE TABLE IF NOT EXISTS " + TABLE_USERS + "("
-                + KEY_ID + " INTEGER PRIMARY KEY," + KEY_NAME + " TEXT,"+ KEY_LNAME+ " TEXT," + KEY_PHONE + " TEXT,"
+                + KEY_NAME + " TEXT,"+ KEY_LNAME+ " TEXT," + KEY_PHONE + " TEXT,"
                 + KEY_EMAIL + " TEXT," + KEY_PASSWORD + " TEXT,"+ KEY_URL  + " TEXT" +")";
 
         db.execSQL(CREATE_ToDoS_TABLE);
@@ -53,7 +51,6 @@ public class RegistrationDatabase extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // Drop older table if existed  
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_USERS);  // Create tables again
-
         onCreate(db);
     }
 
@@ -73,7 +70,8 @@ public class RegistrationDatabase extends SQLiteOpenHelper {
             // Inserting Row
             Log.i(TAG, "addUser: ");
             db.insert(TABLE_USERS, null, values);
-            registrationInteractor.getResponce(true);
+
+            registrationInteractor.getResponce(registrationModel);
 
             Log.i(TAG, "addUser: added");
             //  Log.i(TAG, "addToDo: success");
@@ -81,7 +79,7 @@ public class RegistrationDatabase extends SQLiteOpenHelper {
 
         }catch(Exception e){
             Log.i(TAG, "addUser: "+e);
-            registrationInteractor.getResponce(false);
+           // registrationInteractor.getResponce(false);
         }
         finally {
             db.close(); // Closing database connection
@@ -89,17 +87,20 @@ public class RegistrationDatabase extends SQLiteOpenHelper {
     }
 
     // code to get the single ToDo  
-    public RegistrationModel getUser(int id) {
+    public RegistrationModel getUser(String  id) {
         SQLiteDatabase db = this.getReadableDatabase();
-
-        Cursor cursor = db.query(TABLE_USERS, new String[] { KEY_ID,
-                        KEY_NAME,KEY_LNAME, KEY_PHONE,KEY_EMAIL,KEY_PASSWORD,KEY_URL}, KEY_ID + "=?",
+        RegistrationModel registrationModel = null;
+        Cursor cursor = db.query(TABLE_USERS, new String[] {
+                        KEY_NAME,KEY_LNAME, KEY_PHONE,KEY_EMAIL,KEY_PASSWORD,KEY_URL}, KEY_EMAIL + "=?",
                 new String[] { String.valueOf(id) }, null, null, null, null);
         if (cursor != null)
+        {
             cursor.moveToFirst();
 
-        RegistrationModel registrationModel = new RegistrationModel(
-                cursor.getString(1),cursor.getString(2), cursor.getString(3),cursor.getString(4),cursor.getString(5),cursor.getString(6));
+            registrationModel = new RegistrationModel(
+                    cursor.getString(1),cursor.getString(2), cursor.getString(3),cursor.getString(4),cursor.getString(5),cursor.getString(6));
+
+        }
         // return toDoModel
         return registrationModel;
     }

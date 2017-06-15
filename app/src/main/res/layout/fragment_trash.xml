@@ -3,16 +3,43 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/white"
-   >
+   ><ScrollView
+    android:layout_width="match_parent"
+    android:background="#d3d3d3"
 
+    android:layout_height="match_parent">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
     <android.support.v7.widget.RecyclerView
         android:id="@+id/gridview_fragment_notes"
         android:background="#d3d3d3"
         android:padding="@dimen/dimen_5dp"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         />
-
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/textview_pinned"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/dimen_10dp"
+        android:text="Pinned Notes"
+        android:textSize="@dimen/dimen_20dp"
+        android:layout_marginLeft="@dimen/dimen_20dp"
+        android:layout_below="@+id/gridview_fragment_notes"
+        android:textColor="@android:color/black"
+        android:visibility="gone"
+        />
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/pinned_fragment_notes"
+        android:background="#d3d3d3"
+        android:padding="@dimen/dimen_5dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/textview_pinned"
+        android:visibility="gone"
+        />
     <android.support.v7.widget.AppCompatTextView
         android:id="@+id/textview_blank_fragment_recyclerview"
         android:layout_width="match_parent"
@@ -23,7 +50,7 @@
         android:layout_marginTop="@dimen/dimen_65dp"
         android:textColor="@android:color/black"
         android:textAlignment="center"
-
         />
-
+    </RelativeLayout>
+</ScrollView>
 </RelativeLayout>

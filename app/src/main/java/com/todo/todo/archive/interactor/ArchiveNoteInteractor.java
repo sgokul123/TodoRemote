@@ -112,4 +112,64 @@ public class ArchiveNoteInteractor {
         date = date.trim();
         return date;
     }
+
+    public void undoREstoredFirbaseData(String mUserUID, String startdate, ToDoItemModel toDoItemModel) {
+        Connection con=new Connection(mContext);
+
+        if(con.isNetworkConnected()){
+            try {
+                toDoItemModel.setArchive(Constants.Stringkeys.FLAGT_TRUE);
+                mDatabase.child(Constants.Stringkeys.FIREBASE_DATABASE_PARENT_CHILD).child(mUserUID).child(startdate).child(String.valueOf(toDoItemModel.getId())).setValue(toDoItemModel);
+            }catch (Exception e){
+                Log.i(TAG, "updateFirbaseData: ");
+            }
+        }
+        else {
+        }
+    }
+
+    public void getRestoreIndexUpdateNotes(ToDoItemModel toDoItemModel, List<ToDoItemModel> mAllToDONotes, String mUserUID) {
+        List<ToDoItemModel> toDoItems = new ArrayList<>();
+        //db.deleteLocaltodoNote(doItemModel);
+        startdate = toDoItemModel.getStartdate();
+        index = toDoItemModel.getId();
+        toDoItems.add(toDoItemModel);
+        for (ToDoItemModel todo : mAllToDONotes) {
+            if (todo.getStartdate().equals(startdate) && todo.getId() > index) {
+                toDoItems.add(todo);
+            }
+        }
+        if (mAllToDONotes != null) {
+            Connection con = new Connection(mContext);
+            if (con.isNetworkConnected()) {
+                restoreData(toDoItems, mUserUID, startdate, index);
+            }
+        }
+
+    }
+
+    private void restoreData(List<ToDoItemModel> toDoItems, String mUserUID, String startdate, int index) {
+        mRef = mDatabase.child("usersdata");
+        pos = index;
+        if (toDoItems.size() == 1) {
+            toDoItems.get(0).setId(pos);
+            mRef.child(mUserUID).child(startdate).child(String.valueOf(pos)).setValue(toDoItems.get(0));
+            pos = pos + 1;
+            mRef.child(mUserUID).child(startdate).child(String.valueOf(pos)).setValue(null);
+        } else if (toDoItems.size() == 0) {
+            mRef.child(mUserUID).child(startdate).child(String.valueOf(pos)).setValue(null);
+        } else {
+            for (ToDoItemModel todoNote : toDoItems) {
+                try {
+                    Log.i(TAG, "setSize: " + pos);
+                    todoNote.setId(pos);
+                    mRef.child(mUserUID).child(todoNote.getStartdate()).child(String.valueOf(pos)).setValue(todoNote);
+                    pos = pos + 1;
+                } catch (Exception f) {
+                    Log.i(TAG, "setData: ");
+                }
+            }
+            mRef.child(mUserUID).child(startdate).child(String.valueOf(pos)).setValue(null);
+        }
+    }
 }

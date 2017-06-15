@@ -30,7 +30,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private ToDoActivityPresenter toDoActivityPresenter;
     AddNoteInteractorInteface mAddNoteInteractoreInteface;
     private String uid;
-
+    boolean isUpdate=false;
     public DatabaseHandler(Context context, ToDoActivityInteractor todoActivityInteractor) {
         super(context, Constants.RequestParam.DATABASE_NAME, null, DATABASE_VERSION);
         //3rd argument to be passed is CursorFactory instance
@@ -74,23 +74,28 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         String CREATE_ToDoS_TABLE = "CREATE TABLE IF NOT EXISTS " + Constants.RequestParam.NOTES_TABLE_NAME + "("
                 + Constants.RequestParam.KEY_ID + " INTEGER PRIMARY KEY," + Constants.RequestParam.KEY_TITLE + " TEXT," + Constants.RequestParam.KEY_NOTE + " TEXT,"
-                + Constants.RequestParam.KEY_REMINDER + " TEXT," + Constants.RequestParam.KEY_STARTDATE + " TEXT," + Constants.RequestParam.KEY_ARCHIVE + " TEXT," + Constants.RequestParam.KEY_SETTIME + " TEXT," + Constants.RequestParam.KEY_COLOR + " TEXT" + ")";
+                + Constants.RequestParam.KEY_REMINDER + " TEXT," + Constants.RequestParam.KEY_STARTDATE + " TEXT," + Constants.RequestParam.KEY_ARCHIVE + " TEXT," + Constants.RequestParam.KEY_SETTIME + " TEXT," + Constants.RequestParam.KEY_COLOR + " TEXT," + Constants.RequestParam.KEY_PIN + " TEXT" + ")";
         db.execSQL(CREATE_ToDoS_TABLE);
 
         String CREATE_LOCAL_ToDoS_TABLE = "CREATE TABLE IF NOT EXISTS " + Constants.RequestParam.LOCAL_NOTES_TABLE_NAME + "("
                 + Constants.RequestParam.KEY_ID + " INTEGER PRIMARY KEY," + Constants.RequestParam.KEY_TITLE + " TEXT," + Constants.RequestParam.KEY_NOTE + " TEXT,"
-                + Constants.RequestParam.KEY_REMINDER + " TEXT," + Constants.RequestParam.KEY_STARTDATE + " TEXT," + Constants.RequestParam.KEY_ARCHIVE + " TEXT," + Constants.RequestParam.KEY_SETTIME + " TEXT," + Constants.RequestParam.KEY_COLOR + " TEXT" + ")";
+                + Constants.RequestParam.KEY_REMINDER + " TEXT," + Constants.RequestParam.KEY_STARTDATE + " TEXT," + Constants.RequestParam.KEY_ARCHIVE + " TEXT," + Constants.RequestParam.KEY_SETTIME + " TEXT," + Constants.RequestParam.KEY_COLOR + " TEXT," + Constants.RequestParam.KEY_PIN + " TEXT" + ")";
         db.execSQL(CREATE_LOCAL_ToDoS_TABLE);
+        String CREATE_LOCAL_UPDATE_TABLE = "CREATE TABLE IF NOT EXISTS " + Constants.RequestParam.LOCAL_UPDATE_TABLE_NAME + "("
+                + Constants.RequestParam.KEY_ID + " INTEGER PRIMARY KEY," + Constants.RequestParam.KEY_TITLE + " TEXT," + Constants.RequestParam.KEY_NOTE + " TEXT,"
+                + Constants.RequestParam.KEY_REMINDER + " TEXT," + Constants.RequestParam.KEY_STARTDATE + " TEXT," + Constants.RequestParam.KEY_ARCHIVE + " TEXT," + Constants.RequestParam.KEY_SETTIME + " TEXT," + Constants.RequestParam.KEY_COLOR + " TEXT," + Constants.RequestParam.KEY_PIN + " TEXT" + ")";
+        db.execSQL(CREATE_LOCAL_ToDoS_TABLE);
+
         String CREATE_TRASH_TABLE = "CREATE TABLE IF NOT EXISTS " + Constants.RequestParam.TRASH_TABLE_NAME+uid + "("
                 + Constants.RequestParam.KEY_ID + " INTEGER PRIMARY KEY," + Constants.RequestParam.KEY_TITLE + " TEXT," + Constants.RequestParam.KEY_NOTE + " TEXT,"
-                + Constants.RequestParam.KEY_REMINDER + " TEXT," + Constants.RequestParam.KEY_STARTDATE + " TEXT," + Constants.RequestParam.KEY_ARCHIVE + " TEXT," + Constants.RequestParam.KEY_SETTIME + " TEXT," + Constants.RequestParam.KEY_COLOR + " TEXT" + ")";
+                + Constants.RequestParam.KEY_REMINDER + " TEXT," + Constants.RequestParam.KEY_STARTDATE + " TEXT," + Constants.RequestParam.KEY_ARCHIVE + " TEXT," + Constants.RequestParam.KEY_SETTIME + " TEXT," + Constants.RequestParam.KEY_COLOR + " TEXT," + Constants.RequestParam.KEY_PIN + " TEXT" + ")";
         db.execSQL(CREATE_TRASH_TABLE);
     }
 
     public  void createTrashTable(SQLiteDatabase db){
         String CREATE_TRASH_TABLE = "CREATE TABLE IF NOT EXISTS " + Constants.RequestParam.TRASH_TABLE_NAME+uid + "("
                 + Constants.RequestParam.KEY_ID + " INTEGER PRIMARY KEY," + Constants.RequestParam.KEY_TITLE + " TEXT,"+ Constants.RequestParam.KEY_NOTE + " TEXT,"
-                + Constants.RequestParam.KEY_REMINDER + " TEXT," + Constants.RequestParam.KEY_STARTDATE + " TEXT," + Constants.RequestParam.KEY_ARCHIVE + " TEXT," + Constants.RequestParam.KEY_SETTIME + " TEXT," + Constants.RequestParam.KEY_COLOR + " TEXT" + ")";
+                + Constants.RequestParam.KEY_REMINDER + " TEXT," + Constants.RequestParam.KEY_STARTDATE + " TEXT," + Constants.RequestParam.KEY_ARCHIVE + " TEXT," + Constants.RequestParam.KEY_SETTIME + " TEXT," + Constants.RequestParam.KEY_COLOR + " TEXT," + Constants.RequestParam.KEY_PIN + " TEXT" + ")";
         db.execSQL(CREATE_TRASH_TABLE);
     }
 
@@ -113,7 +118,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
         String CREATE_ToDoS_TABLE = "CREATE TABLE IF NOT EXISTS " + Constants.RequestParam.NOTES_TABLE_NAME + "("
                 + Constants.RequestParam.KEY_ID + " INTEGER PRIMARY KEY," + Constants.RequestParam.KEY_TITLE + " TEXT," + Constants.RequestParam.KEY_NOTE + " TEXT,"
-                + Constants.RequestParam.KEY_REMINDER + " TEXT," + Constants.RequestParam.KEY_STARTDATE + " TEXT," + Constants.RequestParam.KEY_ARCHIVE + " TEXT," + Constants.RequestParam.KEY_SETTIME + " TEXT," + Constants.RequestParam.KEY_COLOR + " TEXT" + ")";
+                + Constants.RequestParam.KEY_REMINDER + " TEXT," + Constants.RequestParam.KEY_STARTDATE + " TEXT," + Constants.RequestParam.KEY_ARCHIVE + " TEXT," + Constants.RequestParam.KEY_SETTIME + " TEXT," + Constants.RequestParam.KEY_COLOR + " TEXT," + Constants.RequestParam.KEY_PIN + " TEXT" + ")";
         db.execSQL(CREATE_ToDoS_TABLE);
 
     }
@@ -337,9 +342,13 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 new String[]{String.valueOf(id)}, null,null, null, null);
         if (cursor != null)
             cursor.moveToFirst();
-
+        boolean isPin;
+        if(cursor.getString(8).equals("true")){
+            isPin=true;
+        }else {  isPin=false;
+        }
         ToDoItemModel toDoItemModel = new ToDoItemModel(Integer.parseInt(cursor.getString(0)),
-                cursor.getString(1), cursor.getString(2), cursor.getString(3), cursor.getString(4), cursor.getString(5),cursor.getString(6),cursor.getString(7));
+                cursor.getString(1), cursor.getString(2), cursor.getString(3), cursor.getString(4), cursor.getString(5),cursor.getString(6),cursor.getString(7),isPin);
         // return toDoItemModel
         return toDoItemModel;
 
@@ -455,6 +464,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
+        values.put(Constants.RequestParam.KEY_ID, toDoItemModel.getId());
         values.put(Constants.RequestParam.KEY_TITLE, toDoItemModel.getNote());
         values.put(Constants.RequestParam.KEY_NOTE, toDoItemModel.getTitle());
         values.put(Constants.RequestParam.KEY_REMINDER, toDoItemModel.getReminder());
@@ -462,13 +472,17 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         values.put(Constants.RequestParam.KEY_ARCHIVE, toDoItemModel.getArchive());
         values.put(Constants.RequestParam.KEY_SETTIME, toDoItemModel.getSettime());
         values.put(Constants.RequestParam.KEY_COLOR,toDoItemModel.getColor());
-
-        // updating row
-        return db.update(Constants.RequestParam.LOCAL_NOTES_TABLE_NAME, values, Constants.RequestParam.KEY_ID + " = ?",
-                new String[]{String.valueOf(toDoItemModel.getId())});
+        if(isUpdate){
+            return db.update(Constants.RequestParam.LOCAL_UPDATE_TABLE_NAME, values, ""+Constants.RequestParam.KEY_ID +"= '"+ toDoItemModel.getId()+"' AND "+Constants.RequestParam.KEY_STARTDATE+"='"+toDoItemModel.getId() , null);
+        }
+        else {
+            return db.update(Constants.RequestParam.LOCAL_UPDATE_TABLE_NAME, values, Constants.RequestParam.KEY_ID + " = ?",
+                    new String[]{String.valueOf(toDoItemModel.getId())});
+        }
+        /*return db.update(Constants.RequestParam.LOCAL_UPDATE_TABLE_NAME, values, Constants.RequestParam.KEY_ID + " = ?",
+                new String[]{String.valueOf(toDoItemModel.getId())});*/
     }
     //delete local data
-
     // Deleting single ToDo
     public void deleteLocal(List<ToDoItemModel> toDoItemModels) {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -503,7 +517,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(countQuery, null);
         cursor.close();
-
         // return count  
         return cursor.getCount();
     }

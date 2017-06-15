@@ -17,7 +17,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Filter;
-import android.widget.RelativeLayout;
 
 import com.todo.todo.R;
 import com.todo.todo.archive.presenter.ArchiveNotePresenter;
@@ -35,11 +34,11 @@ public class ToDoNotesFragment extends Fragment implements ToDoActivityInteface,
 
     private static final String TAG = "TrashFragment";
     List<ToDoItemModel> mAllToDONotes;
-    List<ToDoItemModel> mTodoNotesNotes;
+    List<ToDoItemModel> mTodoNotes,mPinnedNotes;
     AppCompatImageView mImageView_Linear_Grid;
-    AppCompatTextView titleTextView;
+    AppCompatTextView titleTextView,textViewPinned;
     private ItemAdapter mToDoNotesAdapter;
-    private RecyclerView mToDoRecyclerView;
+    private RecyclerView mToDoRecyclerView,mPinnedRecyclerView;
     private AppCompatTextView mTextView_blank_recycler;
     private ArchiveNotePresenter mArchiveNotePresenter;
     private AppCompatEditText mEditText_Search;
@@ -50,6 +49,8 @@ public class ToDoNotesFragment extends Fragment implements ToDoActivityInteface,
     private TrashNotePresenter trashNotePresenter;
     private UpdateNotePresenter updateNotePresenter;
     private ToDoActivityPresenter mToDoActivityPresenter;
+    private ItemAdapter mToDoPinnedAdapter;
+
     public ToDoNotesFragment() {
     }
 
@@ -63,10 +64,12 @@ public class ToDoNotesFragment extends Fragment implements ToDoActivityInteface,
         super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.fragment_trash, container, false);
         mToDoRecyclerView = (RecyclerView) view.findViewById(R.id.gridview_fragment_notes);
+        mPinnedRecyclerView=(RecyclerView) view.findViewById(R.id.pinned_fragment_notes);
         mTextView_blank_recycler = (AppCompatTextView) view.findViewById(R.id.textview_blank_fragment_recyclerview);
         // mArchiveNotePresenter = new ArchiveNotePresenter(getActivity().getBaseContext(), ToDoNotesFragment.this);
         mTextView_blank_recycler.setVisibility(View.VISIBLE);
         mTextView_blank_recycler.setText(getString(R.string.data_is_null));
+        textViewPinned=(AppCompatTextView)view.findViewById(R.id.textview_pinned);
         titleTextView = (AppCompatTextView) getActivity().findViewById(R.id.textview_title_toolbar);
         mEditText_Search = (AppCompatEditText) getActivity().findViewById(R.id.edittext_search_toolbar);
         mImageView_Linear_Grid = (AppCompatImageView) getActivity().findViewById(R.id.imageView_grid_linear);
@@ -82,6 +85,8 @@ public class ToDoNotesFragment extends Fragment implements ToDoActivityInteface,
             mToDoActivityPresenter = new ToDoActivityPresenter(this, getActivity().getBaseContext());
             mToDoActivityPresenter.getPresenterNotes(mUserUID);
         }
+        mTodoNotes=new ArrayList<>();
+        mPinnedNotes=new ArrayList<>();
         trashNotePresenter = new TrashNotePresenter(getActivity().getBaseContext());
         updateNotePresenter = new UpdateNotePresenter(getActivity().getBaseContext(), this);
         initSwipe();
@@ -102,6 +107,8 @@ public class ToDoNotesFragment extends Fragment implements ToDoActivityInteface,
                 if (mToDoNotesAdapter != null) {
                     Filter filter = mToDoNotesAdapter.getFilter();
                     filter.filter(query);
+                    Filter filter2= mToDoPinnedAdapter.getFilter();
+                    filter2.filter(query);
                 }
 
             }
@@ -123,7 +130,7 @@ public class ToDoNotesFragment extends Fragment implements ToDoActivityInteface,
                 final int position = viewHolder.getAdapterPosition();
                 final List<ToDoItemModel> forArchiveAlldataModels = mAllToDONotes;
                 Log.i(TAG, "onSwiped: ");
-                final ToDoItemModel toDoItem = mTodoNotesNotes.get(position);
+                final ToDoItemModel toDoItem = mTodoNotes.get(position);
                 if (direction == ItemTouchHelper.LEFT) {
                     trashNotePresenter.removeFirebaseData(toDoItem, forArchiveAlldataModels, mUserUID);
                     Snackbar snackbar = Snackbar
@@ -137,11 +144,11 @@ public class ToDoNotesFragment extends Fragment implements ToDoActivityInteface,
                     snackbar.setDuration(2000);     //5 sec duration if want to Undo else it will Archive note
                     snackbar.show();
 
-                    if (mTodoNotesNotes.size() == 1) {
-                        mTodoNotesNotes.remove(0);
+                    if (mTodoNotes.size() == 1) {
+                        mTodoNotes.remove(0);
                     }
                 } else {
-                    getArchive(mToDoNotesAdapter, position, mTodoNotesNotes.get(position));
+                    getArchive(mToDoNotesAdapter, position, mTodoNotes.get(position));
                 }
 
             }
@@ -186,9 +193,11 @@ public class ToDoNotesFragment extends Fragment implements ToDoActivityInteface,
 
     private void getRecyclerLayout() {
         if (mLinear) {
+            mPinnedRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL));
             mToDoRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL));
             mImageView_Linear_Grid.setImageResource(R.drawable.grid_view);
         } else {
+            mPinnedRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
             mToDoRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
             mImageView_Linear_Grid.setImageResource(R.drawable.list_view);
         }
@@ -200,28 +209,35 @@ public class ToDoNotesFragment extends Fragment implements ToDoActivityInteface,
             mLinear = true;
             editor.putBoolean(Constants.Stringkeys.STR_LINEAR_GRID, true);
             editor.commit();
+            mPinnedRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL));
             mToDoRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL));
             mImageView_Linear_Grid.setImageResource(R.drawable.grid_view);
         } else {
             mLinear = false;
             editor.putBoolean(Constants.Stringkeys.STR_LINEAR_GRID, false);
             editor.commit();
+            mPinnedRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
             mToDoRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
             mImageView_Linear_Grid.setImageResource(R.drawable.list_view);
         }
     }
 
     //get All notes
-    public List<ToDoItemModel> getAllToDo() {
-        List<ToDoItemModel> tempToDoModels = new ArrayList<>();
+    public void getAllToDo(List<ToDoItemModel> toDoItemModels) {
+        mPinnedNotes.clear();
+        mTodoNotes.clear();
         if (mAllToDONotes != null) {
             for (ToDoItemModel todoItem : mAllToDONotes) {
                 if (todoItem.getArchive().equals("false")) {
-                    tempToDoModels.add(todoItem);
+                    if(todoItem.isPin()){
+                        mPinnedNotes.add(todoItem);
+                        textViewPinned.setVisibility(View.VISIBLE);
+                    }else {
+                        mTodoNotes.add(todoItem);
+                    }
                 }
             }
         }
-        return tempToDoModels;
     }
 
     @Override
@@ -236,29 +252,39 @@ public class ToDoNotesFragment extends Fragment implements ToDoActivityInteface,
 
     @Override
     public void showDataInActivity(List<ToDoItemModel> toDoItemModels) {
-        this.mAllToDONotes = toDoItemModels;
-        mTodoNotesNotes = getAllToDo();
-        if (mTodoNotesNotes.size() != 0) {
-            getupdatedView(mTodoNotesNotes, 1);
+        mAllToDONotes.clear();
+        mAllToDONotes = toDoItemModels;
+         getAllToDo(toDoItemModels);
+        if (mTodoNotes.size() != 0||mPinnedNotes.size()!=0) {
+            getupdatedView(mTodoNotes,mPinnedNotes, 1);
         } else {
-            getupdatedView(mTodoNotesNotes, 1);
+            getupdatedView(mTodoNotes,mPinnedNotes, 1);
         }
     }
 
-    private void getupdatedView(List<ToDoItemModel> toDoItemModels, int i) {
+    private void getupdatedView(List<ToDoItemModel> mTodoNotes, List<ToDoItemModel> pinnedNotes, int i) {
 
         switch (i) {
             case 1:
-                if (toDoItemModels.size() == 0) {
+                if (pinnedNotes.size() == 0 && mTodoNotes.size()==0) {
                     mTextView_blank_recycler.setVisibility(View.VISIBLE);
                     mTextView_blank_recycler.setText(getString(R.string.data_is_null));
                     mToDoRecyclerView.setVisibility(View.INVISIBLE);
+                    mPinnedRecyclerView.setVisibility(View.INVISIBLE);
                 } else {
                     mTextView_blank_recycler.setVisibility(View.INVISIBLE);
                     mToDoRecyclerView.setVisibility(View.VISIBLE);
                     getRecyclerLayout();
-                    mToDoNotesAdapter = new ItemAdapter(getActivity(), toDoItemModels);
-                    mToDoRecyclerView.setAdapter(mToDoNotesAdapter);
+                    if(pinnedNotes.size()!=0){
+                        mPinnedRecyclerView.setVisibility(View.VISIBLE);
+                        mToDoPinnedAdapter = new ItemAdapter(getActivity(), pinnedNotes);
+                        mPinnedRecyclerView.setAdapter(mToDoPinnedAdapter);
+                    }
+                    if(mTodoNotes.size()!=0){
+                        mToDoNotesAdapter = new ItemAdapter(getActivity(), mTodoNotes);
+                        mToDoRecyclerView.setAdapter(mToDoNotesAdapter);
+                    }
+
                 }
 
                 break;
@@ -283,8 +309,7 @@ public class ToDoNotesFragment extends Fragment implements ToDoActivityInteface,
     public void setUpdatedModel(List<ToDoItemModel> toDoAllItemModels) {
 
         this.mAllToDONotes = toDoAllItemModels;
-        mTodoNotesNotes = getAllToDo();
-        showDataInActivity(mTodoNotesNotes);
+        showDataInActivity(mAllToDONotes);
 
     }
 }

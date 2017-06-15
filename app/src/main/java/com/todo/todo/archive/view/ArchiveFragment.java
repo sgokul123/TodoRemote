@@ -1,6 +1,7 @@
 package com.todo.todo.archive.view;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.AppCompatImageView;
@@ -65,7 +66,7 @@ import java.util.List;
             mTextView_blank_recycler.setVisibility(View.VISIBLE);
             mEditText_Search=(AppCompatEditText) getActivity().findViewById(R.id.edittext_search_toolbar);
             mImageView_Linear_Grid=(AppCompatImageView) getActivity().findViewById(R.id.imageView_grid_linear);
-            mTextView_blank_recycler.setText(getString(R.string.get_trash_null));
+            mTextView_blank_recycler.setText(getString(R.string.get_archive_null));
             titleTextView =(AppCompatTextView) getActivity().findViewById(R.id.textview_title_toolbar);
 
            // mArchiveNotePresenter.getTrashNotes();
@@ -92,7 +93,7 @@ import java.util.List;
             mArchiveNotes =todoItemModel;
             if(mArchiveNotes.size()==0){
                 mTextView_blank_recycler.setVisibility(View.VISIBLE);
-                mTextView_blank_recycler.setText(getString(R.string.get_trash_null));
+                mTextView_blank_recycler.setText(getString(R.string.get_archive_null));
             }else {
                 mTextView_blank_recycler.setVisibility(View.INVISIBLE);
                 mArchiveAdapter =new ItemAdapter(getActivity(),todoItemModel,this);
@@ -137,15 +138,38 @@ import java.util.List;
 
                     Log.i(TAG, "onSwiped: ");
                     if (direction == ItemTouchHelper.RIGHT) {
-                        mArchiveNotePresenter.getRestoreArchiveNote(mUserUID,mArchiveNotes.get(position));
+                        final ToDoItemModel toDoItemModel=mArchiveNotes.get(position);
+                        mArchiveNotePresenter.getRestoreArchiveNote(mUserUID,toDoItemModel);
                         mArchiveAdapter.removeItem(position);
                         mArchiveAdapter.notifyDataSetChanged();
+                        Snackbar snackbar = Snackbar
+                                .make(getActivity().getCurrentFocus(), Constants.Stringkeys.MASSEGE_GET_RESTORE, Snackbar.LENGTH_LONG)
+                                .setAction(Constants.Stringkeys.ARCHIVE_UNDO, new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        mArchiveNotePresenter.getUndoRestoreArchiveNote(mUserUID,toDoItemModel);
+                                    }
+                                });
+                        snackbar.setDuration(2000);     //5 sec duration if want to Undo else it will Archive note
+                        snackbar.show();
+
                         if(mArchiveAdapter.getItemCount()==0){
                             mTextView_blank_recycler.setVisibility(View.VISIBLE);
-                            mTextView_blank_recycler.setText(getString(R.string.get_trash_null));
+                            mTextView_blank_recycler.setText(getString(R.string.get_archive_null));
                         }
                     }else {
-                        mArchiveNotePresenter.removeFirebaseData(mArchiveNotes.get(position),mAllToDONotes,mUserUID);
+                        final ToDoItemModel toDoItemModel=mArchiveNotes.get(position);
+                        mArchiveNotePresenter.removeFirebaseData(toDoItemModel,mAllToDONotes,mUserUID);
+                        Snackbar snackbar = Snackbar
+                                .make(getActivity().getCurrentFocus(), Constants.Stringkeys.MASSEGE_GET_RESTORE, Snackbar.LENGTH_LONG)
+                                .setAction(Constants.Stringkeys.ARCHIVE_UNDO, new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        mArchiveNotePresenter.restoreFirebaseData(toDoItemModel,mAllToDONotes,mUserUID);
+                                    }
+                                });
+                        snackbar.setDuration(2000);     //5 sec duration if want to Undo else it will Archive note
+                        snackbar.show();
                     }
                 }
             };
@@ -255,5 +279,6 @@ import java.util.List;
             arrayList.remove(position);
             mTextViewCount.setText(count+"  Selected");
         }
+
 
     }

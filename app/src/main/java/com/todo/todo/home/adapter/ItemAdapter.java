@@ -11,8 +11,11 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.util.Pair;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.AppCompatImageView;
+import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -30,6 +33,7 @@ import com.todo.todo.home.model.ToDoItemModel;
 import com.todo.todo.home.view.ToDoActivity;
 import com.todo.todo.removenote.view.TrashFragment;
 import com.todo.todo.removenote.view.TrashFragmentInterface;
+import com.todo.todo.sharenote.ShareNote;
 import com.todo.todo.update.view.UpdateNoteActivity;
 import com.todo.todo.util.Constants;
 
@@ -52,7 +56,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.MyViewHolder> 
     private String shareBody;
     private MyViewHolder holders;
     private boolean onclick=false;
-
+    ShareNote shareNote;
     public ItemAdapter(Activity activity, List<ToDoItemModel> todoItemModel) {
         this.mContext = activity;
         this.mdisplayedtoDoItemModels = todoItemModel;
@@ -64,6 +68,14 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.MyViewHolder> 
         this.mdisplayedtoDoItemModels = todoItemModel;
         this.mOriginaltoDoItemModels = todoItemModel;
         this.mTrashFragmentInterface = trashFragmentInterface;
+    }
+
+    public ItemAdapter(Activity activity, List<ToDoItemModel> mShareingNote, ShareNote shareNote) {
+        this.mContext=activity;
+        this.mdisplayedtoDoItemModels = mShareingNote;
+        this.mOriginaltoDoItemModels = mShareingNote;
+        this.shareNote=shareNote;
+
     }
 
 
@@ -88,8 +100,12 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.MyViewHolder> 
         holder.textViewTitle.setText(toDoItemModel.getTitle());
         holder.textViewnote.setText(toDoItemModel.getNote());
         holder.textViewReminder.setText(toDoItemModel.getReminder());
+        holder.textViewtime.setText(toDoItemModel.getSettime());
         if(toDoItemModel.getColor()!=null){
             holder.layout_card.setBackgroundColor(Integer.parseInt(toDoItemModel.getColor()));
+        }
+        if(toDoItemModel.isPin()){
+            holder.imageViewPinm.setBackgroundColor(R.color.back_front_color);
         }
 
     }
@@ -112,9 +128,11 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.MyViewHolder> 
 
 
     public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        TextView textViewTitle, textViewnote, textViewReminder;
+        TextView textViewTitle, textViewnote;
         CardView mCardView;
         RelativeLayout layout_card;
+        AppCompatTextView textViewReminder,textViewtime;
+        AppCompatImageView imageViewPinm;
 
         public MyViewHolder(View itemView) {
             super(itemView);
@@ -123,10 +141,11 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.MyViewHolder> 
             layout_card = (RelativeLayout) itemView.findViewById(R.id.layout_card);
             textViewTitle = (TextView) itemView.findViewById(R.id.textview_card_title);
             textViewnote = (TextView) itemView.findViewById(R.id.textview_notes);
-            textViewReminder = (TextView) itemView.findViewById(R.id.textView_reminder);
-
+            textViewReminder = (AppCompatTextView) itemView.findViewById(R.id.textView_reminder);
+            imageViewPinm=(AppCompatImageView)itemView.findViewById(R.id.imageView_pin);
+            textViewtime=(AppCompatTextView) itemView.findViewById(R.id.textView_time);;
             mCardView.setOnClickListener(this);
-
+            imageViewPinm.setOnClickListener(this);
 
             if (mTrashFragmentInterface != null) {
                 mCardView.setOnLongClickListener(new View.OnLongClickListener() {
@@ -139,7 +158,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.MyViewHolder> 
                         return false;
                     }
                 });
-                
+
             }else {
                /* mCardView.setOnLongClickListener(new View.OnLongClickListener() {
                     @Override
@@ -156,7 +175,6 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.MyViewHolder> 
                                         sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, shareSub);
                                         sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
                                         mContext.startActivity(Intent.createChooser(sharingIntent, mContext.getString(R.string.share_item)));
-
                                     }
                                 });
                         AlertDialog alert = builder.create();
@@ -195,7 +213,11 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.MyViewHolder> 
                                 mTrashFragmentInterface.getCountIncreament(position);
                             }
                         }
-                    }else {
+                    }else if(shareNote!=null) {
+                        shareNote.shareNote(position);
+                    }
+                    else
+                     {
                         SharedPreferences pref = mContext.getSharedPreferences(Constants.ProfileeKey.SHAREDPREFERANCES_KEY, mContext.MODE_PRIVATE);
                         SharedPreferences.Editor editor = pref.edit();
                         String mUserUID = pref.getString(Constants.BundleKey.USER_USER_UID, "null");
@@ -210,7 +232,8 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.MyViewHolder> 
                         bun.putString(Constants.RequestParam.KEY_ARCHIVE, mdisplayedtoDoItemModels.get(position).getArchive());
                         bun.putString(Constants.RequestParam.KEY_SETTIME, mdisplayedtoDoItemModels.get(position).getSettime());
                         bun.putString(Constants.RequestParam.KEY_COLOR, mdisplayedtoDoItemModels.get(position).getColor());
-                        intent.putExtra(Constants.BundleKey.USER_USER_UID, mUserUID);
+                         bun.putBoolean(Constants.RequestParam.KEY_PIN, mdisplayedtoDoItemModels.get(position).isPin());
+                         intent.putExtra(Constants.BundleKey.USER_USER_UID, mUserUID);
                         intent.putExtra(Constants.BundleKey.MEW_NOTE, bun);
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         String transitionName =mContext.getString(R.string.transition_title_image);
@@ -218,7 +241,12 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.MyViewHolder> 
                         ActivityCompat.startActivity((Activity)mContext, intent, options.toBundle());
 
                     }
-                         break;
+                    break;
+                case R.id.imageView_pin:
+                    if(mTrashFragmentInterface==null && shareNote==null){
+
+                    }
+                    break;
             }
         }
 

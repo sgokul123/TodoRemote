@@ -7,19 +7,22 @@ import android.app.Service;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Binder;
+import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v7.app.NotificationCompat;
 import android.util.Log;
 
 import com.todo.todo.R;
+import com.todo.todo.util.Constants;
 
 
 public class NotifyService extends Service {
+    Bundle bundle;
+    private String TAG="NotifyService";
 
-    /**
-     * Class for clients to access
-     */
     public class ServiceBinder extends Binder {
         NotifyService getService() {
             return NotifyService.this;
@@ -42,7 +45,7 @@ public class NotifyService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.i("LocalService", "Received start id " + startId + ": " + intent);
-
+        bundle  =intent.getExtras();
         // If this service was started by out AlarmTask intent then we want to show our notification
         if(intent.getBooleanExtra(INTENT_NOTIFY, false))
             showNotification();
@@ -53,6 +56,7 @@ public class NotifyService extends Service {
 
     @Override
     public IBinder onBind(Intent intent) {
+
         return mBinder;
     }
 
@@ -64,34 +68,40 @@ public class NotifyService extends Service {
      */
     private void showNotification() {
         // This is the 'title' of the notification
-        CharSequence title = "Reminder";
+        CharSequence title = bundle.getString(Constants.RequestParam.KEY_TITLE);
         // This is the icon to use on the notification
-        int icon = R.drawable.todo_icon;
-
+        int icon = R.drawable.ic_action_alert;
+        int icon2 = R.drawable.todo_icon;
         // This is the scrolling text of the notification
-        CharSequence text = "Your notification time is upon us.";
+        CharSequence text = bundle.getString(Constants.RequestParam.KEY_NOTE);
+        Log.i(TAG, "showNotification: "+text+title);
         // What time to show on the notification
         long time = System.currentTimeMillis();
 
         Notification notification = new Notification(icon, text, time);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(
                 this);
-
-
+        Intent intent=new Intent(this, ReminderActivity.class);
+        intent.putExtras(bundle);
+        builder.setStyle(new NotificationCompat.InboxStyle());
+        Uri uri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         // The PendingIntent to launch our activity if the user selects this notification
-        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, new Intent(this, SecondActivity.class), 0);
+        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
         Bitmap bmp= BitmapFactory.decodeResource(getResources(),
-                R.drawable.back_profile);
+                R.drawable.calendar_clock);
         // Set the info for the views that show in the notification panel.
        //notification.setLatestEventInfo(this, title, text, contentIntent);
-        notification=builder.setContentIntent(contentIntent)
-                .setSmallIcon(icon).setTicker(text).setWhen(time)
-                .setAutoCancel(true).setContentTitle(title)
+        notification=builder
+                .setContentTitle(title)
                 .setContentText(text)
+                .setSmallIcon(icon).setWhen(time)
+                .setAutoCancel(true)
+                .setStyle(new NotificationCompat.BigTextStyle().bigText(text))
+                .setSound(uri)
+                .setContentIntent(contentIntent)
+                .setColor(getResources().getColor(R.color.colorPrimary))
                 .setLargeIcon(bmp)
                 .build();
-        // Clear the notification when it is pressed
-        notification.flags |= Notification.FLAG_AUTO_CANCEL;
 
         // Send the notification to the system.
         mNM.notify(NOTIFICATION, notification);

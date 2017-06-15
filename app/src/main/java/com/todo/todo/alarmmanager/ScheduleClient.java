@@ -9,9 +9,6 @@ import android.os.IBinder;
 
 import java.util.Calendar;
 
-/**
- * Created by bridgeit on 3/6/17.
- */
 
 public class ScheduleClient {
     // The hook into our service

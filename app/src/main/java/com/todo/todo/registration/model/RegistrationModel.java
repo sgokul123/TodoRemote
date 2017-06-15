@@ -18,7 +18,6 @@ public class RegistrationModel {
 
     private String mobileNo;
 
-
     public RegistrationModel(String userFirstName, String userLastName, String mobileNo, String mailid, String userPassword, String userProfileImgurl) {
 
         this.userFirstName = userFirstName;
@@ -27,12 +26,9 @@ public class RegistrationModel {
         this.mailid = mailid;
         this.userPassword = userPassword;
         this.userProfileImgurl = userProfileImgurl;
-
     }
 
-    public RegistrationModel() {
-
-    }
+    public RegistrationModel() {    }
 
     public String getMailid() {
         return mailid;
@@ -70,9 +66,7 @@ public class RegistrationModel {
         return userProfileImgurl;
     }
 
-    public void setUserProfileImgurl(String userProfileImgurl) {
-        this.userProfileImgurl = userProfileImgurl;
-    }
+    public void setUserProfileImgurl(String userProfileImgurl) {  this.userProfileImgurl = userProfileImgurl;    }
 
     public String getMobileNo() {
         return mobileNo;

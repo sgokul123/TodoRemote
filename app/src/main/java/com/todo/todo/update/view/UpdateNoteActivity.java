@@ -1,6 +1,7 @@
 package com.todo.todo.update.view;
 
 import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
@@ -16,6 +17,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.RelativeLayout;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.jrummyapps.android.colorpicker.ColorPickerDialog;
@@ -34,7 +36,7 @@ import java.util.List;
 import java.util.Locale;
 
 public class UpdateNoteActivity extends BaseActivity implements View.OnClickListener, ToDoActivityInteface ,ColorPickerDialogListener {
-    AppCompatImageView imageViewBack, imageView_Color_Picker, imageViewReminder, imageViewSave;
+    AppCompatImageView imageViewBack, imageView_Color_Picker, imageViewReminder, imageViewSave,imageViewPin;
     AppCompatTextView textViewReminder;
     AppCompatEditText editTextNote, editTextTitle;
     UpdateNotePresenter updateNotePresenter;
@@ -49,18 +51,20 @@ public class UpdateNoteActivity extends BaseActivity implements View.OnClickList
     private String mNote_Order_id;
     private int DIALOG_ID=9;
     private String noteColor;
+    private  int day,month,years,hour,mint,sec;
+    private  boolean setPin=false;
     private RelativeLayout relativeLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_new_note);
         updateNotePresenter = new UpdateNotePresenter(UpdateNoteActivity.this, this);
         initView();
     }
 
     @Override
     public void initView() {
-        setContentView(R.layout.activity_new_note);
         imageViewBack = (AppCompatImageView) findViewById(R.id.imageView_back_arrow);
         imageView_Color_Picker= (AppCompatImageView) findViewById(R.id.imageView_color_picker);
         imageViewReminder = (AppCompatImageView) findViewById(R.id.imageView_reminder);
@@ -71,6 +75,7 @@ public class UpdateNoteActivity extends BaseActivity implements View.OnClickList
         mTextViewEditedAt = (AppCompatTextView) findViewById(R.id.textview_editedat_at);
         relativeLayout= (RelativeLayout) findViewById(R.id.layout_add_new_card);
 
+        imageViewPin=(AppCompatImageView) findViewById(R.id.imageView_pin);
         progressDialog = new ProgressUtil(this);
 
         mUsre_UID = getIntent().getStringExtra(Constants.BundleKey.USER_USER_UID);
@@ -87,6 +92,8 @@ public class UpdateNoteActivity extends BaseActivity implements View.OnClickList
         imageView_Color_Picker.setOnClickListener(this);
         imageViewReminder.setOnClickListener(this);
         imageViewSave.setOnClickListener(this);
+        imageViewPin.setOnClickListener(this);
+
     }
 
     @Override
@@ -106,10 +113,13 @@ public class UpdateNoteActivity extends BaseActivity implements View.OnClickList
         Note_id = ban.getString(Constants.RequestParam.KEY_ID);
         mIsArchive = ban.getString(Constants.RequestParam.KEY_ARCHIVE);
         StrSetTime = ban.getString(Constants.RequestParam.KEY_SETTIME);
-
+        setPin=ban.getBoolean(Constants.RequestParam.KEY_PIN);
         if(ban.getString(Constants.RequestParam.KEY_COLOR)!=null){
             noteColor=ban.getString(Constants.RequestParam.KEY_COLOR);
             relativeLayout.setBackgroundColor(Integer.parseInt(ban.getString(Constants.RequestParam.KEY_COLOR)));
+        }
+        if(setPin){
+            imageViewPin.setBackgroundColor(R.color.back_front_color);
         }
         if (mIsArchive.equals(R.string.flag_true)) {
         }
@@ -125,6 +135,7 @@ public class UpdateNoteActivity extends BaseActivity implements View.OnClickList
                 remiderPick.set(Calendar.YEAR, year);
                 remiderPick.set(Calendar.MONTH, monthOfYear);
                 remiderPick.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                callTimePickerDialog();
                 updateLabel();
             }
 
@@ -166,11 +177,37 @@ supportFinishAfterTransition();
                     onBackPressed();
                 }
                 break;
+           /* case R.id.imageView_color_timepicker:
+
+                break;*/
+            case R.id.imageView_pin:
+                if(setPin){
+                    setPin=false;
+                    imageViewPin.setBackgroundColor(0x00000000);
+                }else {
+                    setPin=true;
+                    imageViewPin.setBackgroundColor(R.color.back_front_color);
+                }
+                break;
         }
     }
 
-    private void saveNote() {
 
+
+    private void callTimePickerDialog() {
+        // Launch Time Picker Dialog
+        TimePickerDialog timePickerDialog = new TimePickerDialog(this,
+                new TimePickerDialog.OnTimeSetListener() {
+                    @Override
+                    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                        hour=hourOfDay;
+                        mint=minute;
+                        mTextViewEditedAt.setText(hourOfDay + ":" + minute+":"+sec);
+                    }
+                }, hour, mint, false);
+        timePickerDialog.show();
+    }
+    private void saveNote() {
         mToDoItemModel = new ToDoItemModel();
         StrNote = editTextNote.getText().toString();
         mToDoItemModel.setNote(StrNote);
@@ -183,6 +220,7 @@ supportFinishAfterTransition();
         mToDoItemModel.setArchive(mIsArchive);
         mToDoItemModel.setSettime(StrSetTime);
         mToDoItemModel.setColor(noteColor);
+        mToDoItemModel.setPin(setPin);
         updateNotePresenter.updateNote(mUsre_UID, StrStartDate, mToDoItemModel);
     }
 
@@ -194,7 +232,6 @@ supportFinishAfterTransition();
                 .setColor(Color.BLACK)
                 .setShowAlphaSlider(true)
                 .show(this);
-
     }
 
     private void updateLabel() {

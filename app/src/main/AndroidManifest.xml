@@ -64,9 +64,11 @@
             android:name=".addnote.view.NewNoteActivity"
             android:theme="@style/AppTheme.NoActionBar" />
 
-        <service android:name=".alarmmanager.NotifyService"/>
-        <service android:name=".alarmmanager.ScheduleService"/>
-        <activity android:name=".alarmmanager.NotificationNote"></activity>
+        <service android:name=".alarmmanager.NotifyService" />
+        <service android:name=".alarmmanager.ScheduleService" />
+
+        <activity android:name=".alarmmanager.ReminderActivity"
+       />
     </application>
 
 </manifest>

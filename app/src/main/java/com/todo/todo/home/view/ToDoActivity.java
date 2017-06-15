@@ -1,7 +1,5 @@
 package com.todo.todo.home.view;
 
-import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -12,7 +10,6 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
@@ -32,6 +29,7 @@ import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
+import com.crashlytics.android.Crashlytics;
 import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
 import com.todo.todo.R;
@@ -42,6 +40,7 @@ import com.todo.todo.home.model.ToDoItemModel;
 import com.todo.todo.home.presenter.ToDoActivityPresenter;
 import com.todo.todo.login.view.LoginActivity;
 import com.todo.todo.removenote.view.TrashFragment;
+import com.todo.todo.sharenote.ShareNote;
 import com.todo.todo.update.presenter.UpdateNotePresenter;
 import com.todo.todo.util.AsyncTaskLoadImage;
 import com.todo.todo.util.Connection;
@@ -55,15 +54,10 @@ import com.todo.todo.util.Utility;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
-import com.crashlytics.android.Crashlytics;
-import io.fabric.sdk.android.Fabric;
 
+import io.fabric.sdk.android.Fabric;
 public class ToDoActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener, ToDoActivityInteface {
     private final int SELECT_PHOTO = 3;
@@ -72,8 +66,6 @@ public class ToDoActivity extends BaseActivity
     AppCompatTextView mTextView_Email, mTextView_Name, mTextView_Title;
     AppCompatEditText mEditText_Search, mEditTextsearch;
     Toolbar mToolbar, mToolSearch, mToolbardelete;
-    boolean isReminderAdapter = false;
-    boolean isArchivedAdapter = false;
     AppCompatImageView mImageView_Linear_Grid, mImageView_ProfileImage, mImageViewsearchBack;
     FloatingActionButton mFloatingActionButton;
     AppCompatImageView mImageViewsearch;
@@ -84,19 +76,40 @@ public class ToDoActivity extends BaseActivity
     List<ToDoItemModel> toDoAllItemModels, mRemindrsToDO, mArchivedNotes, mTrashNotes;
     Utility util;
     UpdateNotePresenter updateNotePresenter;
-
     private String TAG = "ToDoActivity";
     private String mEmail_id, mUserUID;
     private TrashFragment trashFragment;
     private ArchiveFragment archiveFragment;
     private ToDoNotesFragment notesFragment;
     private ReminderFragment reminderFragment;
-    private boolean offAdd=false;
-    private int RQS_1=1;
+    private boolean offAdd = false;
+    private int RQS_1 = 1;
+    private ShareNote shareNote;
+    private String mStrshareNote;
+
+    //get crop images circular
+    public static Bitmap getRoundedRectBitmap(Bitmap bitmap, int pixels) {
+        Bitmap result = null;
+        try {
+            result = Bitmap.createBitmap(100, 100, Bitmap.Config.ARGB_8888);
+            Canvas canvas = new Canvas(result);
+            int color = 0xff424242;
+            Paint paint = new Paint();
+            Rect rect = new Rect(0, 0, 200, 200);
+            paint.setAntiAlias(true);
+            canvas.drawARGB(0, 0, 0, 0);
+            paint.setColor(color);
+            canvas.drawCircle(50, 50, 50, paint);
+            paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
+            canvas.drawBitmap(bitmap, rect, rect, paint);
+        } catch (NullPointerException e) {
+        } catch (OutOfMemoryError o) {
+        }
+        return result;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
         Fabric.with(this, new Crashlytics());
         setContentView(R.layout.activity_to_do);
@@ -120,16 +133,13 @@ public class ToDoActivity extends BaseActivity
         mEditText_Search = (AppCompatEditText) findViewById(R.id.edittext_search_toolbar);
         mEditTextsearch = (AppCompatEditText) findViewById(R.id.edittext_search_toolbar);
         mImageViewsearchBack = (AppCompatImageView) findViewById(R.id.imageView_back_search);
-
         FacebookSdk.sdkInitialize(getApplicationContext());             //Facebook Social Login sdk initialize
         mProgressDialog = new ProgressUtil(this);
-
         util = new Utility(this);
         pref = getSharedPreferences(ProfileeKey.SHAREDPREFERANCES_KEY, MODE_PRIVATE);
         editor = pref.edit();
         mUserUID = pref.getString(Constants.BundleKey.USER_USER_UID, Constants.Stringkeys.NULL_VALUIE);
         Log.i(TAG, "initView: " + mUserUID);
-
         // get call to database if User ID is not Null
         if (!mUserUID.equals(Constants.Stringkeys.NULL_VALUIE)) {
             mToDoActivityPresenter = new ToDoActivityPresenter(this, this);
@@ -143,19 +153,16 @@ public class ToDoActivity extends BaseActivity
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, mToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
         toggle.syncState();
-
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         View header = navigationView.getHeaderView(0);
         mImageView_ProfileImage = (AppCompatImageView) header.findViewById(R.id.imageView_nav_profile);
         mTextView_Email = (AppCompatTextView) header.findViewById(R.id.textView_nav_email);
         mTextView_Name = (AppCompatTextView) header.findViewById(R.id.textview_nave_name);
-
         setNavigationProfile();
         hideKeyboard();
         setOnClickListener();
     }
-
 
     @Override
     public void setOnClickListener() {
@@ -168,6 +175,7 @@ public class ToDoActivity extends BaseActivity
     public void enterFromBottomAnimation() {
         overridePendingTransition(R.anim.activity_no_animation, R.anim.activity_close_translate_to_bottom);
     }
+
     @Override
     public void exitToBottomAnimation() {
         overridePendingTransition(R.anim.activity_open_translate_from_bottom, R.anim.activity_no_animation);
@@ -188,7 +196,6 @@ public class ToDoActivity extends BaseActivity
         }
     }
 
-
     //Set Profile view
     public void setNavigationProfile() {
         String getemail, getName, image_Url = "";
@@ -203,7 +210,6 @@ public class ToDoActivity extends BaseActivity
             Log.i(TAG, "onCreate:  email" + getemail);
             Connection con = new Connection(getApplicationContext());
             if (con.isNetworkConnected()) {
-
                 if (pref.contains(Constants.BundleKey.USER_PROFILE_SERVER) && pref.getString(Constants.BundleKey.USER_PROFILE_SERVER, getString(R.string.flag_false)).equals(getString(R.string.flag_true))) {
                     mImageView_ProfileImage.setOnClickListener(this);
                     DownloadImage.downloadImage(String.valueOf("myProfiles/" + getemail.substring(0, getemail.indexOf("@")) + ".jpg"), new DownloadImageInterface() {
@@ -245,55 +251,29 @@ public class ToDoActivity extends BaseActivity
         }
     }
 
-    //get crop images circular
-    public static Bitmap getRoundedRectBitmap(Bitmap bitmap, int pixels) {
-        Bitmap result = null;
-        try {
-            result = Bitmap.createBitmap(100, 100, Bitmap.Config.ARGB_8888);
-            Canvas canvas = new Canvas(result);
-
-            int color = 0xff424242;
-            Paint paint = new Paint();
-            Rect rect = new Rect(0, 0, 200, 200);
-
-            paint.setAntiAlias(true);
-            canvas.drawARGB(0, 0, 0, 0);
-            paint.setColor(color);
-            canvas.drawCircle(50, 50, 50, paint);
-            paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
-            canvas.drawBitmap(bitmap, rect, rect, paint);
-
-        } catch (NullPointerException e) {
-        } catch (OutOfMemoryError o) {
-        }
-        return result;
-    }
-
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        } else if (mToolbar.getVisibility()==View.VISIBLE) {
+        } else if (mToolbar.getVisibility() == View.VISIBLE) {
             if (getSupportFragmentManager().getBackStackEntryCount() == 1) {
-                super.onBackPressed();
                 finish();
+                super.onBackPressed();
             } else {
                 getSupportFragmentManager().popBackStack();
             }
         }
-        if(mToolbardelete.getVisibility()==View.VISIBLE)
-        {
+        if (mToolbardelete.getVisibility() == View.VISIBLE) {
             mToolbardelete.setVisibility(View.GONE);
             mToolbar.setVisibility(View.VISIBLE);
             trashFragment.getRefreshNotes();
-        }else if(mToolSearch.getVisibility()==View.VISIBLE){
+        } else if (mToolSearch.getVisibility() == View.VISIBLE) {
             mToolSearch.setVisibility(View.GONE);
             mToolbar.setVisibility(View.VISIBLE);
-        }else {
-
+        } else {
         }
-
+        mFloatingActionButton.setVisibility(View.VISIBLE);
     }
 
     /*
@@ -319,7 +299,6 @@ public class ToDoActivity extends BaseActivity
             Intent intent = new Intent(ToDoActivity.this, LoginActivity.class);
             finish();
             startActivity(intent);
-
         }
     }
 
@@ -342,7 +321,6 @@ public class ToDoActivity extends BaseActivity
                 startActivityForResult(Intent.createChooser(picker, String.valueOf(R.string.select_pick)), SELECT_PHOTO);
                 break;
             case R.id.imageView_search_bar:
-
                 mToolbar.setVisibility(View.GONE);
                 mToolSearch.setVisibility(View.VISIBLE);
                 Animation animate = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fadeout);
@@ -357,6 +335,7 @@ public class ToDoActivity extends BaseActivity
                 break;
         }
     }
+
     public void setVisibilityTollBar(boolean flag) {
         if (flag) {
             mImageViewsearch.setVisibility(View.GONE);
@@ -383,26 +362,41 @@ public class ToDoActivity extends BaseActivity
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-
         // Handle navigation view item clicks here.
         int id = item.getItemId();
         switch (id) {
             case R.id.nav_notes:
                 notesFragment = new ToDoNotesFragment(toDoAllItemModels);
                 getSupportFragmentManager().beginTransaction().replace(R.id.flayout, notesFragment).addToBackStack(null).commit();
+                mFloatingActionButton.setVisibility(View.VISIBLE);
                 break;
             case R.id.nav_reminders:
-                  reminderFragment = new ReminderFragment(toDoAllItemModels,this);
+                reminderFragment = new ReminderFragment(toDoAllItemModels, this);
                 getSupportFragmentManager().beginTransaction().replace(R.id.flayout, reminderFragment).addToBackStack(null).commit();
+                mFloatingActionButton.setVisibility(View.VISIBLE);
                 break;
             case R.id.nav_archive:
                 archiveFragment = new ArchiveFragment(toDoAllItemModels, this);
                 getSupportFragmentManager().beginTransaction().replace(R.id.flayout, archiveFragment).addToBackStack(null).commit();
+                mFloatingActionButton.setVisibility(View.VISIBLE);
                 break;
             case R.id.nav_trash:
                 trashFragment = new TrashFragment();
                 getSupportFragmentManager().beginTransaction().replace(R.id.flayout, trashFragment).addToBackStack(null).commit();
-                //getupdatedView(mTrashNotes, 4);
+                mFloatingActionButton.setVisibility(View.VISIBLE);   //getupdatedView(mTrashNotes, 4);
+                break;
+            case R.id.nav_share:
+                if (mTextView_Title.getText().equals(Constants.NotesType.ALL_NOTES)) {
+                    mStrshareNote = Constants.NotesType.ALL_NOTES;
+                } else if (mTextView_Title.getText().equals(Constants.NotesType.REMINDER_NOTES)) {
+                    mStrshareNote = Constants.NotesType.REMINDER_NOTES;
+                } else if (mTextView_Title.getText().equals(Constants.NotesType.ARCHIVE_NOTES)) {
+                    mStrshareNote = Constants.NotesType.ARCHIVE_NOTES;
+                } else if (mTextView_Title.getText().equals(Constants.NotesType.TRASH_NOTES)) {
+                    mStrshareNote = Constants.NotesType.TRASH_NOTES;
+                }
+                shareNote = new ShareNote(toDoAllItemModels, this,mStrshareNote);
+                getSupportFragmentManager().beginTransaction().replace(R.id.flayout, shareNote).addToBackStack(null).commit();
                 break;
             case R.id.nav_logout:
                 logoutUser();           //call to Logout Methode
@@ -417,12 +411,11 @@ public class ToDoActivity extends BaseActivity
     public void showDataInActivity(List<ToDoItemModel> toDoItemModelas) {
         this.toDoAllItemModels = toDoItemModelas;
         if (toDoAllItemModels.size() != 0) {
-            editor.putInt(Constants.Stringkeys.LAST_NOTE_COUNT,toDoAllItemModels.size());
+            editor.putInt(Constants.Stringkeys.LAST_NOTE_COUNT, toDoAllItemModels.size());
             editor.commit();
             if (mTextView_Title.getText().equals(Constants.NotesType.ALL_NOTES)) {
-              if(offAdd){
-                  notesFragment.setUpdatedModel(toDoAllItemModels);
-              }
+                if (offAdd) {
+                }
             } else if (mTextView_Title.getText().equals(Constants.NotesType.REMINDER_NOTES)) {
                 reminderFragment.setUpdatedModel(toDoAllItemModels);
             } else if (mTextView_Title.getText().equals(Constants.NotesType.ARCHIVE_NOTES)) {
@@ -446,7 +439,7 @@ public class ToDoActivity extends BaseActivity
         if (!con.isNetworkConnected()) {
             if (requestCode == 2) {
                 if (data != null) {
-                    offAdd=true;
+                    offAdd = true;
                     Bundle ban = data.getBundleExtra(Constants.BundleKey.MEW_NOTE);
                     ToDoItemModel toDoItemModel = new ToDoItemModel();
                     toDoItemModel.setId(Integer.parseInt(ban.getString(Constants.RequestParam.KEY_ID)));
@@ -471,7 +464,6 @@ public class ToDoActivity extends BaseActivity
                         editor.putString(Constants.BundleKey.USER_PROFILE_LOCAL, String.valueOf(mPrfilefilePath));
                         editor.putString(Constants.BundleKey.USER_PROFILE_SERVER, getString(R.string.flag_true));
                         editor.commit();
-
                     }
                 }
             }
@@ -515,51 +507,11 @@ public class ToDoActivity extends BaseActivity
         mImageView_ProfileImage.setImageBitmap(conv_bm);
     }
 
-
     public void getReminderSet(ToDoItemModel todoItem) {
         Bundle bundle;
-        bundle=new Bundle();
-        bundle.putString(Constants.BundleKey.MEW_NOTE_TITLE,todoItem.getTitle());
-        bundle.putString(Constants.BundleKey.MEW_NOTE_DISK,todoItem.getNote());
-        Calendar cal = Calendar.getInstance();
-        cal.add(Calendar.SECOND, 10);
-        SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
-        Date dateN = null;
-        try {
-            dateN = dateFormat.parse(todoItem.getSettime());
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        System.out.println(dateN.getTime());
-        Log.i(TAG, "getTodaysReminder: "+dateN.getTime());
-                   /* Intent intent = new Intent(getActivity(), AlarmReceiver.class);
-                    PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity(), RQS_1, intent, 0);
-                    AlarmManager alarmManager = (AlarmManager)getActivity().getSystemService(Context.ALARM_SERVICE);
-                    alarmManager.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pendingIntent);
-                  */
-        Intent intent = new Intent(getBaseContext(), AlarmReceiver.class);
-        PendingIntent pendingIntent =
-                PendingIntent.getBroadcast(getBaseContext(),
-                        RQS_1, intent, PendingIntent.FLAG_ONE_SHOT);
-        AlarmManager alarmManager =
-                (AlarmManager)getSystemService(Context.ALARM_SERVICE);
-        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT)
-        {
-            alarmManager.set(AlarmManager.RTC_WAKEUP,
-                    cal.getTimeInMillis(), pendingIntent);
-            Toast.makeText(getBaseContext(),
-                    "call alarmManager.set()",
-                    Toast.LENGTH_LONG).show();
-        }else{
-            alarmManager.setExact(AlarmManager.RTC_WAKEUP,
-                    cal.getTimeInMillis(), pendingIntent);
-            Log.i(TAG, "onClick: "+cal.getTimeInMillis());
-            Toast.makeText(getBaseContext(),
-                    "call alarmManager.setExact()",
-                    Toast.LENGTH_LONG).show();
-        }
-                   /* Toast.makeText(getActivity().getBaseContext(),
-                            "call alarmManager.set()",
-                            Toast.LENGTH_LONG).show();*/
+        bundle = new Bundle();
+        bundle.putString(Constants.BundleKey.MEW_NOTE_TITLE, todoItem.getTitle());
+        bundle.putString(Constants.BundleKey.MEW_NOTE_DISK, todoItem.getNote());
+
     }
 }
