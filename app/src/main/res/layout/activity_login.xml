@@ -23,7 +23,6 @@
                 android:layout_height="@dimen/dimen_80dp"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="@dimen/dimen_50dp"
-
                 app:srcCompat="@drawable/todo_icon" />
 
             <android.support.design.widget.TextInputLayout

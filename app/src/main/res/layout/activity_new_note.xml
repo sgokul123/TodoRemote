@@ -18,15 +18,28 @@
             android:layout_marginTop="@dimen/dimen_10dp"
             android:layout_marginLeft="@dimen/dimen_10dp"
             app:srcCompat="?attr/actionModeCloseDrawable" />
-        <android.support.v7.widget.AppCompatImageView
-            android:id="@+id/imageView_pin"
+        <RelativeLayout
+            android:id="@+id/relative_layout_pin"
             android:layout_width="@dimen/dimen_30dp"
-            android:layout_height="@dimen/dimen_20dp"
+            android:layout_height="@dimen/dimen_30dp"
+            android:layout_toLeftOf="@+id/imageView_color_picker"
             android:layout_marginRight="@dimen/dimen_20dp"
             android:layout_marginTop="@dimen/dimen_10dp"
-            android:layout_toLeftOf="@+id/imageView_color_picker"
-            app:srcCompat="@drawable/pin" />
+            >
+                <android.support.v7.widget.AppCompatImageView
+                    android:id="@+id/imageView_point"
+                    android:layout_width="@dimen/dimen_10dp"
+                    android:layout_height="@dimen/dimen_10dp"
+                    app:srcCompat="@drawable/ic_asterisk"
+                    android:visibility="gone"/>
 
+                <android.support.v7.widget.AppCompatImageView
+                    android:id="@+id/imageView_pin"
+                    android:layout_width="@dimen/dimen_30dp"
+                    android:layout_marginTop="@dimen/dimen_2dp"
+                    android:layout_height="@dimen/dimen_20dp"
+                    app:srcCompat="@drawable/pin" />
+        </RelativeLayout>
         <android.support.v7.widget.AppCompatImageView
             android:id="@+id/imageView_color_picker"
             android:layout_width="@dimen/dimen_30dp"

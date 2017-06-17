@@ -38,7 +38,7 @@ import java.util.Locale;
 public class NewNoteActivity extends BaseActivity implements View.OnClickListener, NoteInterface,ColorPickerDialogListener {
 
     final static int RQS_1 = 1;
-    AppCompatImageView mImageViewBack, imageView_Color_Picker, mImageViewReminder, mImageViewSave,imageViewPin;
+    AppCompatImageView mImageViewBack, imageView_Color_Picker, mImageViewReminder, mImageViewSave,imageViewPin,imageViewcircle;
     AppCompatTextView mTextViewReminder, mTextViewEditedAt;
     AppCompatEditText mEditTextNote, mEditTextTitle;
     ProgressUtil progressDialog;
@@ -78,8 +78,8 @@ public class NewNoteActivity extends BaseActivity implements View.OnClickListene
         mEditTextNote = (AppCompatEditText) findViewById(R.id.edittet_note);
         mTextViewEditedAt = (AppCompatTextView) findViewById(R.id.textview_editedat_at);
         relativeLayout= (RelativeLayout) findViewById(R.id.layout_add_new_card);
-
         imageViewPin=(AppCompatImageView) findViewById(R.id.imageView_pin);
+        imageViewcircle=(AppCompatImageView) findViewById(R.id.imageView_point);
 
         progressDialog = new ProgressUtil(this);
         Calendar c = Calendar.getInstance();
@@ -103,6 +103,7 @@ public class NewNoteActivity extends BaseActivity implements View.OnClickListene
         imageView_Color_Picker.setOnClickListener(this);
         mImageViewReminder.setOnClickListener(this);
         mImageViewSave.setOnClickListener(this);
+        imageViewPin.setOnClickListener(this);
     }
 
     @Override
@@ -159,14 +160,16 @@ public class NewNoteActivity extends BaseActivity implements View.OnClickListene
                     finish();
                 }
                 break;
-          /*  case R.id.imageView_color_timepicker:
-                callTimePickerDialog();
-                break;*/
             case R.id.imageView_pin:
-                setPin=true;
+                if(setPin){
+                    setPin=false;
+                    imageViewcircle.setVisibility(View.GONE);
+                }else {
+                    setPin=true;
+                    imageViewcircle.setVisibility(View.VISIBLE);
+                }
                 break;
         }
-
     }
 
     private void callTimePickerDialog() {
@@ -241,7 +244,7 @@ public class NewNoteActivity extends BaseActivity implements View.OnClickListene
             bun.putString(Constants.RequestParam.KEY_STARTDATE, mToDoItemModel.getStartdate());
             bun.putString(Constants.RequestParam.KEY_COLOR,noteColor);
             bun.putString(Constants.RequestParam.KEY_SETTIME,mToDoItemModel.getSettime());
-            //
+
             Calendar cals = Calendar.getInstance();
             cals.set(years, month, day);
             cals.set(Calendar.HOUR_OF_DAY, hour);
@@ -250,9 +253,7 @@ public class NewNoteActivity extends BaseActivity implements View.OnClickListene
             if( mToDoItemModel.getReminder()!=null){
                 scheduleClient.setAlarmForNotification(bun,cals);
             }
-
             Toast.makeText(this, "Notification set for: "+ day +"/"+ (month+1) +"/"+ years, Toast.LENGTH_SHORT).show();
-
             Intent intent = new Intent();
             intent.putExtra(Constants.BundleKey.MEW_NOTE, bun);
             setResult(2, intent);

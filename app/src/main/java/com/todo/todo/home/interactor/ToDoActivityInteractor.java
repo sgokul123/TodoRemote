@@ -62,28 +62,28 @@ public class ToDoActivityInteractor implements TodoInteractorInterface {
     @Override
     public void getToDoData(String uid) {
 
-        Connection con = new Connection(mContext);
-        if (con.isNetworkConnected()) {
+       // Connection con = new Connection(mContext);
+        //if (con.isNetworkConnected()) {
 
-            List<ToDoItemModel> localNotes;
+           /* List<ToDoItemModel> localNotes;
             localNotes = new ArrayList<ToDoItemModel>();
 
             DatabaseHandler db = new DatabaseHandler(mContext);
             localNotes = db.getLocalData();
             if (localNotes.size() == 0) {
 
-                Log.i(TAG, "getToDoData: ");
+                Log.i(TAG, "getToDoData: ");*/
                 getFireBaseDatabase(uid);
 
-            } else {
+          /*  } else {
 
                 UpdateLocalDataOnLocalDataOnServerInteractor updateLocalDataOnServerInteractor = new UpdateLocalDataOnLocalDataOnServerInteractor(mContext, this);
                 updateLocalDataOnServerInteractor.updatetoFirebase(uid, localNotes);
-            }
-        } else {
+            }*/
+       /* } else {
             Log.i(TAG, "getPresenterNotes: local");
             getCallToDatabase();
-        }
+        }*/
     }
 
     @Override
@@ -112,7 +112,6 @@ public class ToDoActivityInteractor implements TodoInteractorInterface {
                     }
                     toDoPresenterInteface.closeProgressDialog();
                 }
-
                 @Override
                 public void onCancelled(DatabaseError error) {
                     Log.i(TAG, "onCancelled: ");

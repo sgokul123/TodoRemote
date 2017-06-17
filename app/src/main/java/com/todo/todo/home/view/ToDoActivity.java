@@ -32,6 +32,8 @@ import android.widget.Toast;
 import com.crashlytics.android.Crashlytics;
 import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.todo.todo.R;
 import com.todo.todo.addnote.view.NewNoteActivity;
 import com.todo.todo.archive.view.ArchiveFragment;
@@ -86,7 +88,7 @@ public class ToDoActivity extends BaseActivity
     private int RQS_1 = 1;
     private ShareNote shareNote;
     private String mStrshareNote;
-
+    DatabaseReference databaseReference;
     //get crop images circular
     public static Bitmap getRoundedRectBitmap(Bitmap bitmap, int pixels) {
         Bitmap result = null;
@@ -126,6 +128,12 @@ public class ToDoActivity extends BaseActivity
 
     @Override
     public void initView() {
+        pref = getSharedPreferences(ProfileeKey.SHAREDPREFERANCES_KEY, MODE_PRIVATE);
+        editor = pref.edit();
+        mUserUID = pref.getString(Constants.BundleKey.USER_USER_UID, Constants.Stringkeys.NULL_VALUIE);
+        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+        databaseReference=FirebaseDatabase.getInstance().getReferenceFromUrl("https://todo-165105.firebaseio.com/").child("usersdata").child(mUserUID);
+        databaseReference.keepSynced(true);
         mFloatingActionButton = (FloatingActionButton) findViewById(R.id.fab);
         mImageView_Linear_Grid = (AppCompatImageView) findViewById(R.id.imageView_grid_linear);
         mImageViewsearch = (AppCompatImageView) findViewById(R.id.imageView_search_bar);
@@ -136,9 +144,8 @@ public class ToDoActivity extends BaseActivity
         FacebookSdk.sdkInitialize(getApplicationContext());             //Facebook Social Login sdk initialize
         mProgressDialog = new ProgressUtil(this);
         util = new Utility(this);
-        pref = getSharedPreferences(ProfileeKey.SHAREDPREFERANCES_KEY, MODE_PRIVATE);
-        editor = pref.edit();
-        mUserUID = pref.getString(Constants.BundleKey.USER_USER_UID, Constants.Stringkeys.NULL_VALUIE);
+
+
         Log.i(TAG, "initView: " + mUserUID);
         // get call to database if User ID is not Null
         if (!mUserUID.equals(Constants.Stringkeys.NULL_VALUIE)) {
@@ -436,7 +443,7 @@ public class ToDoActivity extends BaseActivity
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         Connection con = new Connection(getApplicationContext());
-        if (!con.isNetworkConnected()) {
+        /*if (!con.isNetworkConnected()) {
             if (requestCode == 2) {
                 if (data != null) {
                     offAdd = true;
@@ -448,11 +455,17 @@ public class ToDoActivity extends BaseActivity
                     toDoItemModel.setReminder(ban.getString(Constants.RequestParam.KEY_REMINDER));
                     toDoItemModel.setStartdate(ban.getString(Constants.RequestParam.KEY_STARTDATE));
                     toDoItemModel.setColor(ban.getString(Constants.RequestParam.KEY_COLOR));
+                    toDoItemModel.setArchive("false");
                     toDoAllItemModels.add(toDoItemModel);
-                    showDataInActivity(toDoAllItemModels);
+                    if (mTextView_Title.getText().equals(Constants.NotesType.ALL_NOTES)) {
+                        notesFragment.showDataInActivity(toDoAllItemModels);
+                    } else if (mTextView_Title.getText().equals(Constants.NotesType.REMINDER_NOTES)) {
+                        reminderFragment.setUpdatedModel(toDoAllItemModels);
+                    }
                 }
             }
-        }
+        }*/
+
         if (resultCode == RESULT_OK) {
             if (requestCode == SELECT_PHOTO) {
                 // Get the url from data

@@ -105,7 +105,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.MyViewHolder> 
             holder.layout_card.setBackgroundColor(Integer.parseInt(toDoItemModel.getColor()));
         }
         if(toDoItemModel.isPin()){
-            holder.imageViewPinm.setBackgroundColor(R.color.back_front_color);
+            holder.imageViewPoint.setVisibility(View.VISIBLE);
         }
 
     }
@@ -132,7 +132,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.MyViewHolder> 
         CardView mCardView;
         RelativeLayout layout_card;
         AppCompatTextView textViewReminder,textViewtime;
-        AppCompatImageView imageViewPinm;
+        AppCompatImageView imageViewPinm,imageViewPoint;
 
         public MyViewHolder(View itemView) {
             super(itemView);
@@ -143,7 +143,8 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.MyViewHolder> 
             textViewnote = (TextView) itemView.findViewById(R.id.textview_notes);
             textViewReminder = (AppCompatTextView) itemView.findViewById(R.id.textView_reminder);
             imageViewPinm=(AppCompatImageView)itemView.findViewById(R.id.imageView_pin);
-            textViewtime=(AppCompatTextView) itemView.findViewById(R.id.textView_time);;
+            textViewtime=(AppCompatTextView) itemView.findViewById(R.id.textView_time);
+            imageViewPoint=(AppCompatImageView)itemView.findViewById(R.id.imageView_cardpoint);
             mCardView.setOnClickListener(this);
             imageViewPinm.setOnClickListener(this);
 
@@ -203,7 +204,6 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.MyViewHolder> 
                                     layout_card.setBackgroundColor(Integer.parseInt(mdisplayedtoDoItemModels.get(position).getColor()));
                                 }else {
                                     layout_card.setBackgroundColor(R.color.text_color_white);
-
                                 }
                                 mTrashFragmentInterface.getHideToolBar(true);
                                 mTrashFragmentInterface.getCountDecreament(position);

@@ -221,15 +221,15 @@ public class ReminderFragment extends Fragment implements ToDoActivityInteface, 
             editor.commit();
             mToDoRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL));
             mImageView_Linear_Grid.setImageResource(R.drawable.grid_view);
-        }
+            }
         else
-            {
+        {
             mLinear = false;
             editor.putBoolean(Constants.Stringkeys.STR_LINEAR_GRID, false);
             editor.commit();
             mToDoRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
             mImageView_Linear_Grid.setImageResource(R.drawable.list_view);
-        }
+            }
     }
 
     @Override

@@ -25,6 +25,7 @@ import com.todo.todo.home.model.ToDoItemModel;
 import com.todo.todo.home.presenter.ToDoActivityPresenter;
 import com.todo.todo.removenote.presenter.TrashNotePresenter;
 import com.todo.todo.update.presenter.UpdateNotePresenter;
+import com.todo.todo.util.Connection;
 import com.todo.todo.util.Constants;
 
 import java.util.ArrayList;
@@ -81,12 +82,13 @@ public class ToDoNotesFragment extends Fragment implements ToDoActivityInteface,
         pref = getActivity().getSharedPreferences(Constants.ProfileeKey.SHAREDPREFERANCES_KEY, getActivity().MODE_PRIVATE);
         mLinear = pref.getBoolean(Constants.Stringkeys.STR_LINEAR_GRID, false);
         mUserUID = pref.getString(Constants.BundleKey.USER_USER_UID, Constants.Stringkeys.NULL_VALUIE);
+        mTodoNotes=new ArrayList<>();
+        mPinnedNotes=new ArrayList<>();
         if (!mUserUID.equals(Constants.Stringkeys.NULL_VALUIE)) {
             mToDoActivityPresenter = new ToDoActivityPresenter(this, getActivity().getBaseContext());
             mToDoActivityPresenter.getPresenterNotes(mUserUID);
         }
-        mTodoNotes=new ArrayList<>();
-        mPinnedNotes=new ArrayList<>();
+
         trashNotePresenter = new TrashNotePresenter(getActivity().getBaseContext());
         updateNotePresenter = new UpdateNotePresenter(getActivity().getBaseContext(), this);
         initSwipe();
@@ -107,6 +109,7 @@ public class ToDoNotesFragment extends Fragment implements ToDoActivityInteface,
                 if (mToDoNotesAdapter != null) {
                     Filter filter = mToDoNotesAdapter.getFilter();
                     filter.filter(query);
+                }if (mToDoPinnedAdapter != null) {
                     Filter filter2= mToDoPinnedAdapter.getFilter();
                     filter2.filter(query);
                 }
@@ -223,7 +226,7 @@ public class ToDoNotesFragment extends Fragment implements ToDoActivityInteface,
     }
 
     //get All notes
-    public void getAllToDo(List<ToDoItemModel> toDoItemModels) {
+    public void getAllToDo() {
         mPinnedNotes.clear();
         mTodoNotes.clear();
         if (mAllToDONotes != null) {
@@ -252,9 +255,12 @@ public class ToDoNotesFragment extends Fragment implements ToDoActivityInteface,
 
     @Override
     public void showDataInActivity(List<ToDoItemModel> toDoItemModels) {
-        mAllToDONotes.clear();
+        Connection con = new Connection(getActivity());
+       if(con.isNetworkConnected()){
+           mAllToDONotes.clear();
+       }
         mAllToDONotes = toDoItemModels;
-         getAllToDo(toDoItemModels);
+         getAllToDo();
         if (mTodoNotes.size() != 0||mPinnedNotes.size()!=0) {
             getupdatedView(mTodoNotes,mPinnedNotes, 1);
         } else {

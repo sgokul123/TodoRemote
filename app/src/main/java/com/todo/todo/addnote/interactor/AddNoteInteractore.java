@@ -65,8 +65,8 @@ public class AddNoteInteractore  implements AddNoteInteractorInteface{
 
     @Override
     public void uploadNotes(String uid, String date, ToDoItemModel toDoItemModel) {
-        Connection con=new Connection(mContext);
-        if(con.isNetworkConnected()){
+     //        Connection con=new Connection(mContext);
+       // if(con.isNetworkConnected()){
             mAddNotePresenterInteface.showNoteProgressDialog();
             this.date=date;
             this.uid=uid;
@@ -74,8 +74,8 @@ public class AddNoteInteractore  implements AddNoteInteractorInteface{
 
             FireBaseGetIndex fireBaseGetIndex=new FireBaseGetIndex(this);
             fireBaseGetIndex.getIndex(uid,date);
-        }else{
+      /*  }else{
             storeNote(date,toDoItemModel);
-        }
+        }*/
     }
 }

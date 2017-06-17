@@ -80,7 +80,6 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
     @Override
     public void initView() {
         setContentView(R.layout.activity_login);
-
         //facebook Login API call
         FacebookSdk.sdkInitialize(getApplicationContext());
         AppEventsLogger.activateApp(this);
@@ -98,17 +97,13 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
         textViewSignUp = (AppCompatTextView) findViewById(R.id.registation);
         frameLayout= (FrameLayout) findViewById(R.id.framlayout_login);
         Log.i(TAG, "onCreate: ");
-
         //call to data Access before load activity
         loginLoginPresenter = new LoginLoginPresenter(LoginActivity.this, getApplicationContext());
-
         pref = getSharedPreferences(Constants.ProfileeKey.SHAREDPREFERANCES_KEY, MODE_PRIVATE);
         if (!pref.getString(Constants.BundleKey.FR_USER_EMAIL, "").equals(""))
             mEditTextEmail.setText(pref.getString(Constants.BundleKey.FR_USER_EMAIL, "").toString());
-
         if (!pref.getString(Constants.BundleKey.USER_PASSWORD, "").equals(""))
             mEditTextPassword.setText(pref.getString(Constants.BundleKey.USER_PASSWORD, "").toString());
-
         mSharedPref_editor = pref.edit();
         setOnClickListener();
         googleAPICall();

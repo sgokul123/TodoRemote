@@ -43,16 +43,16 @@ public class ArchiveNoteInteractor {
     public void undoArchivedFirbaseData(String uid, String date, ToDoItemModel toDoItemModel) {
         Connection con=new Connection(mContext);
 
-        if(con.isNetworkConnected()){
+        //if(con.isNetworkConnected()){
             try {
                 toDoItemModel.setArchive(Constants.Stringkeys.FLAG_FALSE);
                 mDatabase.child(Constants.Stringkeys.FIREBASE_DATABASE_PARENT_CHILD).child(uid).child(date).child(String.valueOf(toDoItemModel.getId())).setValue(toDoItemModel);
             }catch (Exception e){
                 Log.i(TAG, "updateFirbaseData: ");
             }
-        }
+        /*}
         else {
-        }
+        }*/
     }
 
     public void getIndexUpdateNotes(ToDoItemModel doItemModel, List<ToDoItemModel> toDoItemModels, String mUserUID) {

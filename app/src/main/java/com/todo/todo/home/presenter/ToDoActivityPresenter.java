@@ -86,9 +86,9 @@ public class ToDoActivityPresenter implements ToDoPresenterInteface {
 
     @Override
     public void getCallBackNotes(List<ToDoItemModel> toDoItemModels) {
-
-        DatabaseHandler db = new DatabaseHandler(mContext, this);
-        db.addAllNotesToLocal(toDoItemModels);
+        mToDoActivityInteface.showDataInActivity(toDoItemModels);
+        /*DatabaseHandler db = new DatabaseHandler(mContext, this);
+        db.addAllNotesToLocal(toDoItemModels);*/
     }
 
     @Override

@@ -61,14 +61,11 @@ public class FireBaseGetIndex  {
     public void getIndexer(final String uid, final List<ToDoItemModel> LocalItemModels){
         mDatabase = FirebaseDatabase.getInstance();
         mRef = mDatabase.getReference().child("usersdata").child(uid);
-
         mRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists()) {
-
+                if (dataSnapshot.exists()){
                     if(LocalItemModels.size()>0){
-
                         ToDoItemModel todoModel=LocalItemModels.get(0);
                         LocalItemModels.remove(0);
                         if (dataSnapshot.child(todoModel.getStartdate()).exists()) {
@@ -78,7 +75,6 @@ public class FireBaseGetIndex  {
                             setData(uid,0,todoModel);
                         }
                     }else{
-
                     }
                 }
                 else {
@@ -88,7 +84,6 @@ public class FireBaseGetIndex  {
             @Override
             public void onCancelled(DatabaseError error) {
                 Log.i(TAG, "onCancelled: ");
-
             }
         });
 

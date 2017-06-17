@@ -141,7 +141,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             values.put(Constants.RequestParam.KEY_SETTIME, toDoItemModel.getSettime());
             values.put(Constants.RequestParam.KEY_COLOR,toDoItemModel.getColor());
             // Inserting Row
-
+            if(toDoItemModel.isPin()){
+                values.put(Constants.RequestParam.KEY_PIN,"true");
+            }else {
+                values.put(Constants.RequestParam.KEY_PIN,"false");
+            }
             db.insert(Constants.RequestParam.NOTES_TABLE_NAME, null, values);
 
             Log.i(TAG, "addToDo: success");
@@ -175,6 +179,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             values.put(Constants.RequestParam.KEY_ARCHIVE, toDoItemModel.getArchive());
             values.put(Constants.RequestParam.KEY_SETTIME, toDoItemModel.getSettime());
             values.put(Constants.RequestParam.KEY_COLOR,toDoItemModel.getColor());
+            if(toDoItemModel.isPin()){
+                values.put(Constants.RequestParam.KEY_PIN,"true");
+            }else {
+                values.put(Constants.RequestParam.KEY_PIN,"false");
+            }
             editor = pref.edit();
             editor.putInt(Constants.Stringkeys.LAST_INDEX,id+1);
             editor.commit();
@@ -210,6 +219,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             values.put(Constants.RequestParam.KEY_ARCHIVE, toDoItemModel.getArchive());
             values.put(Constants.RequestParam.KEY_SETTIME, toDoItemModel.getSettime());
             values.put(Constants.RequestParam.KEY_COLOR,toDoItemModel.getColor());
+            if(toDoItemModel.isPin()){
+                values.put(Constants.RequestParam.KEY_PIN,"true");
+            }else {
+                values.put(Constants.RequestParam.KEY_PIN,"false");
+            }
             editor = pref.edit();
             editor.putInt(Constants.Stringkeys.LAST_INDEX,id+1);
             editor.commit();
@@ -243,6 +257,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             values.put(Constants.RequestParam.KEY_ARCHIVE, toDoItemModel.getArchive());
             values.put(Constants.RequestParam.KEY_SETTIME, toDoItemModel.getSettime());
             values.put(Constants.RequestParam.KEY_COLOR,toDoItemModel.getColor());
+            if(toDoItemModel.isPin()){
+                values.put(Constants.RequestParam.KEY_PIN,"true");
+            }else {
+                values.put(Constants.RequestParam.KEY_PIN,"false");
+            }
             // Inserting Row
             db.insert(Constants.RequestParam.TRASH_TABLE_NAME+uid, null, values);
             Log.i(TAG, "addToDo:  success");
@@ -320,7 +339,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 values.put(Constants.RequestParam.KEY_ARCHIVE, toDoItemModel.getArchive()); // ToDo REMINDER
                 values.put(Constants.RequestParam.KEY_SETTIME, toDoItemModel.getSettime());
                 values.put(Constants.RequestParam.KEY_COLOR,toDoItemModel.getColor());
-
+                if(toDoItemModel.isPin()){
+                    values.put(Constants.RequestParam.KEY_PIN,"true");
+                }else {
+                    values.put(Constants.RequestParam.KEY_PIN,"false");
+                }
                 db.insert(Constants.RequestParam.NOTES_TABLE_NAME, null, values);
             }
             toDoActivityPresenter.sendCallBackNotes(toDoItemModels);
@@ -452,7 +475,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         values.put(Constants.RequestParam.KEY_ARCHIVE, toDoItemModel.getArchive());
         values.put(Constants.RequestParam.KEY_SETTIME, toDoItemModel.getSettime());
         values.put(Constants.RequestParam.KEY_COLOR,toDoItemModel.getColor());
-
+        if(toDoItemModel.isPin()){
+            values.put(Constants.RequestParam.KEY_PIN,"true");
+        }else {
+            values.put(Constants.RequestParam.KEY_PIN,"false");
+        }
         // updating row  
         return db.update(Constants.RequestParam.NOTES_TABLE_NAME, values, Constants.RequestParam.KEY_ID + " = ?",
                 new String[]{String.valueOf(toDoItemModel.getId())});
@@ -472,6 +499,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         values.put(Constants.RequestParam.KEY_ARCHIVE, toDoItemModel.getArchive());
         values.put(Constants.RequestParam.KEY_SETTIME, toDoItemModel.getSettime());
         values.put(Constants.RequestParam.KEY_COLOR,toDoItemModel.getColor());
+        if(toDoItemModel.isPin()){
+            values.put(Constants.RequestParam.KEY_PIN,"true");
+        }else {
+            values.put(Constants.RequestParam.KEY_PIN,"false");
+        }
         if(isUpdate){
             return db.update(Constants.RequestParam.LOCAL_UPDATE_TABLE_NAME, values, ""+Constants.RequestParam.KEY_ID +"= '"+ toDoItemModel.getId()+"' AND "+Constants.RequestParam.KEY_STARTDATE+"='"+toDoItemModel.getId() , null);
         }

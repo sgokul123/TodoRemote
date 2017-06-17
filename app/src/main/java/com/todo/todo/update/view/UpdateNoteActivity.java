@@ -36,7 +36,7 @@ import java.util.List;
 import java.util.Locale;
 
 public class UpdateNoteActivity extends BaseActivity implements View.OnClickListener, ToDoActivityInteface ,ColorPickerDialogListener {
-    AppCompatImageView imageViewBack, imageView_Color_Picker, imageViewReminder, imageViewSave,imageViewPin;
+    AppCompatImageView imageViewBack, imageView_Color_Picker, imageViewReminder, imageViewSave,imageViewPin,imageViewPoint;
     AppCompatTextView textViewReminder;
     AppCompatEditText editTextNote, editTextTitle;
     UpdateNotePresenter updateNotePresenter;
@@ -76,8 +76,9 @@ public class UpdateNoteActivity extends BaseActivity implements View.OnClickList
         relativeLayout= (RelativeLayout) findViewById(R.id.layout_add_new_card);
 
         imageViewPin=(AppCompatImageView) findViewById(R.id.imageView_pin);
+        imageViewPoint=(AppCompatImageView) findViewById(R.id.imageView_point);
+        imageViewPoint.setVisibility(View.GONE);
         progressDialog = new ProgressUtil(this);
-
         mUsre_UID = getIntent().getStringExtra(Constants.BundleKey.USER_USER_UID);
         Bundle ban = getIntent().getBundleExtra(Constants.BundleKey.MEW_NOTE);
         setData(ban);
@@ -119,9 +120,10 @@ public class UpdateNoteActivity extends BaseActivity implements View.OnClickList
             relativeLayout.setBackgroundColor(Integer.parseInt(ban.getString(Constants.RequestParam.KEY_COLOR)));
         }
         if(setPin){
-            imageViewPin.setBackgroundColor(R.color.back_front_color);
+            imageViewPoint.setVisibility(View.VISIBLE);
         }
         if (mIsArchive.equals(R.string.flag_true)) {
+
         }
     }
 
@@ -183,10 +185,12 @@ supportFinishAfterTransition();
             case R.id.imageView_pin:
                 if(setPin){
                     setPin=false;
-                    imageViewPin.setBackgroundColor(0x00000000);
+                    imageViewPoint.setVisibility(View.GONE);
+                  //  imageViewPin.setBackgroundColor(0x00000000);
                 }else {
                     setPin=true;
-                    imageViewPin.setBackgroundColor(R.color.back_front_color);
+                    imageViewPoint.setVisibility(View.VISIBLE);
+                   // imageViewPin.setBackgroundColor(R.color.back_front_color);
                 }
                 break;
         }

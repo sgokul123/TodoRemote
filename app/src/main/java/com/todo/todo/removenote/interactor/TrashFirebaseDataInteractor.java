@@ -114,10 +114,10 @@ public class TrashFirebaseDataInteractor {
         }
 
         if (toDoItemModels != null) {
-            Connection con = new Connection(mContext);
-            if (con.isNetworkConnected()) {
+          /*  Connection con = new Connection(mContext);
+            if (con.isNetworkConnected()) {*/
                 removeData(toDoItemModels, mUserUID, startdate, index);
-            }
+            //}
         }
     }
 

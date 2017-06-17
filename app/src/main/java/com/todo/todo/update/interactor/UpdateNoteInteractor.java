@@ -29,7 +29,7 @@ public class UpdateNoteInteractor implements UpdateNoteInteractorInterface {
     public void updateFirbaseData(String uid, String date, ToDoItemModel toDoItemModel) {
 
         Connection con = new Connection(mContext);
-        if (con.isNetworkConnected()) {
+       // if (con.isNetworkConnected()) {
             mUpdateNotePresenter.showProgress();
             try {
 
@@ -41,10 +41,10 @@ public class UpdateNoteInteractor implements UpdateNoteInteractorInterface {
                 mUpdateNotePresenter.getResponce(false);
                 mUpdateNotePresenter.closeProgress();
             }
-        } else {
+        /*} else {
             
             Toast.makeText(mContext, Constants.InternateConnnection.CHICK_CONNECTION, Toast.LENGTH_SHORT).show();
-        }
+        }*/
     }
 
     @Override
@@ -74,7 +74,7 @@ public class UpdateNoteInteractor implements UpdateNoteInteractorInterface {
     public void getArchiveFirebaseData(String uid, String date, ToDoItemModel toDoItemModel) {
         Connection con = new Connection(mContext);
 
-        if (con.isNetworkConnected()) {
+        //if (con.isNetworkConnected()) {
             mUpdateNotePresenter.showProgress();
             try {
                 Log.i(TAG, "getArchiveFirebaseData: ");
@@ -87,11 +87,11 @@ public class UpdateNoteInteractor implements UpdateNoteInteractorInterface {
                 mUpdateNotePresenter.getResponce(false);
                 mUpdateNotePresenter.closeProgress();
             }
-        } else {
+       /* } else {
             toDoItemModel.setArchive(Constants.Stringkeys.FLAGT_TRUE);
             updateLocal(toDoItemModel);
 
-        }
+        }*/
     }
 
    /* @Override
