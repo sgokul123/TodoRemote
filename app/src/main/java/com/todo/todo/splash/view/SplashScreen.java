@@ -12,6 +12,8 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 
 import com.crashlytics.android.Crashlytics;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.todo.todo.R;
 import com.todo.todo.home.view.ToDoActivity;
 import com.todo.todo.login.view.LoginActivity;
@@ -27,12 +29,16 @@ public class SplashScreen extends Activity {
     SharedPreferences pref;
     SharedPreferences.Editor editor;
     boolean flag = false;
+    private DatabaseReference databaseReference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Fabric.with(this, new Crashlytics());
         setContentView(R.layout.activity_splash_screen);
+        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+        databaseReference=FirebaseDatabase.getInstance().getReferenceFromUrl("https://todo-165105.firebaseio.com/").child("usersdata");
+        databaseReference.keepSynced(true);
 
         textView_title = (AppCompatTextView) findViewById(R.id.textView_splash);
         Animation animationimage = AnimationUtils.loadAnimation(getApplicationContext(),
@@ -46,33 +52,26 @@ public class SplashScreen extends Activity {
         pref = getSharedPreferences("testapp", MODE_PRIVATE);
         editor = pref.edit();
         isLogin();
+
         if (!isFinishing() && flag) {
             getToDoCall();
         } else {
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
-
                     if (flag) {
                         getToDoCall();
-
                     } else {
-
                         Intent i = new Intent(SplashScreen.this, LoginActivity.class);
                         startActivity(i);
                         finish();
                     }
-
                 }
             }, SPLASH_TIME_OUT);
         }
-
-
     }
 
     private void getToDoCall() {
-
-
         Log.i("", "isLogin: ");
         String mStrEmail = pref.getString(Constants.BundleKey.USER_EMAIL, "abcd@gmail.com");
         //redirect to next activity

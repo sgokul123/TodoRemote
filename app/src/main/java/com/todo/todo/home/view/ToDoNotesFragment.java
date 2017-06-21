@@ -29,6 +29,8 @@ import com.todo.todo.util.Connection;
 import com.todo.todo.util.Constants;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class ToDoNotesFragment extends Fragment implements ToDoActivityInteface, View.OnClickListener {
@@ -124,7 +126,10 @@ public class ToDoNotesFragment extends Fragment implements ToDoActivityInteface,
             @Override
             public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
                 Log.i(TAG, "onMove: " + viewHolder.getAdapterPosition() + "  target" + target.getAdapterPosition());
+                int start=viewHolder.getAdapterPosition();
+                int end= target.getAdapterPosition();
                 mToDoNotesAdapter.notifyItemMoved(viewHolder.getAdapterPosition(), target.getAdapterPosition());
+                trashNotePresenter.dragNotes(mUserUID,mTodoNotes.get(start),mTodoNotes.get(end));
                 return true;
             }
 
@@ -146,7 +151,6 @@ public class ToDoNotesFragment extends Fragment implements ToDoActivityInteface,
                             });
                     snackbar.setDuration(2000);     //5 sec duration if want to Undo else it will Archive note
                     snackbar.show();
-
                     if (mTodoNotes.size() == 1) {
                         mTodoNotes.remove(0);
                     }
@@ -171,13 +175,10 @@ public class ToDoNotesFragment extends Fragment implements ToDoActivityInteface,
                         });
                 snackbar.setDuration(2000);     //5 sec duration if want to Undo else it will Archive note
                 snackbar.show();
-
             }
         };
-
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
         itemTouchHelper.attachToRecyclerView(mToDoRecyclerView);
-
     }
 
     @Override
@@ -187,10 +188,7 @@ public class ToDoNotesFragment extends Fragment implements ToDoActivityInteface,
             case R.id.imageView_grid_linear:
                 getAlterRecyclerLayout();
                 break;
-
         }
-
-
     }
 
 
@@ -245,12 +243,10 @@ public class ToDoNotesFragment extends Fragment implements ToDoActivityInteface,
 
     @Override
     public void closeProgressDialog() {
-
     }
 
     @Override
     public void showProgressDialog() {
-
     }
 
     @Override
@@ -259,8 +255,22 @@ public class ToDoNotesFragment extends Fragment implements ToDoActivityInteface,
        if(con.isNetworkConnected()){
            mAllToDONotes.clear();
        }
-        mAllToDONotes = toDoItemModels;
-         getAllToDo();
+        getsortList(toDoItemModels);
+    }
+
+    private void getsortList(List<ToDoItemModel> toDoItemModels) {
+          int size=toDoItemModels.size(),pos=0;
+        List<ToDoItemModel> toDoItemModels1=toDoItemModels;
+        mAllToDONotes.clear();
+        for(int i=0;i<size-1;i++){
+                    for(int j=i+1;j<size;j++){
+                        if(toDoItemModels1.get(i).getSrid()>toDoItemModels1.get(j).getSrid()){
+                            Collections.swap(toDoItemModels1, i, j);
+                        }
+                    }
+            }
+        mAllToDONotes=toDoItemModels1;
+        getAllToDo();
         if (mTodoNotes.size() != 0||mPinnedNotes.size()!=0) {
             getupdatedView(mTodoNotes,mPinnedNotes, 1);
         } else {
@@ -269,7 +279,6 @@ public class ToDoNotesFragment extends Fragment implements ToDoActivityInteface,
     }
 
     private void getupdatedView(List<ToDoItemModel> mTodoNotes, List<ToDoItemModel> pinnedNotes, int i) {
-
         switch (i) {
             case 1:
                 if (pinnedNotes.size() == 0 && mTodoNotes.size()==0) {
@@ -282,6 +291,7 @@ public class ToDoNotesFragment extends Fragment implements ToDoActivityInteface,
                     mToDoRecyclerView.setVisibility(View.VISIBLE);
                     getRecyclerLayout();
                     if(pinnedNotes.size()!=0){
+                        textViewPinned.setVisibility(View.VISIBLE);
                         mPinnedRecyclerView.setVisibility(View.VISIBLE);
                         mToDoPinnedAdapter = new ItemAdapter(getActivity(), pinnedNotes);
                         mPinnedRecyclerView.setAdapter(mToDoPinnedAdapter);
@@ -289,33 +299,29 @@ public class ToDoNotesFragment extends Fragment implements ToDoActivityInteface,
                     if(mTodoNotes.size()!=0){
                         mToDoNotesAdapter = new ItemAdapter(getActivity(), mTodoNotes);
                         mToDoRecyclerView.setAdapter(mToDoNotesAdapter);
+                        if(pinnedNotes.size()==0){
+                            textViewPinned.setVisibility(View.GONE);
+                        }
                     }
-
                 }
-
                 break;
         }
     }
 
     @Override
     public void getResponce(boolean flag) {
-
     }
 
     @Override
     public void getUndoArchivedNote(int position) {
-
     }
 
     @Override
     public void hideToolBar(boolean flag) {
-
     }
 
     public void setUpdatedModel(List<ToDoItemModel> toDoAllItemModels) {
-
         this.mAllToDONotes = toDoAllItemModels;
         showDataInActivity(mAllToDONotes);
-
     }
 }

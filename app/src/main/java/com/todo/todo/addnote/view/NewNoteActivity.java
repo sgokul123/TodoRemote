@@ -19,6 +19,9 @@ import android.widget.RelativeLayout;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
 import com.jrummyapps.android.colorpicker.ColorPickerDialog;
 import com.jrummyapps.android.colorpicker.ColorPickerDialogListener;
 import com.todo.todo.R;
@@ -57,6 +60,8 @@ public class NewNoteActivity extends BaseActivity implements View.OnClickListene
     private  int day,month,years,hour,mint,sec;
     private ScheduleClient scheduleClient;
     private  boolean setPin=false;
+    private AdView mAdView;
+    public  boolean isSetReminder=false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,7 +85,9 @@ public class NewNoteActivity extends BaseActivity implements View.OnClickListene
         relativeLayout= (RelativeLayout) findViewById(R.id.layout_add_new_card);
         imageViewPin=(AppCompatImageView) findViewById(R.id.imageView_pin);
         imageViewcircle=(AppCompatImageView) findViewById(R.id.imageView_point);
-
+        mAdView = (AdView) findViewById(R.id.ad_notes_advs);
+        showBannerAd();
+       // mAdView.loadAd(adRequest);
         progressDialog = new ProgressUtil(this);
         Calendar c = Calendar.getInstance();
         SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss");
@@ -95,7 +102,11 @@ public class NewNoteActivity extends BaseActivity implements View.OnClickListene
         reminderPicker();
         setOnClickListener();
     }
-
+    private void showBannerAd() {
+        MobileAds.initialize(this,getString(R.string.adnotes_id));
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
+    }
     @Override
     public void setOnClickListener() {
       //  mTextViewEditedAt.setOnClickListener(this);
@@ -105,7 +116,29 @@ public class NewNoteActivity extends BaseActivity implements View.OnClickListene
         mImageViewSave.setOnClickListener(this);
         imageViewPin.setOnClickListener(this);
     }
+    @Override
+    public void onPause() {
+        if (mAdView != null) {
+            mAdView.pause();
+        }
+        super.onPause();
+    }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (mAdView != null) {
+            mAdView.resume();
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        if (mAdView != null) {
+            mAdView.destroy();
+        }
+        super.onDestroy();
+    }
     @Override
     public void enterFromBottomAnimation() {
     }
@@ -181,6 +214,7 @@ public class NewNoteActivity extends BaseActivity implements View.OnClickListene
                                           int minute) {
                         hour=hourOfDay;
                         mint=minute;
+                        isSetReminder=true;
                         mTextViewEditedAt.setText(hourOfDay + ":" + minute+":"+sec);
                     }
                 }, hour, mint, false);
@@ -233,9 +267,8 @@ public class NewNoteActivity extends BaseActivity implements View.OnClickListene
     }
 
     @Override
-    public void getResponce(boolean flag) {
+    public void getResponce(boolean flag){
         if (flag) {
-          ///  Toast.makeText(this, "succcess", Toast.LENGTH_SHORT).show();
             Bundle bun = new Bundle();
             bun.putString(Constants.RequestParam.KEY_ID, String.valueOf(mToDoItemModel.getId()));
             bun.putString(Constants.RequestParam.KEY_NOTE, mToDoItemModel.getNote());
@@ -250,10 +283,11 @@ public class NewNoteActivity extends BaseActivity implements View.OnClickListene
             cals.set(Calendar.HOUR_OF_DAY, hour);
             cals.set(Calendar.MINUTE, mint);
             cals.set(Calendar.SECOND, sec);
-            if( mToDoItemModel.getReminder()!=null){
+
+            if(isSetReminder){
                 scheduleClient.setAlarmForNotification(bun,cals);
             }
-            Toast.makeText(this, "Notification set for: "+ day +"/"+ (month+1) +"/"+ years, Toast.LENGTH_SHORT).show();
+
             Intent intent = new Intent();
             intent.putExtra(Constants.BundleKey.MEW_NOTE, bun);
             setResult(2, intent);

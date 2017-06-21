@@ -18,6 +18,8 @@ public class Constants {
         String NOTE_ORDER_ID = "noteorderid";
         String MEW_NOTE_TITLE="title";
         String MEW_NOTE_DISK="discription";
+        String USER__LOCAL_REGISTER="localregistered";
+        String USER_USER_UID_LOCAL="localregisteruid";
     }
 
     public interface ProfileeKey {
@@ -45,6 +47,7 @@ public class Constants {
         String KEY_COLOR = "color";
         String LOCAL_UPDATE_TABLE_NAME="localupdate";
         String KEY_PIN="keypin";
+        String KEY_SRID="srid";
     }
 
     public interface NotesType {
@@ -71,6 +74,7 @@ public class Constants {
         String FIREBASE_DATABASE_TRASH="trashData";
         String MASSEGE_GET_RESTORE="Note Get Restored";
         String LOCAL_REGISTER="localregister";
+        String LAST_SRNO="lastsrno";
     }
 
     public interface InternateConnnection {

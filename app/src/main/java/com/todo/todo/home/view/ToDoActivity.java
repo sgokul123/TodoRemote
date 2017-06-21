@@ -131,9 +131,10 @@ public class ToDoActivity extends BaseActivity
         pref = getSharedPreferences(ProfileeKey.SHAREDPREFERANCES_KEY, MODE_PRIVATE);
         editor = pref.edit();
         mUserUID = pref.getString(Constants.BundleKey.USER_USER_UID, Constants.Stringkeys.NULL_VALUIE);
-        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
-        databaseReference=FirebaseDatabase.getInstance().getReferenceFromUrl("https://todo-165105.firebaseio.com/").child("usersdata").child(mUserUID);
-        databaseReference.keepSynced(true);
+        if(mUserUID.equals("localregister")){
+            mUserUID = pref.getString(Constants.BundleKey.USER_USER_UID_LOCAL, Constants.Stringkeys.NULL_VALUIE);
+        }
+
         mFloatingActionButton = (FloatingActionButton) findViewById(R.id.fab);
         mImageView_Linear_Grid = (AppCompatImageView) findViewById(R.id.imageView_grid_linear);
         mImageViewsearch = (AppCompatImageView) findViewById(R.id.imageView_search_bar);
@@ -152,6 +153,7 @@ public class ToDoActivity extends BaseActivity
             mToDoActivityPresenter = new ToDoActivityPresenter(this, this);
             mToDoActivityPresenter.getPresenterNotes(mUserUID);
         }
+
         mToolSearch = (Toolbar) findViewById(R.id.toolbarsearch);
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         mToolbardelete = (Toolbar) findViewById(R.id.toolbar_delete);
@@ -422,6 +424,7 @@ public class ToDoActivity extends BaseActivity
             editor.commit();
             if (mTextView_Title.getText().equals(Constants.NotesType.ALL_NOTES)) {
                 if (offAdd) {
+
                 }
             } else if (mTextView_Title.getText().equals(Constants.NotesType.REMINDER_NOTES)) {
                 reminderFragment.setUpdatedModel(toDoAllItemModels);
@@ -443,7 +446,7 @@ public class ToDoActivity extends BaseActivity
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         Connection con = new Connection(getApplicationContext());
-        /*if (!con.isNetworkConnected()) {
+        if (!con.isNetworkConnected()) {
             if (requestCode == 2) {
                 if (data != null) {
                     offAdd = true;
@@ -455,6 +458,7 @@ public class ToDoActivity extends BaseActivity
                     toDoItemModel.setReminder(ban.getString(Constants.RequestParam.KEY_REMINDER));
                     toDoItemModel.setStartdate(ban.getString(Constants.RequestParam.KEY_STARTDATE));
                     toDoItemModel.setColor(ban.getString(Constants.RequestParam.KEY_COLOR));
+                    toDoItemModel.setSrid(ban.getInt(Constants.RequestParam.KEY_SRID));
                     toDoItemModel.setArchive("false");
                     toDoAllItemModels.add(toDoItemModel);
                     if (mTextView_Title.getText().equals(Constants.NotesType.ALL_NOTES)) {
@@ -464,7 +468,7 @@ public class ToDoActivity extends BaseActivity
                     }
                 }
             }
-        }*/
+        }
 
         if (resultCode == RESULT_OK) {
             if (requestCode == SELECT_PHOTO) {

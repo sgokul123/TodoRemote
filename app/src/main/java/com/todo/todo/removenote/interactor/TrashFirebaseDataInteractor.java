@@ -218,4 +218,17 @@ public class TrashFirebaseDataInteractor {
         }
         mRef.child(mUserUID).child(String.valueOf(id[0])).setValue(doItemModel);
     }
+
+    public void getDragNotes(String mUserUID, ToDoItemModel toDoItemModel, ToDoItemModel toDoItemModel1) {
+        int  startsrid=toDoItemModel.getSrid();
+        int endsrid=toDoItemModel1.getSrid();
+        ToDoItemModel startItemModel=toDoItemModel;
+        ToDoItemModel distItemModel1=toDoItemModel1;
+        startItemModel.setSrid(endsrid);
+        distItemModel1.setSrid(startsrid);
+        mRef = mDatabase.getReference().child(Constants.Stringkeys.FIREBASE_DATABASE_PARENT_CHILD);
+        mRef.child(mUserUID).child(startItemModel.getStartdate()).child(String.valueOf(startItemModel.getId())).setValue(startItemModel);
+        mRef.child(mUserUID).child(distItemModel1.getStartdate()).child(String.valueOf(distItemModel1.getId())).setValue(distItemModel1);
+
+    }
 }

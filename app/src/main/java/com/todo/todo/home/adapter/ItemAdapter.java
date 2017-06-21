@@ -12,6 +12,8 @@ import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.util.Pair;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatImageView;
@@ -233,6 +235,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.MyViewHolder> 
                         bun.putString(Constants.RequestParam.KEY_SETTIME, mdisplayedtoDoItemModels.get(position).getSettime());
                         bun.putString(Constants.RequestParam.KEY_COLOR, mdisplayedtoDoItemModels.get(position).getColor());
                          bun.putBoolean(Constants.RequestParam.KEY_PIN, mdisplayedtoDoItemModels.get(position).isPin());
+                         bun.putInt(Constants.RequestParam.KEY_SRID, mdisplayedtoDoItemModels.get(position).getSrid());
                          intent.putExtra(Constants.BundleKey.USER_USER_UID, mUserUID);
                         intent.putExtra(Constants.BundleKey.MEW_NOTE, bun);
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

@@ -54,6 +54,7 @@ public class UpdateNoteActivity extends BaseActivity implements View.OnClickList
     private  int day,month,years,hour,mint,sec;
     private  boolean setPin=false;
     private RelativeLayout relativeLayout;
+    private int sridno=0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,6 +115,8 @@ public class UpdateNoteActivity extends BaseActivity implements View.OnClickList
         Note_id = ban.getString(Constants.RequestParam.KEY_ID);
         mIsArchive = ban.getString(Constants.RequestParam.KEY_ARCHIVE);
         StrSetTime = ban.getString(Constants.RequestParam.KEY_SETTIME);
+        sridno = ban.getInt(Constants.RequestParam.KEY_SRID);
+
         setPin=ban.getBoolean(Constants.RequestParam.KEY_PIN);
         if(ban.getString(Constants.RequestParam.KEY_COLOR)!=null){
             noteColor=ban.getString(Constants.RequestParam.KEY_COLOR);
@@ -225,6 +228,7 @@ supportFinishAfterTransition();
         mToDoItemModel.setSettime(StrSetTime);
         mToDoItemModel.setColor(noteColor);
         mToDoItemModel.setPin(setPin);
+        mToDoItemModel.setSrid(sridno);
         updateNotePresenter.updateNote(mUsre_UID, StrStartDate, mToDoItemModel);
     }
 
@@ -268,6 +272,8 @@ supportFinishAfterTransition();
             bun.putString(Constants.RequestParam.KEY_REMINDER, mToDoItemModel.getReminder());
             bun.putString(Constants.RequestParam.KEY_SETTIME, mToDoItemModel.getSettime());
             bun.putString(Constants.RequestParam.KEY_COLOR,noteColor);
+            bun.putInt(Constants.RequestParam.KEY_SRID,sridno);
+            bun.putBoolean(Constants.RequestParam.KEY_SRID,setPin);
 
             Intent intent = new Intent();
             intent.putExtra(Constants.BundleKey.MEW_NOTE, bun);

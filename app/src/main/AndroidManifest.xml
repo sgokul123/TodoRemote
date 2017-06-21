@@ -27,6 +27,9 @@
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="fcb78aba9d1e4b69e317e5c5660aedfafcdb61b7" />
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
 
         <activity android:name=".login.view.LoginActivity" />
         <activity android:name=".splash.view.SplashScreen">
@@ -62,8 +65,9 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".addnote.view.NewNoteActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
-
+            android:theme="@style/AppTheme.NoActionBar"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            />
         <service android:name=".alarmmanager.NotifyService" />
         <service android:name=".alarmmanager.ScheduleService" />
 

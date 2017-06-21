@@ -101,4 +101,28 @@ public class FireBaseGetIndex  {
         }
     }
 
+    public void getIndexLocal(final String uid, final String date) {
+        mDatabase = FirebaseDatabase.getInstance();
+        mRef = mDatabase.getReference().child("usersdata");
+        mRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (mAddNoteInteractorInteface != null) {
+                    if (dataSnapshot.child(uid).child(date).exists()) {
+                        int size = (int) dataSnapshot.child(uid).child(date).getChildrenCount();
+                        mAddNoteInteractorInteface.setDataLocal(size);
+                        mAddNoteInteractorInteface = null;
+                    } else {
+                        mAddNoteInteractorInteface.setData(0);
+                        mAddNoteInteractorInteface = null;
+                    }
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError error) {
+                Log.i(TAG, "onCancelled: ");
+
+            }
+        });
+    }
 }

@@ -39,10 +39,8 @@ public class ArchiveNoteInteractor {
         mDatabase = FirebaseDatabase.getInstance().getReference();
     }
 
-
     public void undoArchivedFirbaseData(String uid, String date, ToDoItemModel toDoItemModel) {
         Connection con=new Connection(mContext);
-
         //if(con.isNetworkConnected()){
             try {
                 toDoItemModel.setArchive(Constants.Stringkeys.FLAG_FALSE);
@@ -96,7 +94,6 @@ public class ArchiveNoteInteractor {
             }
             mRef.child(mUserUID).child(startdate).child(String.valueOf(pos)).setValue(null);
         }
-
         if(startdate.equals(getCurrentDate())){
             pref = mContext.getSharedPreferences(Constants.ProfileeKey.SHAREDPREFERANCES_KEY,mContext.MODE_PRIVATE);
             editor=pref.edit();
@@ -104,6 +101,7 @@ public class ArchiveNoteInteractor {
             editor.commit();
         }
     }
+
     public String getCurrentDate() {
         String date = "";
         Calendar c = Calendar.getInstance();
@@ -115,7 +113,6 @@ public class ArchiveNoteInteractor {
 
     public void undoREstoredFirbaseData(String mUserUID, String startdate, ToDoItemModel toDoItemModel) {
         Connection con=new Connection(mContext);
-
         if(con.isNetworkConnected()){
             try {
                 toDoItemModel.setArchive(Constants.Stringkeys.FLAGT_TRUE);
@@ -145,7 +142,6 @@ public class ArchiveNoteInteractor {
                 restoreData(toDoItems, mUserUID, startdate, index);
             }
         }
-
     }
 
     private void restoreData(List<ToDoItemModel> toDoItems, String mUserUID, String startdate, int index) {
@@ -172,4 +168,5 @@ public class ArchiveNoteInteractor {
             mRef.child(mUserUID).child(startdate).child(String.valueOf(pos)).setValue(null);
         }
     }
+
 }

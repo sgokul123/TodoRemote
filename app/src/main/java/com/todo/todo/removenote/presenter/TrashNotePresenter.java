@@ -86,4 +86,9 @@ public class TrashNotePresenter {
         databaseHandler.deleteMultipleTrash(trashNotes);
         getTrashNotes();
     }
+
+    public void dragNotes(String mUserUID, ToDoItemModel toDoItemModel, ToDoItemModel toDoItemModel1) {
+        trashFirebaseDataInteractor.getDragNotes(mUserUID,toDoItemModel,toDoItemModel1);
+
+    }
 }

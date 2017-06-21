@@ -8,6 +8,7 @@ public class ToDoItemModel {
 
     private int id;
     private String title;
+    private  int srid;
     private String reminder;
     private String note;
     private String startdate;
@@ -19,7 +20,7 @@ public class ToDoItemModel {
 
     }
 
-    public ToDoItemModel(int id, String title, String reminder, String note, String archive, String Settime,String color,boolean isPin) {
+    public ToDoItemModel(int id, String title, String reminder, String note, String archive, String Settime,String color,boolean isPin,int srid) {
         this.id = id;
         this.title = title;
         this.reminder = reminder;
@@ -28,9 +29,10 @@ public class ToDoItemModel {
         this.settime = Settime;
         this.color=color;
         this.isPin=isPin;
+        this.srid=srid;
     }
 
-    public ToDoItemModel(String title, String note, String reminder, String startdate, String archive, String Settime,String color,boolean isPin) {
+    public ToDoItemModel(String title, String note, String reminder, String startdate, String archive, String Settime,String color,boolean isPin,int srid) {
         this.title = title;
         this.reminder = reminder;
         this.note = note;
@@ -39,10 +41,10 @@ public class ToDoItemModel {
         this.settime = Settime;
         this.color=color;
         this.isPin=isPin;
-
+        this.srid=srid;
     }
 
-    public ToDoItemModel(int id, String title, String note, String reminder, String startdate, String archive, String Settime,String color,boolean isPin) {
+    public ToDoItemModel(int id, String title, String note, String reminder, String startdate, String archive, String Settime,String color,boolean isPin,int srid) {
         this.id = id;
         this.title = title;
         this.reminder = reminder;
@@ -52,7 +54,7 @@ public class ToDoItemModel {
         this.settime = Settime;
         this.color=color;
         this.isPin=isPin;
-
+        this.srid=srid;
     }
 
     public String getSettime() {
@@ -111,7 +113,6 @@ public class ToDoItemModel {
         this.note = note;
     }
 
-
     public String getColor() {
         return color;
     }
@@ -127,4 +128,8 @@ public class ToDoItemModel {
     public void setPin(boolean pin) {
         isPin = pin;
     }
+
+    public int getSrid() {  return srid;    }
+
+    public void setSrid(int srid) {  this.srid = srid;    }
 }

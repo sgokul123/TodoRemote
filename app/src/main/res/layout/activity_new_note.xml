@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:transitionName="@string/transition_title_image"
+    xmlns:ads="http://schemas.android.com/apk/res-auto"
     tools:context=".addnote.view.NewNoteActivity">
     <RelativeLayout
         android:id="@+id/layout_add_new_card"
@@ -96,6 +97,7 @@
             android:layout_height="wrap_content"
             android:layout_marginRight="@dimen/dimen_20dp"
             android:layout_marginLeft="@dimen/dimen_20dp"
+            android:layout_above="@+id/textview_reminder_text"
             android:layout_marginTop="@dimen/dimen_20dp">
             <android.support.v7.widget.AppCompatEditText
                 android:id="@+id/edittet_note"
@@ -127,9 +129,17 @@
             android:layout_height="wrap_content"
             android:hint="Edited 2:56 PM"
             android:textAlignment="center"
+            android:layout_marginBottom="@dimen/dimen_10dp"
+            android:layout_above="@+id/ad_notes_advs"/>
+        <com.google.android.gms.ads.AdView
+            android:id="@+id/ad_notes_advs"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:layout_marginBottom="@dimen/dimen_10dp" />
-
+            android:layout_centerHorizontal="true"
+            ads:adSize="BANNER"
+            ads:adUnitId="@string/adnotes_id">
+        </com.google.android.gms.ads.AdView>
     </RelativeLayout>
 
 </RelativeLayout>

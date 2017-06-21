@@ -11,4 +11,6 @@ public interface AddNoteInteractorInteface {
     public  void getResponce(boolean flag);
     public  void storeNote(String date,ToDoItemModel toDoItemModel);
     public  void uploadNotes(String uid,String date,ToDoItemModel toDoItemModel);
+
+    void setDataLocal(int size);
 }

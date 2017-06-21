@@ -21,6 +21,7 @@ public class AsyncTaskLoadImage extends AsyncTask<String, String, Bitmap> {
 
     @Override
     protected Bitmap doInBackground(String... params) {
+
         Bitmap bitmap = null;
         try {
             URL url = new URL(params[0]);
@@ -29,6 +30,7 @@ public class AsyncTaskLoadImage extends AsyncTask<String, String, Bitmap> {
             Log.e(TAG, e.getMessage());
         }
         return bitmap;
+
     }
 
     @Override

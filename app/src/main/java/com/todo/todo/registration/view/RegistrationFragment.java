@@ -17,6 +17,7 @@ import com.todo.todo.R;
 import com.todo.todo.home.view.ToDoActivity;
 import com.todo.todo.registration.model.RegistrationModel;
 import com.todo.todo.registration.presenter.RegistrationPresenter;
+import com.todo.todo.util.Connection;
 import com.todo.todo.util.Constants;
 import com.todo.todo.util.ProgressUtil;
 
@@ -140,7 +141,6 @@ public class RegistrationFragment extends Fragment implements View.OnClickListen
         getActivity().finish();*/
         // Toast.makeText(getActivity(), "Successfull", Toast.LENGTH_SHORT).show();
 
-
         mEditTextEmail.setText("");
         mEditTextLName.setText("");
         mEditTextMobile.setText("");
@@ -151,6 +151,7 @@ public class RegistrationFragment extends Fragment implements View.OnClickListen
 
     @Override
     public void getLocalResponce(RegistrationModel model) {
+        Connection con =new Connection(getActivity());
         mSharedPref_editor.putString(Constants.BundleKey.USER_REGISTER, getString(R.string.flag_true));
         mSharedPref_editor.putString(Constants.BundleKey.USER_EMAIL, model.getMailid());
         mSharedPref_editor.putString(Constants.BundleKey.USER_USER_UID, Constants.Stringkeys.LOCAL_REGISTER);
@@ -159,21 +160,23 @@ public class RegistrationFragment extends Fragment implements View.OnClickListen
         mSharedPref_editor.putString(Constants.ProfileeKey.MOBILE_NO, model.getMobileNo());
         mSharedPref_editor.putString(Constants.ProfileeKey.PROFILE_IMAGE_URL, model.getUserProfileImgurl());
         mSharedPref_editor.putString(Constants.BundleKey.USER_PROFILE_SERVER, getString(R.string.flag_true));
+        if(!con.isNetworkConnected()){
+            mSharedPref_editor.putString(Constants.BundleKey.USER_USER_UID_LOCAL, model.getMailid().substring(0,model.getMailid().indexOf("@")));
+            mSharedPref_editor.putBoolean(Constants.BundleKey.USER__LOCAL_REGISTER, true);
+        }
         mSharedPref_editor.commit();
-        ///  show registration page again
-        Intent intent = new Intent(getActivity(), ToDoActivity.class);
+        Intent intent = new Intent(getActivity(),ToDoActivity.class);
         startActivity(intent);
         getActivity().finish();
     }
 
-
     public boolean validateAll() {
-
         boolean mobil = false, name = false, lname = false, pass = false, email = false;
         if (mEditTextMobile.getText().toString().length() == 10) {
             mobil = true;
             Log.i(TAG, "validateAll: mobil");
         }
+
         mPattern = Pattern.compile(EMAIL_PATTERN);
         mMatcher = mPattern.matcher(mEditTextEmail.getText().toString());
         if (mMatcher.matches()) {
@@ -193,7 +196,6 @@ public class RegistrationFragment extends Fragment implements View.OnClickListen
         //Password validation
 
         if ((mEditTextPassword.getText().toString().length() >= 5) && (!(mEditTextPassword.getText().toString().equals("")))) {
-
             if (mEditTextPassword.getText().toString().equals(mEditTextPassword2.getText().toString())) {
                 Log.i(TAG, "validateAll:pass ");
                 pass = true;

@@ -54,5 +54,5 @@
     <string name="data_type">text/plain</string>
     <string name="login_fail">Login Failuar</string>
     <string name="registration_fail">Registration Fail</string>
-
+    <string name="adnotes_id">ca-app-pub-8481129705111709/7538068478</string>
 </resources>

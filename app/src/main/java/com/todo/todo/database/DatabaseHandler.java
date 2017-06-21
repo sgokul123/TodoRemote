@@ -140,6 +140,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             values.put(Constants.RequestParam.KEY_ARCHIVE, toDoItemModel.getArchive());
             values.put(Constants.RequestParam.KEY_SETTIME, toDoItemModel.getSettime());
             values.put(Constants.RequestParam.KEY_COLOR,toDoItemModel.getColor());
+            values.put(Constants.RequestParam.KEY_SRID,toDoItemModel.getSrid());
+
             // Inserting Row
             if(toDoItemModel.isPin()){
                 values.put(Constants.RequestParam.KEY_PIN,"true");
@@ -179,6 +181,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             values.put(Constants.RequestParam.KEY_ARCHIVE, toDoItemModel.getArchive());
             values.put(Constants.RequestParam.KEY_SETTIME, toDoItemModel.getSettime());
             values.put(Constants.RequestParam.KEY_COLOR,toDoItemModel.getColor());
+            values.put(Constants.RequestParam.KEY_SRID,toDoItemModel.getSrid());
+
             if(toDoItemModel.isPin()){
                 values.put(Constants.RequestParam.KEY_PIN,"true");
             }else {
@@ -219,6 +223,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             values.put(Constants.RequestParam.KEY_ARCHIVE, toDoItemModel.getArchive());
             values.put(Constants.RequestParam.KEY_SETTIME, toDoItemModel.getSettime());
             values.put(Constants.RequestParam.KEY_COLOR,toDoItemModel.getColor());
+            values.put(Constants.RequestParam.KEY_SRID,toDoItemModel.getSrid());
             if(toDoItemModel.isPin()){
                 values.put(Constants.RequestParam.KEY_PIN,"true");
             }else {
@@ -257,6 +262,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             values.put(Constants.RequestParam.KEY_ARCHIVE, toDoItemModel.getArchive());
             values.put(Constants.RequestParam.KEY_SETTIME, toDoItemModel.getSettime());
             values.put(Constants.RequestParam.KEY_COLOR,toDoItemModel.getColor());
+            values.put(Constants.RequestParam.KEY_SRID,toDoItemModel.getSrid());
+
             if(toDoItemModel.isPin()){
                 values.put(Constants.RequestParam.KEY_PIN,"true");
             }else {
@@ -315,6 +322,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 ToDo.setArchive(cursor.getString(5));
                 ToDo.setSettime(cursor.getString(6));
                 ToDo.setColor(cursor.getString(7));
+                ToDo.setSrid(cursor.getInt(8));
                 // Adding ToDo to list
                 mToDoList.add(ToDo);
             } while (cursor.moveToNext());
@@ -339,6 +347,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 values.put(Constants.RequestParam.KEY_ARCHIVE, toDoItemModel.getArchive()); // ToDo REMINDER
                 values.put(Constants.RequestParam.KEY_SETTIME, toDoItemModel.getSettime());
                 values.put(Constants.RequestParam.KEY_COLOR,toDoItemModel.getColor());
+                values.put(Constants.RequestParam.KEY_SRID,toDoItemModel.getSrid());
+
                 if(toDoItemModel.isPin()){
                     values.put(Constants.RequestParam.KEY_PIN,"true");
                 }else {
@@ -371,7 +381,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         }else {  isPin=false;
         }
         ToDoItemModel toDoItemModel = new ToDoItemModel(Integer.parseInt(cursor.getString(0)),
-                cursor.getString(1), cursor.getString(2), cursor.getString(3), cursor.getString(4), cursor.getString(5),cursor.getString(6),cursor.getString(7),isPin);
+                cursor.getString(1), cursor.getString(2), cursor.getString(3), cursor.getString(4), cursor.getString(5),cursor.getString(6),cursor.getString(7),isPin,cursor.getInt(8));
         // return toDoItemModel
         return toDoItemModel;
 
@@ -399,6 +409,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 ToDo.setArchive(cursor.getString(5));
                 ToDo.setSettime(cursor.getString(6));
                 ToDo.setColor(cursor.getString(7));
+                ToDo.setSrid(cursor.getInt(8));
+
                 // Adding ToDo to list  
                 ToDoList.add(ToDo);
             } while (cursor.moveToNext());
@@ -423,6 +435,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 ToDo.setArchive(cursor2.getString(5));
                 ToDo.setSettime(cursor2.getString(6));
                 ToDo.setColor(cursor2.getString(7));
+                ToDo.setSrid(cursor.getInt(8));
+
                 // Adding ToDo to list
                 ToDoList.add(ToDo);
             } while (cursor2.moveToNext());
@@ -455,6 +469,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 localNote.setArchive(cursor2.getString(5));
                 localNote.setSettime(cursor2.getString(6));
                 localNote.setColor(cursor2.getString(7));
+                localNote.setSrid(cursor2.getInt(8));
+
                 // Adding ToDo to list
                 localNotes.add(localNote);
             } while (cursor2.moveToNext());
@@ -475,6 +491,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         values.put(Constants.RequestParam.KEY_ARCHIVE, toDoItemModel.getArchive());
         values.put(Constants.RequestParam.KEY_SETTIME, toDoItemModel.getSettime());
         values.put(Constants.RequestParam.KEY_COLOR,toDoItemModel.getColor());
+        values.put(Constants.RequestParam.KEY_SRID,toDoItemModel.getSrid());
+
         if(toDoItemModel.isPin()){
             values.put(Constants.RequestParam.KEY_PIN,"true");
         }else {
@@ -499,6 +517,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         values.put(Constants.RequestParam.KEY_ARCHIVE, toDoItemModel.getArchive());
         values.put(Constants.RequestParam.KEY_SETTIME, toDoItemModel.getSettime());
         values.put(Constants.RequestParam.KEY_COLOR,toDoItemModel.getColor());
+        values.put(Constants.RequestParam.KEY_SRID,toDoItemModel.getSrid());
+
         if(toDoItemModel.isPin()){
             values.put(Constants.RequestParam.KEY_PIN,"true");
         }else {

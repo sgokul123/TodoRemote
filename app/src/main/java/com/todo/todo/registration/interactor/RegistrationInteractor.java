@@ -53,7 +53,6 @@ public class RegistrationInteractor implements RegistrationInteractorInterface {
             }else {
                 RegistrationDatabase registrationDatabase=new RegistrationDatabase(mContext,this);
                 registrationDatabase.addUser(registrationModel);
-                //registrationPresenter.registrationFailuar();
             }
 
         } catch (Exception e) {
