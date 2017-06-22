@@ -47,8 +47,8 @@
     <string name="get_trash_null">Trash is Empty</string>
     <string name="transition_title_image">transition</string>
     <string name="title">Color Picker</string>
-    <string name="gettitle">Title    :   \\n\\n</string>
-    <string name="getdiscription">\\n   Discription     : \\n\\n</string>
+    <string name="gettitle">Title    :   \n\n</string>
+    <string name="getdiscription">\n    Discription     : \n\n</string>
     <string name="share_item">Share using</string>
     <string name="yes">YES</string>
     <string name="data_type">text/plain</string>

@@ -87,8 +87,12 @@ public class TrashNotePresenter {
         getTrashNotes();
     }
 
-    public void dragNotes(String mUserUID, ToDoItemModel toDoItemModel, ToDoItemModel toDoItemModel1) {
+  /*  public void dragNotes(String mUserUID, ToDoItemModel toDoItemModel, ToDoItemModel toDoItemModel1) {
         trashFirebaseDataInteractor.getDragNotes(mUserUID,toDoItemModel,toDoItemModel1);
 
+    }*/
+
+    public void dragNotes(String mUserUID, List<ToDoItemModel> mTodoNotes, int start, int end) {
+        trashFirebaseDataInteractor.getDragNotes(mUserUID,mTodoNotes,start,end);
     }
 }

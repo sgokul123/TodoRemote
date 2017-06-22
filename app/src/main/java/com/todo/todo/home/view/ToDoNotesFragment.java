@@ -52,14 +52,17 @@ public class ToDoNotesFragment extends Fragment implements ToDoActivityInteface,
     private TrashNotePresenter trashNotePresenter;
     private UpdateNotePresenter updateNotePresenter;
     private ToDoActivityPresenter mToDoActivityPresenter;
+    private  boolean draged=false;
     private ItemAdapter mToDoPinnedAdapter;
+    int start=-1,end;
+    ToDoActivity mToDoActivity;
 
-    public ToDoNotesFragment() {
-    }
-
-    public ToDoNotesFragment(List<ToDoItemModel> toDoAllItemModels) {
+    public ToDoNotesFragment(ToDoActivity toDoActivity, List<ToDoItemModel> toDoAllItemModels) {
         this.mAllToDONotes = toDoAllItemModels;
+        this.mToDoActivity=toDoActivity;
     }
+
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -126,11 +129,22 @@ public class ToDoNotesFragment extends Fragment implements ToDoActivityInteface,
             @Override
             public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
                 Log.i(TAG, "onMove: " + viewHolder.getAdapterPosition() + "  target" + target.getAdapterPosition());
-                int start=viewHolder.getAdapterPosition();
-                int end= target.getAdapterPosition();
+                if(start==-1){
+                    start=viewHolder.getAdapterPosition();
+                }
+                 end= target.getAdapterPosition();
                 mToDoNotesAdapter.notifyItemMoved(viewHolder.getAdapterPosition(), target.getAdapterPosition());
-                trashNotePresenter.dragNotes(mUserUID,mTodoNotes.get(start),mTodoNotes.get(end));
                 return true;
+            }
+
+            @Override
+            public void clearView(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
+               if(start>=0){
+                       trashNotePresenter.dragNotes(mUserUID,mTodoNotes,end,start);
+                   draged=true;
+                   mToDoActivity.setdraged(true);
+               }
+                super.clearView(recyclerView, viewHolder);
             }
 
             @Override
@@ -157,8 +171,8 @@ public class ToDoNotesFragment extends Fragment implements ToDoActivityInteface,
                 } else {
                     getArchive(mToDoNotesAdapter, position, mTodoNotes.get(position));
                 }
-
             }
+
             //Archive Note Methode  And do Undo if required
             public void getArchive(final ItemAdapter archiveitemAdapter, final int position, final ToDoItemModel toDoItemModel) {
                 final String date = toDoItemModel.getStartdate();
@@ -190,7 +204,6 @@ public class ToDoNotesFragment extends Fragment implements ToDoActivityInteface,
                 break;
         }
     }
-
 
     private void getRecyclerLayout() {
         if (mLinear) {
@@ -251,15 +264,13 @@ public class ToDoNotesFragment extends Fragment implements ToDoActivityInteface,
 
     @Override
     public void showDataInActivity(List<ToDoItemModel> toDoItemModels) {
-        Connection con = new Connection(getActivity());
-       if(con.isNetworkConnected()){
-           mAllToDONotes.clear();
-       }
-        getsortList(toDoItemModels);
+        if(!draged){
+            getsortList(toDoItemModels);
+        }
     }
 
     private void getsortList(List<ToDoItemModel> toDoItemModels) {
-          int size=toDoItemModels.size(),pos=0;
+          int size=toDoItemModels.size();
         List<ToDoItemModel> toDoItemModels1=toDoItemModels;
         mAllToDONotes.clear();
         for(int i=0;i<size-1;i++){
@@ -269,7 +280,11 @@ public class ToDoNotesFragment extends Fragment implements ToDoActivityInteface,
                         }
                     }
             }
+
+        editor = pref.edit();
         mAllToDONotes=toDoItemModels1;
+        editor.putInt(Constants.Stringkeys.LAST_SRNO,mAllToDONotes.get(size-1).getSrid()+1);
+        editor.commit();
         getAllToDo();
         if (mTodoNotes.size() != 0||mPinnedNotes.size()!=0) {
             getupdatedView(mTodoNotes,mPinnedNotes, 1);

@@ -30,15 +30,20 @@ public class SplashScreen extends Activity {
     SharedPreferences.Editor editor;
     boolean flag = false;
     private DatabaseReference databaseReference;
+    private boolean resumed=false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Fabric.with(this, new Crashlytics());
         setContentView(R.layout.activity_splash_screen);
-        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
-        databaseReference=FirebaseDatabase.getInstance().getReferenceFromUrl("https://todo-165105.firebaseio.com/").child("usersdata");
-        databaseReference.keepSynced(true);
+
+        if(databaseReference==null){
+            FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+            databaseReference=FirebaseDatabase.getInstance().getReferenceFromUrl("https://todo-165105.firebaseio.com/").child("usersdata");
+            databaseReference.keepSynced(true);
+        }
+
 
         textView_title = (AppCompatTextView) findViewById(R.id.textView_splash);
         Animation animationimage = AnimationUtils.loadAnimation(getApplicationContext(),
@@ -55,7 +60,8 @@ public class SplashScreen extends Activity {
 
         if (!isFinishing() && flag) {
             getToDoCall();
-        } else {
+        }
+        else {
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
@@ -69,6 +75,12 @@ public class SplashScreen extends Activity {
                 }
             }, SPLASH_TIME_OUT);
         }
+    }
+
+    @Override
+    protected void onResume() {
+        resumed=true;
+        super.onResume();
     }
 
     private void getToDoCall() {

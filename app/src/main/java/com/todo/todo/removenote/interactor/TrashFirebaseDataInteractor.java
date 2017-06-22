@@ -219,16 +219,32 @@ public class TrashFirebaseDataInteractor {
         mRef.child(mUserUID).child(String.valueOf(id[0])).setValue(doItemModel);
     }
 
-    public void getDragNotes(String mUserUID, ToDoItemModel toDoItemModel, ToDoItemModel toDoItemModel1) {
-        int  startsrid=toDoItemModel.getSrid();
-        int endsrid=toDoItemModel1.getSrid();
-        ToDoItemModel startItemModel=toDoItemModel;
-        ToDoItemModel distItemModel1=toDoItemModel1;
-        startItemModel.setSrid(endsrid);
-        distItemModel1.setSrid(startsrid);
+
+    public void getDragNotes(String mUserUID, List<ToDoItemModel> mTodoNotes, int start, int end) {
         mRef = mDatabase.getReference().child(Constants.Stringkeys.FIREBASE_DATABASE_PARENT_CHILD);
-        mRef.child(mUserUID).child(startItemModel.getStartdate()).child(String.valueOf(startItemModel.getId())).setValue(startItemModel);
-        mRef.child(mUserUID).child(distItemModel1.getStartdate()).child(String.valueOf(distItemModel1.getId())).setValue(distItemModel1);
+        if(start>end){
+            for(int i=start;i>end;i--){
+                int  startsrid=mTodoNotes.get(i).getSrid();
+                int endsrid=mTodoNotes.get(i-1).getSrid();
+                ToDoItemModel startItemModel=mTodoNotes.get(i);
+                ToDoItemModel distItemModel1=mTodoNotes.get(i-1);
+                startItemModel.setSrid(endsrid);
+                distItemModel1.setSrid(startsrid);
+                mRef.child(mUserUID).child(startItemModel.getStartdate()).child(String.valueOf(startItemModel.getId())).setValue(startItemModel);
+                mRef.child(mUserUID).child(distItemModel1.getStartdate()).child(String.valueOf(distItemModel1.getId())).setValue(distItemModel1);
+            }
+        }else{
+            for(int i=start;i<end;i++){
+                int  startsrid=mTodoNotes.get(i).getSrid();
+                int endsrid=mTodoNotes.get(i+1).getSrid();
+                ToDoItemModel startItemModel=mTodoNotes.get(i);
+                ToDoItemModel distItemModel1=mTodoNotes.get(i+1);
+                startItemModel.setSrid(endsrid);
+                distItemModel1.setSrid(startsrid);
+                mRef.child(mUserUID).child(startItemModel.getStartdate()).child(String.valueOf(startItemModel.getId())).setValue(startItemModel);
+                mRef.child(mUserUID).child(distItemModel1.getStartdate()).child(String.valueOf(distItemModel1.getId())).setValue(distItemModel1);
+            }
+        }
 
     }
 }

@@ -89,6 +89,8 @@ public class ToDoActivity extends BaseActivity
     private ShareNote shareNote;
     private String mStrshareNote;
     DatabaseReference databaseReference;
+    private boolean draged=false;
+
     //get crop images circular
     public static Bitmap getRoundedRectBitmap(Bitmap bitmap, int pixels) {
         Bitmap result = null;
@@ -116,7 +118,7 @@ public class ToDoActivity extends BaseActivity
         Fabric.with(this, new Crashlytics());
         setContentView(R.layout.activity_to_do);
         toDoAllItemModels = new ArrayList<>();
-        notesFragment = new ToDoNotesFragment(toDoAllItemModels);
+        notesFragment = new ToDoNotesFragment(this,toDoAllItemModels);
         getSupportFragmentManager().beginTransaction().replace(R.id.flayout, notesFragment).addToBackStack(null).commit();
         initView();
         updateNotePresenter = new UpdateNotePresenter(ToDoActivity.this, this);
@@ -375,7 +377,7 @@ public class ToDoActivity extends BaseActivity
         int id = item.getItemId();
         switch (id) {
             case R.id.nav_notes:
-                notesFragment = new ToDoNotesFragment(toDoAllItemModels);
+                notesFragment = new ToDoNotesFragment(this,toDoAllItemModels);
                 getSupportFragmentManager().beginTransaction().replace(R.id.flayout, notesFragment).addToBackStack(null).commit();
                 mFloatingActionButton.setVisibility(View.VISIBLE);
                 break;
@@ -418,21 +420,24 @@ public class ToDoActivity extends BaseActivity
 
     @Override
     public void showDataInActivity(List<ToDoItemModel> toDoItemModelas) {
-        this.toDoAllItemModels = toDoItemModelas;
-        if (toDoAllItemModels.size() != 0) {
-            editor.putInt(Constants.Stringkeys.LAST_NOTE_COUNT, toDoAllItemModels.size());
-            editor.commit();
-            if (mTextView_Title.getText().equals(Constants.NotesType.ALL_NOTES)) {
-                if (offAdd) {
+       if(!draged) {
+           this.toDoAllItemModels = toDoItemModelas;
+           if (toDoAllItemModels.size() != 0) {
+               editor.putInt(Constants.Stringkeys.LAST_NOTE_COUNT, toDoAllItemModels.size());
+               editor.commit();
+               if (mTextView_Title.getText().equals(Constants.NotesType.ALL_NOTES)) {
+                   if (offAdd) {
 
-                }
-            } else if (mTextView_Title.getText().equals(Constants.NotesType.REMINDER_NOTES)) {
-                reminderFragment.setUpdatedModel(toDoAllItemModels);
-            } else if (mTextView_Title.getText().equals(Constants.NotesType.ARCHIVE_NOTES)) {
-                archiveFragment.setUpdatedModel(toDoAllItemModels);
-            }
-        } else {
-        }
+                   }
+               } else if (mTextView_Title.getText().equals(Constants.NotesType.REMINDER_NOTES)) {
+                   reminderFragment.setUpdatedModel(toDoAllItemModels);
+               } else if (mTextView_Title.getText().equals(Constants.NotesType.ARCHIVE_NOTES)) {
+                   archiveFragment.setUpdatedModel(toDoAllItemModels);
+               }
+           }
+           else {
+           }
+       }
     }
 
     @Override
@@ -530,5 +535,9 @@ public class ToDoActivity extends BaseActivity
         bundle.putString(Constants.BundleKey.MEW_NOTE_TITLE, todoItem.getTitle());
         bundle.putString(Constants.BundleKey.MEW_NOTE_DISK, todoItem.getNote());
 
+    }
+
+    public void setdraged(boolean b) {
+        draged=b;
     }
 }

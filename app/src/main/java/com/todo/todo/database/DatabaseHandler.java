@@ -74,28 +74,28 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         String CREATE_ToDoS_TABLE = "CREATE TABLE IF NOT EXISTS " + Constants.RequestParam.NOTES_TABLE_NAME + "("
                 + Constants.RequestParam.KEY_ID + " INTEGER PRIMARY KEY," + Constants.RequestParam.KEY_TITLE + " TEXT," + Constants.RequestParam.KEY_NOTE + " TEXT,"
-                + Constants.RequestParam.KEY_REMINDER + " TEXT," + Constants.RequestParam.KEY_STARTDATE + " TEXT," + Constants.RequestParam.KEY_ARCHIVE + " TEXT," + Constants.RequestParam.KEY_SETTIME + " TEXT," + Constants.RequestParam.KEY_COLOR + " TEXT," + Constants.RequestParam.KEY_PIN + " TEXT" + ")";
+                + Constants.RequestParam.KEY_REMINDER + " TEXT," + Constants.RequestParam.KEY_STARTDATE + " TEXT," + Constants.RequestParam.KEY_ARCHIVE + " TEXT," + Constants.RequestParam.KEY_SETTIME + " TEXT," + Constants.RequestParam.KEY_COLOR + " TEXT," + Constants.RequestParam.KEY_PIN + " TEXT," + Constants.RequestParam.KEY_SRID+ " INTEGER" + ")";
         db.execSQL(CREATE_ToDoS_TABLE);
 
         String CREATE_LOCAL_ToDoS_TABLE = "CREATE TABLE IF NOT EXISTS " + Constants.RequestParam.LOCAL_NOTES_TABLE_NAME + "("
                 + Constants.RequestParam.KEY_ID + " INTEGER PRIMARY KEY," + Constants.RequestParam.KEY_TITLE + " TEXT," + Constants.RequestParam.KEY_NOTE + " TEXT,"
-                + Constants.RequestParam.KEY_REMINDER + " TEXT," + Constants.RequestParam.KEY_STARTDATE + " TEXT," + Constants.RequestParam.KEY_ARCHIVE + " TEXT," + Constants.RequestParam.KEY_SETTIME + " TEXT," + Constants.RequestParam.KEY_COLOR + " TEXT," + Constants.RequestParam.KEY_PIN + " TEXT" + ")";
+                + Constants.RequestParam.KEY_REMINDER + " TEXT," + Constants.RequestParam.KEY_STARTDATE + " TEXT," + Constants.RequestParam.KEY_ARCHIVE + " TEXT," + Constants.RequestParam.KEY_SETTIME + " TEXT," + Constants.RequestParam.KEY_COLOR + " TEXT," + Constants.RequestParam.KEY_PIN + " TEXT," + Constants.RequestParam.KEY_SRID+ " INTEGER" + ")";
         db.execSQL(CREATE_LOCAL_ToDoS_TABLE);
         String CREATE_LOCAL_UPDATE_TABLE = "CREATE TABLE IF NOT EXISTS " + Constants.RequestParam.LOCAL_UPDATE_TABLE_NAME + "("
                 + Constants.RequestParam.KEY_ID + " INTEGER PRIMARY KEY," + Constants.RequestParam.KEY_TITLE + " TEXT," + Constants.RequestParam.KEY_NOTE + " TEXT,"
-                + Constants.RequestParam.KEY_REMINDER + " TEXT," + Constants.RequestParam.KEY_STARTDATE + " TEXT," + Constants.RequestParam.KEY_ARCHIVE + " TEXT," + Constants.RequestParam.KEY_SETTIME + " TEXT," + Constants.RequestParam.KEY_COLOR + " TEXT," + Constants.RequestParam.KEY_PIN + " TEXT" + ")";
+                + Constants.RequestParam.KEY_REMINDER + " TEXT," + Constants.RequestParam.KEY_STARTDATE + " TEXT," + Constants.RequestParam.KEY_ARCHIVE + " TEXT," + Constants.RequestParam.KEY_SETTIME + " TEXT," + Constants.RequestParam.KEY_COLOR + " TEXT," + Constants.RequestParam.KEY_PIN + " TEXT," + Constants.RequestParam.KEY_SRID+ " INTEGER" + ")";
         db.execSQL(CREATE_LOCAL_ToDoS_TABLE);
 
         String CREATE_TRASH_TABLE = "CREATE TABLE IF NOT EXISTS " + Constants.RequestParam.TRASH_TABLE_NAME+uid + "("
                 + Constants.RequestParam.KEY_ID + " INTEGER PRIMARY KEY," + Constants.RequestParam.KEY_TITLE + " TEXT," + Constants.RequestParam.KEY_NOTE + " TEXT,"
-                + Constants.RequestParam.KEY_REMINDER + " TEXT," + Constants.RequestParam.KEY_STARTDATE + " TEXT," + Constants.RequestParam.KEY_ARCHIVE + " TEXT," + Constants.RequestParam.KEY_SETTIME + " TEXT," + Constants.RequestParam.KEY_COLOR + " TEXT," + Constants.RequestParam.KEY_PIN + " TEXT" + ")";
+                + Constants.RequestParam.KEY_REMINDER + " TEXT," + Constants.RequestParam.KEY_STARTDATE + " TEXT," + Constants.RequestParam.KEY_ARCHIVE + " TEXT," + Constants.RequestParam.KEY_SETTIME + " TEXT," + Constants.RequestParam.KEY_COLOR + " TEXT," + Constants.RequestParam.KEY_PIN + " TEXT," + Constants.RequestParam.KEY_SRID+ " INTEGER" + ")";
         db.execSQL(CREATE_TRASH_TABLE);
     }
 
     public  void createTrashTable(SQLiteDatabase db){
         String CREATE_TRASH_TABLE = "CREATE TABLE IF NOT EXISTS " + Constants.RequestParam.TRASH_TABLE_NAME+uid + "("
                 + Constants.RequestParam.KEY_ID + " INTEGER PRIMARY KEY," + Constants.RequestParam.KEY_TITLE + " TEXT,"+ Constants.RequestParam.KEY_NOTE + " TEXT,"
-                + Constants.RequestParam.KEY_REMINDER + " TEXT," + Constants.RequestParam.KEY_STARTDATE + " TEXT," + Constants.RequestParam.KEY_ARCHIVE + " TEXT," + Constants.RequestParam.KEY_SETTIME + " TEXT," + Constants.RequestParam.KEY_COLOR + " TEXT," + Constants.RequestParam.KEY_PIN + " TEXT" + ")";
+                + Constants.RequestParam.KEY_REMINDER + " TEXT," + Constants.RequestParam.KEY_STARTDATE + " TEXT," + Constants.RequestParam.KEY_ARCHIVE + " TEXT," + Constants.RequestParam.KEY_SETTIME + " TEXT," + Constants.RequestParam.KEY_COLOR + " TEXT," + Constants.RequestParam.KEY_PIN + " TEXT," + Constants.RequestParam.KEY_SRID+ " INTEGER" + ")";
         db.execSQL(CREATE_TRASH_TABLE);
     }
 
@@ -118,7 +118,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
         String CREATE_ToDoS_TABLE = "CREATE TABLE IF NOT EXISTS " + Constants.RequestParam.NOTES_TABLE_NAME + "("
                 + Constants.RequestParam.KEY_ID + " INTEGER PRIMARY KEY," + Constants.RequestParam.KEY_TITLE + " TEXT," + Constants.RequestParam.KEY_NOTE + " TEXT,"
-                + Constants.RequestParam.KEY_REMINDER + " TEXT," + Constants.RequestParam.KEY_STARTDATE + " TEXT," + Constants.RequestParam.KEY_ARCHIVE + " TEXT," + Constants.RequestParam.KEY_SETTIME + " TEXT," + Constants.RequestParam.KEY_COLOR + " TEXT," + Constants.RequestParam.KEY_PIN + " TEXT" + ")";
+                + Constants.RequestParam.KEY_REMINDER + " TEXT," + Constants.RequestParam.KEY_STARTDATE + " TEXT," + Constants.RequestParam.KEY_ARCHIVE + " TEXT," + Constants.RequestParam.KEY_SETTIME + " TEXT," + Constants.RequestParam.KEY_COLOR + " TEXT," + Constants.RequestParam.KEY_PIN + " TEXT," + Constants.RequestParam.KEY_SRID+ " INTEGER" + ")";
         db.execSQL(CREATE_ToDoS_TABLE);
 
     }

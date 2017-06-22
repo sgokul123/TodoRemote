@@ -24,6 +24,7 @@ import java.util.List;
 
 public class ToDoActivityInteractor implements TodoInteractorInterface {
     ToDoPresenterInteface toDoPresenterInteface;
+
     DatabaseHandler db;
     DatabaseReference mRef;
     int size = 0;
@@ -35,6 +36,7 @@ public class ToDoActivityInteractor implements TodoInteractorInterface {
     public ToDoActivityInteractor(ToDoPresenterInteface toDoPresenterInteface, Context context) {
         Log.i(TAG, "ToDoActivityInteractor: ");
         this.toDoPresenterInteface = toDoPresenterInteface;
+
         this.mContext = context;
         mDatabase = FirebaseDatabase.getInstance().getReference();
     }
@@ -99,17 +101,18 @@ public class ToDoActivityInteractor implements TodoInteractorInterface {
                     GenericTypeIndicator<ArrayList<ToDoItemModel>> t = new GenericTypeIndicator<ArrayList<ToDoItemModel>>() {
                     };
 
-                    if (dataSnapshot.hasChild(uid)) {
-                        DataSnapshot dataSnapsho = dataSnapshot.child(uid);
-                        Log.i(TAG, "onDataChange: ");
-                        List<ToDoItemModel> todoItemModel = new ArrayList<ToDoItemModel>();
-                        for (DataSnapshot child : dataSnapsho.getChildren()) {
+                        if (dataSnapshot.hasChild(uid)) {
+                            DataSnapshot dataSnapsho = dataSnapshot.child(uid);
                             Log.i(TAG, "onDataChange: ");
-                            todoItemModel.addAll(child.getValue(t));
+                            List<ToDoItemModel> todoItemModel = new ArrayList<ToDoItemModel>();
+                            for (DataSnapshot child : dataSnapsho.getChildren()) {
+                                Log.i(TAG, "onDataChange: ");
+                                todoItemModel.addAll(child.getValue(t));
+                            }
+                            todoItemModel.removeAll(Collections.singleton(null));
+
+                            toDoPresenterInteface.getCallBackNotes(todoItemModel);
                         }
-                        todoItemModel.removeAll(Collections.singleton(null));
-                        toDoPresenterInteface.getCallBackNotes(todoItemModel);
-                    }
                     toDoPresenterInteface.closeProgressDialog();
                 }
                 @Override
