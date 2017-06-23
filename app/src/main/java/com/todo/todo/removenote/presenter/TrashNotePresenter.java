@@ -56,7 +56,6 @@ public class TrashNotePresenter {
         db.updateToDo(toDoItemModel);
         startdate = toDoItemModel.getStartdate();
         index = toDoItemModel.getId();
-
         Connection con = new Connection(mContext);
         if (con.isNetworkConnected()) {
             trashFirebaseDataInteractor.updateFirebaseData(toDoItemModel, mUserUID, startdate, index);
@@ -86,11 +85,6 @@ public class TrashNotePresenter {
         databaseHandler.deleteMultipleTrash(trashNotes);
         getTrashNotes();
     }
-
-  /*  public void dragNotes(String mUserUID, ToDoItemModel toDoItemModel, ToDoItemModel toDoItemModel1) {
-        trashFirebaseDataInteractor.getDragNotes(mUserUID,toDoItemModel,toDoItemModel1);
-
-    }*/
 
     public void dragNotes(String mUserUID, List<ToDoItemModel> mTodoNotes, int start, int end) {
         trashFirebaseDataInteractor.getDragNotes(mUserUID,mTodoNotes,start,end);

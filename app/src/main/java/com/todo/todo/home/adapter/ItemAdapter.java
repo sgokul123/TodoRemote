@@ -163,28 +163,6 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.MyViewHolder> 
                 });
 
             }else {
-               /* mCardView.setOnLongClickListener(new View.OnLongClickListener() {
-                    @Override
-                    public boolean onLongClick(View v) {
-                        toDoIte=mdisplayedtoDoItemModels.get(position);
-                        shareBody = mContext.getString(R.string.gettitle)+ toDoIte.getTitle() +mContext.getString(R.string.getdiscription)+toDoIte.getNote().toString();
-                        shareSub =toDoIte.getNote().toString();
-                        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-                        builder.setMessage("You want share this Note....")
-                                .setPositiveButton(mContext.getString(R.string.yes), new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int id) {
-                                        Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
-                                        sharingIntent.setType(mContext.getString(R.string.data_type));
-                                        sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, shareSub);
-                                        sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
-                                        mContext.startActivity(Intent.createChooser(sharingIntent, mContext.getString(R.string.share_item)));
-                                    }
-                                });
-                        AlertDialog alert = builder.create();
-                        alert.show();
-                        return true;
-                    }
-                });*/
             }
 
         }
@@ -261,11 +239,9 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.MyViewHolder> 
     @Override
     public Filter getFilter() {
         Filter filter = new Filter() {
-
             @SuppressWarnings("unchecked")
             @Override
             public void publishResults(CharSequence constraint, FilterResults results) {
-
                 mdisplayedtoDoItemModels = (ArrayList<ToDoItemModel>) results.values; // has the filtered values
                 notifyDataSetChanged();  // notifies the data with new filtered values
             }
@@ -274,7 +250,6 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.MyViewHolder> 
             protected FilterResults performFiltering(CharSequence constraint) {
                 FilterResults results = new Filter.FilterResults();        // Holds the results of a filtering operation in values
                 ArrayList<ToDoItemModel> FilteredArrList = new ArrayList<ToDoItemModel>();
-
                 if (mOriginaltoDoItemModels == null) {
                     mOriginaltoDoItemModels = new ArrayList<ToDoItemModel>(mdisplayedtoDoItemModels); // saves the original data in mOriginalValues
                 }

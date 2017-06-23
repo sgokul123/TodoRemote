@@ -22,10 +22,6 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 
-/**
- * Created by bridgeit on 4/4/17.
- */
-
 public class TrashFirebaseDataInteractor {
     private static String TAG = "TrashFirebaseDataInteractor";
     FirebaseDatabase mDatabase;
@@ -61,11 +57,9 @@ public class TrashFirebaseDataInteractor {
             mRef.child(mUserUID).child(startdate).child(String.valueOf(pos)).setValue(null);
         } else if (toDoItemModels.size() == 0) {
             mRef.child(mUserUID).child(startdate).child(String.valueOf(pos)).setValue(null);
-
         } else {
             for (ToDoItemModel todoNote : toDoItemModels) {
                 try {
-
                     Log.i(TAG, "setSize: " + pos);
                     todoNote.setId(pos);
                     mRef.child(mUserUID).child(todoNote.getStartdate()).child(String.valueOf(pos)).setValue(todoNote);
@@ -76,7 +70,6 @@ public class TrashFirebaseDataInteractor {
             }
             mRef.child(mUserUID).child(startdate).child(String.valueOf(pos)).setValue(null);
         }
-
         if(startdate.equals(getCurrentDate())){
             pref = mContext.getSharedPreferences(Constants.ProfileeKey.SHAREDPREFERANCES_KEY,mContext.MODE_PRIVATE);
             editor=pref.edit();
@@ -84,6 +77,7 @@ public class TrashFirebaseDataInteractor {
             editor.commit();
         }
     }
+
     public String getCurrentDate() {
         String date = "";
         Calendar c = Calendar.getInstance();
@@ -92,6 +86,7 @@ public class TrashFirebaseDataInteractor {
         date = date.trim();
         return date;
     }
+
     public void updateFirebaseData(ToDoItemModel toDoItemModel, String mUserUID, String startdate, int index) {
         mRef = mDatabase.getReference().child("usersdata");
         try {
@@ -106,7 +101,6 @@ public class TrashFirebaseDataInteractor {
         db.deleteLocaltodoNote(doItemModel);
         startdate = doItemModel.getStartdate();
         index = doItemModel.getId();
-
         for (ToDoItemModel todo : toDoItemModel) {
             if (todo.getStartdate().equals(startdate) && todo.getId() > index) {
                 toDoItemModels.add(todo);
@@ -245,6 +239,5 @@ public class TrashFirebaseDataInteractor {
                 mRef.child(mUserUID).child(distItemModel1.getStartdate()).child(String.valueOf(distItemModel1.getId())).setValue(distItemModel1);
             }
         }
-
     }
 }

@@ -12,6 +12,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 
 import com.crashlytics.android.Crashlytics;
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.todo.todo.R;
@@ -29,7 +30,7 @@ public class SplashScreen extends Activity {
     SharedPreferences pref;
     SharedPreferences.Editor editor;
     boolean flag = false;
-    private DatabaseReference databaseReference;
+    private  static DatabaseReference databaseReference;
     private boolean resumed=false;
 
     @Override
@@ -38,12 +39,11 @@ public class SplashScreen extends Activity {
         Fabric.with(this, new Crashlytics());
         setContentView(R.layout.activity_splash_screen);
 
-        if(databaseReference==null){
+        if(FirebaseApp.getApps(getBaseContext()).isEmpty()){
             FirebaseDatabase.getInstance().setPersistenceEnabled(true);
             databaseReference=FirebaseDatabase.getInstance().getReferenceFromUrl("https://todo-165105.firebaseio.com/").child("usersdata");
             databaseReference.keepSynced(true);
         }
-
 
         textView_title = (AppCompatTextView) findViewById(R.id.textView_splash);
         Animation animationimage = AnimationUtils.loadAnimation(getApplicationContext(),
@@ -60,18 +60,17 @@ public class SplashScreen extends Activity {
 
         if (!isFinishing() && flag) {
             getToDoCall();
-        }
-        else {
+        } else{
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    if (flag) {
-                        getToDoCall();
-                    } else {
-                        Intent i = new Intent(SplashScreen.this, LoginActivity.class);
-                        startActivity(i);
-                        finish();
-                    }
+                        if(flag) {
+                            getToDoCall();
+                        } else  {
+                                Intent i = new Intent(SplashScreen.this, LoginActivity.class);
+                                startActivity(i);
+                                finish();
+                        }
                 }
             }, SPLASH_TIME_OUT);
         }

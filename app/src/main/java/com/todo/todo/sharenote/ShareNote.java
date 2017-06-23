@@ -31,9 +31,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-/**
- * Created by bridgeit on 8/6/17.
- */
 
 public class ShareNote  extends Fragment implements  View.OnClickListener ,ShareNoteInteface{
 
@@ -97,7 +94,6 @@ public class ShareNote  extends Fragment implements  View.OnClickListener ,Share
             getRecyclerLayout();
             mToDoRecyclerView.setAdapter(mSharingAdapter);
         }
-
     }
 
     public void addTextListener() {
@@ -128,7 +124,6 @@ public class ShareNote  extends Fragment implements  View.OnClickListener ,Share
                 getAlterRecyclerLayout();
                 break;
         }
-
     }
 
 
@@ -189,8 +184,7 @@ public class ShareNote  extends Fragment implements  View.OnClickListener ,Share
     }
 
     //get Reminders todo
-    public List<ToDoItemModel> getTodaysReminder()
-    {
+    public List<ToDoItemModel> getTodaysReminder(){
         Calendar c = Calendar.getInstance();
         SimpleDateFormat df = new SimpleDateFormat(Constants.NotesType.DATE_FORMAT);
         String date = df.format(c.getTime());
@@ -230,11 +224,6 @@ public class ShareNote  extends Fragment implements  View.OnClickListener ,Share
         sendIntent.putExtra(Intent.EXTRA_TEXT, getActivity().getString(R.string.gettitle) + toDoItemModel.getTitle() + getActivity().getString(R.string.getdiscription) + toDoItemModel.getNote());
         sendIntent.setType("text/plain");
         getActivity().startActivity(sendIntent);
-
     }
-   /* public void setUpdatedModel(List<ToDoItemModel> updatedModel) {
-        this.mAllToDONotes = updatedModel;
-        mShareingNote = getSharingToDos();
-        displaySharingNotes(mShareingNote);
-    }*/
+
 }
