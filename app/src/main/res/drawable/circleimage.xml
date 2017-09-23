@@ -6,7 +6,6 @@
     android:thicknessRatio="2"
     android:useLevel="false" >
     <solid android:color="@android:color/transparent" />
-
     <stroke
         android:width="10dp"
         android:color="@android:color/white" />

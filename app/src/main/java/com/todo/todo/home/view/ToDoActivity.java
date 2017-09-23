@@ -91,27 +91,6 @@ public class ToDoActivity extends BaseActivity
     DatabaseReference databaseReference;
     private boolean draged=false;
 
-    //get crop images circular
-    public static Bitmap getRoundedRectBitmap(Bitmap bitmap, int pixels) {
-        Bitmap result = null;
-        try {
-            result = Bitmap.createBitmap(100, 100, Bitmap.Config.ARGB_8888);
-            Canvas canvas = new Canvas(result);
-            int color = 0xff424242;
-            Paint paint = new Paint();
-            Rect rect = new Rect(0, 0, 200, 200);
-            paint.setAntiAlias(true);
-            canvas.drawARGB(0, 0, 0, 0);
-            paint.setColor(color);
-            canvas.drawCircle(50, 50, 50, paint);
-            paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
-            canvas.drawBitmap(bitmap, rect, rect, paint);
-        } catch (NullPointerException e) {
-        } catch (OutOfMemoryError o) {
-        }
-        return result;
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -287,9 +266,6 @@ public class ToDoActivity extends BaseActivity
         mFloatingActionButton.setVisibility(View.VISIBLE);
     }
 
-    /*
-    * Logout User From ToDo App
-    * */
     private void logoutUser() {
         if (pref.contains(Constants.BundleKey.USER_REGISTER)) {
             if (pref.contains(Constants.BundleKey.FACEBOOK_LOGIN) && pref.getString(Constants.BundleKey.FACEBOOK_LOGIN, "false").equals("true")) {
@@ -425,11 +401,11 @@ public class ToDoActivity extends BaseActivity
            if (toDoAllItemModels.size() != 0) {
                editor.putInt(Constants.Stringkeys.LAST_NOTE_COUNT, toDoAllItemModels.size());
                editor.commit();
-               if (mTextView_Title.getText().equals(Constants.NotesType.ALL_NOTES)) {
+               if (mTextView_Title.getText().equals(Constants.NotesType.ALL_NOTES)){
                    if (offAdd) {
 
                    }
-               } else if (mTextView_Title.getText().equals(Constants.NotesType.REMINDER_NOTES)) {
+               }else if (mTextView_Title.getText().equals(Constants.NotesType.REMINDER_NOTES)) {
                    reminderFragment.setUpdatedModel(toDoAllItemModels);
                } else if (mTextView_Title.getText().equals(Constants.NotesType.ARCHIVE_NOTES)) {
                    archiveFragment.setUpdatedModel(toDoAllItemModels);
@@ -491,7 +467,7 @@ public class ToDoActivity extends BaseActivity
             }
         }
         //take croped image
-        if (requestCode == 3) {
+        if (requestCode == 4) {
             if (data != null) {
                 Bundle extras = data.getExtras();
                 Bitmap cropedPic = extras.getParcelable("data");
@@ -503,6 +479,28 @@ public class ToDoActivity extends BaseActivity
         }
     }
 
+    //get crop images circular
+    public static Bitmap getRoundedRectBitmap(Bitmap bitmap, int pixels) {
+        Bitmap result = null;
+        try {
+            result = Bitmap.createBitmap(100, 100, Bitmap.Config.ARGB_8888);
+            Canvas canvas = new Canvas(result);
+            int color = 0xff424242;
+            Paint paint = new Paint();
+            Rect rect = new Rect(0, 0, 200, 200);
+            paint.setAntiAlias(true);
+            canvas.drawARGB(0, 0, 0, 0);
+            paint.setColor(color);
+            canvas.drawCircle(50, 50, 50, paint);
+            paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
+            canvas.drawBitmap(bitmap, rect, rect, paint);
+        } catch (NullPointerException e) {
+        } catch (OutOfMemoryError o) {
+        }
+        return result;
+    }
+
+
     private void cropCapturedImage(Uri prfilefilePath) {
         Intent cropIntent = new Intent("com.android.camera.action.CROP");
         cropIntent.setDataAndType(prfilefilePath, "image/*");
@@ -512,7 +510,7 @@ public class ToDoActivity extends BaseActivity
         cropIntent.putExtra("outputX", 256);
         cropIntent.putExtra("outputY", 256);
         cropIntent.putExtra("return-data", true);
-        startActivityForResult(cropIntent, 3);
+        startActivityForResult(cropIntent, 4);
     }
 
     //hide keyboard

@@ -17,11 +17,6 @@ import com.todo.todo.util.Connection;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-/**
- * Created by bridgeit on 20/3/17.
- */
-
 public class ToDoActivityInteractor implements TodoInteractorInterface {
     ToDoPresenterInteface toDoPresenterInteface;
 
@@ -44,8 +39,6 @@ public class ToDoActivityInteractor implements TodoInteractorInterface {
     @Override
     public void getCallToDatabase() {
 
-        // call to he database to retrive data load into grid view
-        //it will responce all notes back to presenter
 
         db = new DatabaseHandler(mContext, this);
         toDoPresenterInteface.showProgressDialog();

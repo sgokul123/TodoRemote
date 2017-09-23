@@ -8,14 +8,12 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
-
 import com.todo.todo.addnote.interactor.AddNoteInteractorInteface;
 import com.todo.todo.home.interactor.ToDoActivityInteractor;
 import com.todo.todo.home.model.ToDoItemModel;
 import com.todo.todo.home.presenter.ToDoActivityPresenter;
 import com.todo.todo.update.interactor.UpdateNoteInteractor;
 import com.todo.todo.util.Constants;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -348,7 +346,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 values.put(Constants.RequestParam.KEY_SETTIME, toDoItemModel.getSettime());
                 values.put(Constants.RequestParam.KEY_COLOR,toDoItemModel.getColor());
                 values.put(Constants.RequestParam.KEY_SRID,toDoItemModel.getSrid());
-
                 if(toDoItemModel.isPin()){
                     values.put(Constants.RequestParam.KEY_PIN,"true");
                 }else {
@@ -357,9 +354,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 db.insert(Constants.RequestParam.NOTES_TABLE_NAME, null, values);
             }
             toDoActivityPresenter.sendCallBackNotes(toDoItemModels);
-
         } catch (Exception e) {
-
             Log.i(TAG, "addToDo: " + e);
         } finally {
             db.close(); // Closing database connection
@@ -436,7 +431,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 ToDo.setSettime(cursor2.getString(6));
                 ToDo.setColor(cursor2.getString(7));
                 ToDo.setSrid(cursor.getInt(8));
-
                 // Adding ToDo to list
                 ToDoList.add(ToDo);
             } while (cursor2.moveToNext());
@@ -451,7 +445,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public List<ToDoItemModel> getLocalData() {
         List<ToDoItemModel> localNotes = new ArrayList<ToDoItemModel>();
         String selectQuerylocal = "SELECT  * FROM " + Constants.RequestParam.LOCAL_NOTES_TABLE_NAME;
-
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor2 = db.rawQuery(selectQuerylocal, null);
 

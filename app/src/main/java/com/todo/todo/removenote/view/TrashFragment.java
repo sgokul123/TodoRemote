@@ -74,7 +74,6 @@ public class TrashFragment extends Fragment implements TrashFragmentInterface, V
         mImageView_Linear_Grid.setOnClickListener(this);
         imageView_Delete.setOnClickListener(this);
         pref = getActivity().getSharedPreferences(Constants.ProfileeKey.SHAREDPREFERANCES_KEY, getActivity().MODE_PRIVATE);
-
         mLinear = pref.getBoolean("mlinear", false);
         trashNotePresenter.getTrashNotes();
         mUserUID = pref.getString(Constants.BundleKey.USER_USER_UID, Constants.Stringkeys.NULL_VALUIE);

@@ -75,6 +75,7 @@ public class Constants {
         String MASSEGE_GET_RESTORE="Note Get Restored";
         String LOCAL_REGISTER="localregister";
         String LAST_SRNO="lastsrno";
+        String MASSEGE_IS_DELETED="Note is Deleted";
     }
 
     public interface InternateConnnection {

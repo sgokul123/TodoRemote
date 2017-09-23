@@ -140,7 +140,7 @@ public class ToDoNotesFragment extends Fragment implements ToDoActivityInteface,
             @Override
             public void clearView(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
                if(start>=0){
-                       trashNotePresenter.dragNotes(mUserUID,mTodoNotes,end,start);
+                   trashNotePresenter.dragNotes(mUserUID,mTodoNotes,end,start);
                    draged=true;
                    mToDoActivity.setdraged(true);
                }
@@ -149,6 +149,8 @@ public class ToDoNotesFragment extends Fragment implements ToDoActivityInteface,
 
             @Override
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+                start=-1;
+                end=-1;
                 final int position = viewHolder.getAdapterPosition();
                 final List<ToDoItemModel> forArchiveAlldataModels = mAllToDONotes;
                 Log.i(TAG, "onSwiped: ");
@@ -156,7 +158,7 @@ public class ToDoNotesFragment extends Fragment implements ToDoActivityInteface,
                 if (direction == ItemTouchHelper.LEFT) {
                     trashNotePresenter.removeFirebaseData(toDoItem, forArchiveAlldataModels, mUserUID);
                     Snackbar snackbar = Snackbar
-                            .make(getActivity().getCurrentFocus(), Constants.Stringkeys.MASSEGE_IS_ARCHIVED, Snackbar.LENGTH_LONG)
+                            .make(getActivity().getCurrentFocus(), Constants.Stringkeys.MASSEGE_IS_DELETED, Snackbar.LENGTH_LONG)
                             .setAction(Constants.Stringkeys.ARCHIVE_UNDO, new View.OnClickListener() {
                                 @Override
                                 public void onClick(View view) {
@@ -265,6 +267,7 @@ public class ToDoNotesFragment extends Fragment implements ToDoActivityInteface,
     @Override
     public void showDataInActivity(List<ToDoItemModel> toDoItemModels) {
         if(!draged){
+            mToDoActivity.showDataInActivity(toDoItemModels);
             getsortList(toDoItemModels);
         }
     }

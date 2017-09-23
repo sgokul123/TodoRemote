@@ -1,8 +1,6 @@
 package com.todo.todo.home.adapter;
 
 import android.app.Activity;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -11,11 +9,6 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.util.Pair;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.CardView;
@@ -31,9 +24,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.todo.todo.R;
+import com.todo.todo.archive.view.ArchiveFragmentInterface;
 import com.todo.todo.home.model.ToDoItemModel;
 import com.todo.todo.home.view.ToDoActivity;
-import com.todo.todo.removenote.view.TrashFragment;
 import com.todo.todo.removenote.view.TrashFragmentInterface;
 import com.todo.todo.sharenote.ShareNote;
 import com.todo.todo.update.view.UpdateNoteActivity;
@@ -49,6 +42,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.MyViewHolder> 
     ToDoActivity mToDoActivity;
     int count = 0;
     TrashFragmentInterface mTrashFragmentInterface;
+    ArchiveFragmentInterface archiveFragmentInterface ;
     private String TAG = "NoteAdapter";
     private Activity mContext;
     private List<ToDoItemModel> mdisplayedtoDoItemModels;
@@ -80,6 +74,12 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.MyViewHolder> 
 
     }
 
+    public ItemAdapter(Activity context, List<ToDoItemModel> todoItemModel, ArchiveFragmentInterface archiveFragmentInterface) {
+        this.mContext=context;
+        this.mdisplayedtoDoItemModels = todoItemModel;
+        this.mOriginaltoDoItemModels = todoItemModel;
+      this.archiveFragmentInterface=archiveFragmentInterface;
+    }
 
     @Override
     public ItemAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -170,6 +170,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.MyViewHolder> 
 
         @Override
         public void onClick(View v) {
+
             switch (v.getId()) {
                 case R.id.cardview_notes:
                     int position = getAdapterPosition();
@@ -196,7 +197,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.MyViewHolder> 
                     }else if(shareNote!=null) {
                         shareNote.shareNote(position);
                     }
-                    else
+                    else if(archiveFragmentInterface==null)
                      {
                         SharedPreferences pref = mContext.getSharedPreferences(Constants.ProfileeKey.SHAREDPREFERANCES_KEY, mContext.MODE_PRIVATE);
                         SharedPreferences.Editor editor = pref.edit();

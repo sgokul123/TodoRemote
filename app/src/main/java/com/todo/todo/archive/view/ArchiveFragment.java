@@ -28,7 +28,7 @@ import com.todo.todo.util.Constants;
 
 import java.util.ArrayList;
 import java.util.List;
-    public class ArchiveFragment extends Fragment implements  View.OnClickListener,TrashFragmentInterface {
+    public class ArchiveFragment extends Fragment implements  View.OnClickListener,ArchiveFragmentInterface {
 
         private static final String TAG = "TrashFragment";
         private ItemAdapter mArchiveAdapter;
@@ -49,6 +49,8 @@ import java.util.List;
         ArrayList<Integer> arrayList=new ArrayList<>();
         private Toolbar mToolbardelete;
         ToDoActivityInteface mToDoActivityInteface;
+
+
         public ArchiveFragment(List<ToDoItemModel> toDoAllItemModels, ToDoActivityInteface toDoActivityInteface) {
             this.mAllToDONotes=toDoAllItemModels;
             this.mToDoActivityInteface=toDoActivityInteface;
@@ -78,7 +80,7 @@ import java.util.List;
             mLinear=pref.getBoolean(Constants.Stringkeys.STR_LINEAR_GRID,false);
             mImageView_Linear_Grid.setOnClickListener(this);
             mArchiveNotes=getArchivedToDos();
-            displayArchiveNotes(mArchiveNotes);
+            displayArchivedNotes(mArchiveNotes);
             // editor = pref.edit();
             mUserUID = pref.getString(Constants.BundleKey.USER_USER_UID, Constants.Stringkeys.NULL_VALUIE);
             mToolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
@@ -89,19 +91,7 @@ import java.util.List;
             return view;
         }
 
-        public void displayArchiveNotes(List<ToDoItemModel> todoItemModel) {
-            mArchiveNotes =todoItemModel;
-            if(mArchiveNotes.size()==0){
-                mTextView_blank_recycler.setVisibility(View.VISIBLE);
-                mTextView_blank_recycler.setText(getString(R.string.get_archive_null));
-            }else {
-                mTextView_blank_recycler.setVisibility(View.INVISIBLE);
-                mArchiveAdapter =new ItemAdapter(getActivity(),todoItemModel,this);
-                getRecyclerLayout();
-                mToDoRecyclerView.setAdapter(mArchiveAdapter);
-            }
 
-        }
 
 
 
@@ -189,7 +179,7 @@ import java.util.List;
                     break;
                 case R.id.imageView_delete:
 
-                    getHideToolBar(false);
+                   // getHideToolBar(false);
                     mArchiveAdapter =new ItemAdapter(getActivity(),mArchiveNotes);
                     getRecyclerLayout();
                     mToDoRecyclerView.setAdapter(mArchiveAdapter);
@@ -242,42 +232,30 @@ import java.util.List;
         public void setUpdatedModel(List<ToDoItemModel> updatedModel) {
             this.mAllToDONotes = updatedModel;
             mArchiveNotes=getArchivedToDos();
-            displayArchiveNotes(mArchiveNotes);
+            displayArchivedNotes(mArchiveNotes);
         }
 
+
+
+
         @Override
-        public void getHideToolBar(boolean flag) {
-            if (flag) {
-                mToolbar.setVisibility(View.GONE);
-                mToolbardelete.setVisibility(View.VISIBLE);
-            } else {
-                mToolbardelete.setVisibility(View.GONE);
-                mToolbar.setVisibility(View.VISIBLE);
+        public void displayArchivedNotes(List<ToDoItemModel> todoItemModel) {
+            mArchiveNotes =todoItemModel;
+            if(mArchiveNotes.size()==0){
+                mTextView_blank_recycler.setVisibility(View.VISIBLE);
+                mTextView_blank_recycler.setText(getString(R.string.get_archive_null));
+            }else {
+                mTextView_blank_recycler.setVisibility(View.INVISIBLE);
+                mArchiveAdapter =new ItemAdapter(getActivity(),todoItemModel,this);
+                getRecyclerLayout();
+                mToDoRecyclerView.setAdapter(mArchiveAdapter);
             }
-        }
-
-        @Override
-        public void getCountIncreament(int position) {
-            count=count+1;
-            arrayList.add(position);
-            mTextViewCount.setText(count+"  Selected");
-        }
-
-        @Override
-        public void displayTrashNotes(List<ToDoItemModel> todoItemModel) {
 
         }
 
         @Override
         public void getRefreshNotes() {
 
-        }
-
-        @Override
-        public void getCountDecreament(Integer position) {
-            count=count-1;
-            arrayList.remove(position);
-            mTextViewCount.setText(count+"  Selected");
         }
 
 

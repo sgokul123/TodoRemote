@@ -22,7 +22,6 @@ import com.todo.todo.util.Constants;
 import io.fabric.sdk.android.Fabric;
 
 public class SplashScreen extends Activity {
-
     // Splash screen timer
     private static int SPLASH_TIME_OUT = 5000;
     AppCompatImageView image1;
@@ -44,7 +43,6 @@ public class SplashScreen extends Activity {
             databaseReference=FirebaseDatabase.getInstance().getReferenceFromUrl("https://todo-165105.firebaseio.com/").child("usersdata");
             databaseReference.keepSynced(true);
         }
-
         textView_title = (AppCompatTextView) findViewById(R.id.textView_splash);
         Animation animationimage = AnimationUtils.loadAnimation(getApplicationContext(),
                 R.anim.fade);
